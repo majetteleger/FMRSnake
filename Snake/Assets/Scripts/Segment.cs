@@ -8,7 +8,7 @@ public class Segment : MonoBehaviour
 {
     public float ScaleUpTime;
     public Transform Shape;
-
+    
     public GridCell CurrentCell { get; set; }
     public Player Player { get; set; }
     public Vector3 LastDirection { get; set; }

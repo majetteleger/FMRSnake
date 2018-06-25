@@ -135,7 +135,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator Beat()
     {
-        for (int i = 0; i < Bar.Beats.Count; i++)
+        for (var i = 0; i < Bar.Beats.Count; i++)
         {
             if (!Bar.Beats[i].IsHigh)
             {
@@ -170,7 +170,7 @@ public class Player : MonoBehaviour
     {
         var offButtons = new List<Button>();
 
-        for (int i = 0; i < _buttons.Length; i++)
+        for (var i = 0; i < _buttons.Length; i++)
         {
             if (!_buttons[i].IsOn)
             {
@@ -190,7 +190,7 @@ public class Player : MonoBehaviour
 
     public void Move(Vector3 direction)
     {
-        for (int i = 0; i < _tailParent.childCount; i++)
+        for (var i = 0; i < _tailParent.childCount; i++)
         {
             _tailParent.GetChild(i).GetComponent<Segment>().Move();
         }
@@ -236,7 +236,8 @@ public class Player : MonoBehaviour
     
     public void Grow()
     {
-        Segment newSegment;
+        var newSegment = (Segment) null;
+
         if (_tailParent.childCount > 0)
         {
             newSegment = Instantiate(SegmentPrefab, _lastSegmentPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
@@ -249,7 +250,6 @@ public class Player : MonoBehaviour
         }
         
         newSegment.Player = this;
-        
     }
 
     private void MovementCallback()
