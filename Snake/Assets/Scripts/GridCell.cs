@@ -5,6 +5,7 @@ using UnityEngine;
 public class GridCell : MonoBehaviour
 {
     public List<ZoneModifier> ZoneModifiers;
+    public GameObject Content;
 
     private SpriteRenderer _spriteRenderer;
 

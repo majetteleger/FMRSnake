@@ -26,13 +26,15 @@ public class Player : MonoBehaviour
     public AudioClip HighBeat;
     public float MoveTime;
     public GameObject SegmentPrefab;
-    public Transform TailParent;
-
+    public Bar[] Bars;
+    
+    private Transform _tailParent;
     private Vector3 _lastSegmentPosition;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
     private GridPlayground _gridPlayground;
     private GridCell _currentCell;
+    private Vector3 _lastDirection;
 
     private Button[] _buttons = {
         new Button(0, new Vector2(-1, 0), false),
@@ -43,14 +45,22 @@ public class Player : MonoBehaviour
     
 	private void Start()
     {
+        _tailParent = new GameObject("Tail Parent").GetComponent<Transform>();
+
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
 
-        StartCoroutine(Beat());
-	}
+        Instantiate(SegmentPrefab, transform);
+        
+        _lastDirection = Vector3.right;
+    }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Bar = Bars[UnityEngine.Random.Range(0, Bars.Length)];
+        }
         // // Simpler but seems to bug sometimes when I mash keys quickly
         //_buttons[0] = Input.GetKey(KeyCode.LeftArrow);
         //_buttons[1] = Input.GetKey(KeyCode.UpArrow);
@@ -98,6 +108,7 @@ public class Player : MonoBehaviour
     {
         var food = other.GetComponent<Food>();
         var gridCell = other.GetComponent<GridCell>();
+        var segment = other.GetComponent<Segment>();
 
         if (food != null)
         {
@@ -106,18 +117,20 @@ public class Player : MonoBehaviour
         }
         else if (gridCell != null)
         {
+            gridCell.Content = gameObject;
             _currentCell = gridCell;
+        }
+        else if (segment != null)
+        {
+            Debug.Log("Collided with a segment of the tail!");
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    public void StartGame()
     {
-        var gridCell = other.GetComponent<GridCell>();
-
-        if (gridCell != null && _currentCell != null && _currentCell == gridCell)
-        {
-            _currentCell = null;
-        }
+        StartCoroutine(Beat());
+        transform.position = MainManager.Instance.GridPlayground.PlayerSpawnPoint;
+        _tailParent.transform.position = MainManager.Instance.GridPlayground.PlayerSpawnPoint;
     }
 
     private IEnumerator Beat()
@@ -175,41 +188,68 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    private void Move(Vector3 direction)
+    public void Move(Vector3 direction)
     {
-        for (int i = 0; i < TailParent.childCount; i++)
+        for (int i = 0; i < _tailParent.childCount; i++)
         {
-            if (i == TailParent.childCount - 1)
-            {
-                _lastSegmentPosition = TailParent.GetChild(i).position;
-            }
-            if (i == 0)
-            {
-                TailParent.GetChild(0).DOMove(transform.position, MoveTime);
-            }
-            else
-            {
-                TailParent.GetChild(i).DOMove(TailParent.GetChild(i - 1).position, MoveTime);
-            }   
+            _tailParent.GetChild(i).GetComponent<Segment>().Move();
+        }
+
+        if (_tailParent.childCount > 0)
+        {
+            _lastSegmentPosition = _tailParent.GetChild(_tailParent.childCount - 1).position;
         }
 
         _prevHeadPosition = transform.position;
-
+        
         var movement = transform.DOMove(transform.position + direction * _gridPlayground.MoveDistance, MoveTime);
+
+        // Horizontal to vertical
+        if (Mathf.Abs(_lastDirection.x) > Mathf.Abs(_lastDirection.y) && Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
+        {
+            if (direction.y > 0)
+            {
+                transform.DORotate(new Vector3(0f, 0f, 90f), MoveTime);
+            }
+            else if (direction.y < 0)
+            {
+                transform.DORotate(new Vector3(0f, 0f, -90f), MoveTime);
+            }
+        }
+        // Vertical to horizontal
+        else if (Mathf.Abs(_lastDirection.x) < Mathf.Abs(_lastDirection.y) && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            if (direction.x > 0)
+            {
+                transform.DORotate(new Vector3(0f, 0f, 0f), MoveTime);
+            }
+            else if (direction.x < 0)
+            {
+                transform.DORotate(new Vector3(0f, 0f, 180f), MoveTime);
+            }
+        }
+
+        _lastDirection = direction;
 
         movement.onComplete += MovementCallback;
     }
     
-    private void Grow()
+    public void Grow()
     {
-        if (TailParent.childCount > 0)
+        Segment newSegment;
+        if (_tailParent.childCount > 0)
         {
-            Instantiate(SegmentPrefab, _lastSegmentPosition, Quaternion.identity, TailParent);
+            newSegment = Instantiate(SegmentPrefab, _lastSegmentPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
+            newSegment.LastDirection = _lastSegmentPosition - newSegment.transform.position;
         }
         else
         {
-            Instantiate(SegmentPrefab, _prevHeadPosition, Quaternion.identity, TailParent);
+            newSegment = Instantiate(SegmentPrefab, _prevHeadPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
+            newSegment.LastDirection = _lastDirection;
         }
+        
+        newSegment.Player = this;
+        
     }
 
     private void MovementCallback()
@@ -221,6 +261,6 @@ public class Player : MonoBehaviour
             debugString += _currentCell.ZoneModifiers[i].Color + (i != _currentCell.ZoneModifiers.Count - 1 ? ", " : string.Empty);
         }
 
-        Debug.Log(debugString);
+        //Debug.Log(debugString);
     }
 }

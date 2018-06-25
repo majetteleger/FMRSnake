@@ -1,11 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GridPlayground : MonoBehaviour 
+public class GridPlayground : MonoBehaviour
 {
-	public GameObject CellPrefab;
+    public static GridPlayground Instance;
+
+    public GameObject CellPrefab;
 	public GameObject PlayerPrefab;
 	public GameObject FoodPrefab;
     public float CellSize;
@@ -16,14 +19,20 @@ public class GridPlayground : MonoBehaviour
 	public float ZoneSpawnTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
+    public Vector3 PlayerSpawnPoint { get; set; }
 
     private float _foodSpawnTimer;
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
-	
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
 	private void Start()
 	{
-		var playerSpawned = false;
+		var playerSpawnFound = false;
 		
 		for(var x = -GridRadius; x < GridRadius; x += (CellSize + CellSpacing))
 		{
@@ -34,10 +43,10 @@ public class GridPlayground : MonoBehaviour
 				newGridCell.GetComponent<BoxCollider2D>().size = Vector2.one * CellSize;
                 newGridCell.transform.SetParent(transform);
 				
-				if(!playerSpawned && Mathf.Abs(x) < 0.5f && Mathf.Abs(y) < 0.5f)
+				if(!playerSpawnFound && Mathf.Abs(x) < 0.5f && Mathf.Abs(y) < 0.5f)
 				{
-					Instantiate(PlayerPrefab, new Vector3(x, y, 0f), Quaternion.identity);
-					playerSpawned = true;
+				    PlayerSpawnPoint = new Vector3(x, y, 0f);
+                    playerSpawnFound = true;
 				}
 			}
 		}
@@ -50,6 +59,11 @@ public class GridPlayground : MonoBehaviour
 	
 	private void Update()
 	{
+	    if (!MainManager.Instance.GameStarted)
+	    {
+	        return;
+	    }
+
 		if(_foodSpawnTimer > 0f)
 		{
 			_foodSpawnTimer -= Time.deltaTime;
@@ -75,22 +89,56 @@ public class GridPlayground : MonoBehaviour
 	
 	private void SpawnFood()
 	{
-	    var randomCell = _cells[Random.Range(0, _cells.Length)];
+        var randomCell = GetRandomEmptyCell();
 
-	    Instantiate(FoodPrefab, randomCell.transform);
+        if (randomCell == null)
+            return;
+
+        //var randomCell = _cells[UnityEngine.Random.Range(0, _cells.Length)];
+
+        GameObject newFood = Instantiate(FoodPrefab, randomCell.transform);
+
+        randomCell.Content = newFood;
+    }
+
+    private GridCell GetRandomEmptyCell()
+    {
+        var emptyCells = _cells.Where(cell => cell.Content == null).ToArray();
+
+        if (emptyCells.Length == 0)
+            return null;
+        else
+            return emptyCells[UnityEngine.Random.Range(0, emptyCells.Length)];
+
     }
 
     private void SpawnZone()
     {
-        var randomModifier = ZoneModifiers[Random.Range(0, ZoneModifiers.Length)];
+        var randomModifier = ZoneModifiers[UnityEngine.Random.Range(0, ZoneModifiers.Length)];
 
-        var randomPosition = new Vector2(Random.Range(-GridRadius, GridRadius), Random.Range(-GridRadius, GridRadius));
+        var randomPosition = new Vector2(UnityEngine.Random.Range(-GridRadius, GridRadius), UnityEngine.Random.Range(-GridRadius, GridRadius));
         var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius).Where(x => x.GetComponent<GridCell>() != null).Select(x => x.GetComponent<GridCell>());
         
         foreach (var overlappedCell in overlappedCells)
         {
             overlappedCell.ZoneModifiers.Add(randomModifier);
             overlappedCell.Modify(randomModifier);
+        }
+    }
+
+    public void ShowCells()
+    {
+        foreach (var cell in _cells)
+        {
+            cell.GetComponent<SpriteRenderer>().enabled = true;
+        }
+    }
+
+    public void HideCells()
+    {
+        foreach (var cell in _cells)
+        {
+            cell.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 }
