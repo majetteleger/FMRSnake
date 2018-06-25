@@ -59,7 +59,7 @@ public class GridPlayground : MonoBehaviour
 	
 	private void Update()
 	{
-	    if (!MainManager.Instance.GameStarted)
+	    if (!MainManager.Instance.GameStarted || MainManager.Instance.GamePaused)
 	    {
 	        return;
 	    }

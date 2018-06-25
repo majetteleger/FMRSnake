@@ -11,6 +11,7 @@ public class MainManager : MonoBehaviour
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
     public bool GameStarted { get; set; }
+    public bool GamePaused { get; set; }
 
     private bool[] loadedPlayerIndices = new bool[4];
     

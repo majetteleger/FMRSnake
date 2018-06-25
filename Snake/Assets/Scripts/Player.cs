@@ -57,6 +57,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (MainManager.Instance.GamePaused)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Bar = Bars[UnityEngine.Random.Range(0, Bars.Length)];
@@ -122,8 +127,17 @@ public class Player : MonoBehaviour
         }
         else if (segment != null)
         {
-            Debug.Log("Collided with a segment of the tail!");
+            Debug.Log("Colliding with Tail!");
+            //StartCoroutine(Die());
         }
+    }
+
+    private IEnumerator Die()
+    {
+        MainManager.Instance.GamePaused = true;
+
+        yield return new WaitForSeconds(1);
+        //end sequence
     }
 
     public void StartGame()
