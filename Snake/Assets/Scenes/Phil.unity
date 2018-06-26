@@ -630,6 +630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline: {fileID: 285823954}
+  Color: {r: 0.9960785, g: 0.8352942, b: 0.003921569, a: 1}
 --- !u!212 &576035969
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -888,10 +889,6 @@ MonoBehaviour:
   MainMenuAnchor: {fileID: 666853905}
   BuildYourSnakeAnchor: {fileID: 1423733471}
   LeaderBoardAnchor: {fileID: 787414671}
-  MetroGreen: {r: 0, g: 0.5686275, b: 0.21176472, a: 1}
-  MetroOrange: {r: 0.93725497, g: 0.49803925, b: 0.003921569, a: 1}
-  MetroYellow: {r: 0.9960785, g: 0.8352942, b: 0.003921569, a: 1}
-  MetroBlue: {r: 0, g: 0.4901961, b: 0.75294125, a: 1}
   MetroLines:
   - {fileID: 1536701322}
   - {fileID: 1213611970}
@@ -1048,6 +1045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline: {fileID: 1253655742}
+  Color: {r: 0.93725497, g: 0.49803925, b: 0.003921569, a: 1}
 --- !u!212 &1213611971
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1347,6 +1345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline: {fileID: 575250494}
+  Color: {r: 0, g: 0.4901961, b: 0.75294125, a: 1}
 --- !u!212 &1536701323
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1435,6 +1434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline: {fileID: 349809643}
+  Color: {r: 0, g: 0.5686275, b: 0.21176472, a: 1}
 --- !u!212 &1631214258
 SpriteRenderer:
   m_ObjectHideFlags: 0
