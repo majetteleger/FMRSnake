@@ -19,7 +19,6 @@ public class GridPlayground : MonoBehaviour
 	public float ZoneSpawnTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
-    public Vector3 PlayerSpawnPoint { get; set; }
 
     private float _foodSpawnTimer;
     private float _zoneSpawnTimer;
@@ -32,22 +31,14 @@ public class GridPlayground : MonoBehaviour
 
 	private void Start()
 	{
-		var playerSpawnFound = false;
-		
-		for(var x = -GridRadius; x < GridRadius; x += (CellSize + CellSpacing))
+		for(var x = transform.position.x - GridRadius; x < GridRadius; x += (CellSize + CellSpacing))
 		{
-			for(var y = -GridRadius; y < GridRadius; y += (CellSize + CellSpacing))
+			for(var y = transform.position.y - GridRadius; y < GridRadius; y += (CellSize + CellSpacing))
 			{
 				var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
 				newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
 				newGridCell.GetComponent<BoxCollider2D>().size = Vector2.one * CellSize;
                 newGridCell.transform.SetParent(transform);
-				
-				if(!playerSpawnFound && Mathf.Abs(x) < 0.5f && Mathf.Abs(y) < 0.5f)
-				{
-				    PlayerSpawnPoint = new Vector3(x, y, 0f);
-                    playerSpawnFound = true;
-				}
 			}
 		}
 
@@ -59,12 +50,12 @@ public class GridPlayground : MonoBehaviour
 	
 	private void Update()
 	{
-	    if (!MainManager.Instance.GameStarted || MainManager.Instance.GamePaused)
+	    if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
 	    {
 	        return;
 	    }
 
-		if(_foodSpawnTimer > 0f)
+        if (_foodSpawnTimer > 0f)
 		{
 			_foodSpawnTimer -= Time.deltaTime;
 			

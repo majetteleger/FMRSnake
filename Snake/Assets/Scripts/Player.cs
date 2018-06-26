@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (MainManager.Instance.GamePaused)
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
         {
             return;
         }
@@ -132,19 +132,31 @@ public class Player : MonoBehaviour
         }
     }
 
-    private IEnumerator Die()
+    public void Die()
     {
-        MainManager.Instance.GamePaused = true;
+        StopAllCoroutines();
+        StartCoroutine(DoDie());
 
+        var childrenSegments = _tailParent.GetComponentsInChildren<Segment>();
+
+        foreach (var childrenSegment in childrenSegments)
+        {
+            Destroy(childrenSegment.gameObject);
+        }
+    }
+
+    private IEnumerator DoDie()
+    {
         yield return new WaitForSeconds(1);
         //end sequence
+
+        MainManager.Instance.TransitionToLeaderBoard();
     }
 
     public void StartGame()
     {
         StartCoroutine(Beat());
-        transform.position = MainManager.Instance.GridPlayground.PlayerSpawnPoint;
-        _tailParent.transform.position = MainManager.Instance.GridPlayground.PlayerSpawnPoint;
+        _tailParent.transform.position = transform.position;
     }
 
     private IEnumerator Beat()
@@ -215,9 +227,18 @@ public class Player : MonoBehaviour
         }
 
         _prevHeadPosition = transform.position;
-        
-        var movement = transform.DOMove(transform.position + direction * _gridPlayground.MoveDistance, MoveTime);
 
+        var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
+        var movement = transform.DOMove(playerMoveDestination, MoveTime);
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
+        {
+            var cameraMoveDestination = playerMoveDestination;
+            cameraMoveDestination.z = -10f;
+
+            Camera.main.transform.DOMove(cameraMoveDestination, MoveTime);
+        }
+        
         // Horizontal to vertical
         if (Mathf.Abs(_lastDirection.x) > Mathf.Abs(_lastDirection.y) && Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
         {
@@ -262,7 +283,8 @@ public class Player : MonoBehaviour
             newSegment = Instantiate(SegmentPrefab, _prevHeadPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
             newSegment.LastDirection = _lastDirection;
         }
-        
+
+        newSegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
         newSegment.Player = this;
     }
 
