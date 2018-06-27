@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -35,7 +36,6 @@ public class MainManager : MonoBehaviour
     public GridPlayground GridPlayground { get; set; }
 
     private int _selectedLineIndex;
-    private Vector3 _playCenterPosition;
     
     private void Awake()
     {
@@ -45,13 +45,7 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
-
-        _playCenterPosition = BuildYourSnakeAnchor.transform.position;
-        _playCenterPosition.z = 0f;
-
-        Player = Instantiate(PlayerPrefab, _playCenterPosition, Quaternion.identity).GetComponent<Player>();
-        GridPlayground.transform.position = _playCenterPosition;
-
+        
         _selectedLineIndex = 1;
         TransitionToMainMenu();
     }
@@ -151,6 +145,7 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine();
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToMainMenu();
+        ResetSnake();
     }
 
     public void TransitionToBuildYourSnake()
@@ -181,8 +176,7 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToLeaderBoard();
-        
-        Player.transform.position = _playCenterPosition;
+        ResetSnake();
 
         var foodObjects = FindObjectsOfType<Food>();
 
@@ -192,10 +186,25 @@ public class MainManager : MonoBehaviour
         }
     }
 
+    public void ResetSnake()
+    {
+        if (Player != null)
+        {
+            Player.Destroy();
+        }
+
+        var approximatePosition = BuildYourSnakeAnchor.transform.position;
+        approximatePosition.z = 0f;
+
+        var spawnPosition = FindNearestCellPosition(approximatePosition);
+
+        Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
+    }
+
     private void AddPlayer()
     {
         Player.Grow();
-        Player.Move(Vector3.right);
+        Player.QueueMove(Vector3.right);
 
         //
     }
@@ -217,5 +226,26 @@ public class MainManager : MonoBehaviour
 
             MetroLines[i].DeEmphasize();
         }
+    }
+
+    private Vector3 FindNearestCellPosition(Vector3 approximatePosition)
+    {
+        var gridCells = Physics2D.OverlapCircleAll(approximatePosition, GridPlayground.CellSize).Select(x => x.transform).ToArray();
+
+        var distance = float.MaxValue;
+        var resultCell = (Transform) null;
+
+        foreach (var gridCell in gridCells)
+        {
+            var tempDistance = Vector2.Distance(approximatePosition, transform.position);
+
+            if (tempDistance < distance)
+            {
+                distance = tempDistance;
+                resultCell = gridCell;
+            }
+        }
+
+        return resultCell.position;
     }
 }

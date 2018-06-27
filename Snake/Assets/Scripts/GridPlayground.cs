@@ -11,15 +11,17 @@ public class GridPlayground : MonoBehaviour
     public GameObject CellPrefab;
 	public GameObject PlayerPrefab;
 	public GameObject FoodPrefab;
+    public SpriteRenderer BackgroundRenderer;
     public float CellSize;
-	public float CellSpacing;
-	public float GridRadius;
+    public float CellSpacing;
 	public float FoodSpawnTime;
     public ZoneModifier[] ZoneModifiers;
 	public float ZoneSpawnTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
 
+    private float _gridHeight;
+    private float _gridWidth;
     private float _foodSpawnTimer;
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
@@ -27,25 +29,28 @@ public class GridPlayground : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 84f;
+        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 84f;
+
+        for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
+        {
+            for (var y = transform.position.y - _gridHeight / 2; y < _gridHeight / 2; y += (CellSize + CellSpacing))
+            {
+                var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
+                newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
+                newGridCell.GetComponent<BoxCollider2D>().size = Vector2.one * CellSize;
+                newGridCell.transform.SetParent(transform);
+            }
+        }
+
+        _cells = GetComponentsInChildren<GridCell>();
     }
 
 	private void Start()
 	{
-		for(var x = transform.position.x - GridRadius; x < GridRadius; x += (CellSize + CellSpacing))
-		{
-			for(var y = transform.position.y - GridRadius; y < GridRadius; y += (CellSize + CellSpacing))
-			{
-				var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
-				newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
-				newGridCell.GetComponent<BoxCollider2D>().size = Vector2.one * CellSize;
-                newGridCell.transform.SetParent(transform);
-			}
-		}
-
-	    _cells = GetComponentsInChildren<GridCell>();
-
-        _foodSpawnTimer = FoodSpawnTime;
-        _zoneSpawnTimer = ZoneSpawnTime;
+	    _foodSpawnTimer = FoodSpawnTime;
+	    _zoneSpawnTimer = ZoneSpawnTime;
     }
 	
 	private void Update()
@@ -97,17 +102,18 @@ public class GridPlayground : MonoBehaviour
         var emptyCells = _cells.Where(cell => cell.Content == null).ToArray();
 
         if (emptyCells.Length == 0)
+        {
             return null;
-        else
-            return emptyCells[UnityEngine.Random.Range(0, emptyCells.Length)];
+        }
 
+        return emptyCells[UnityEngine.Random.Range(0, emptyCells.Length)];
     }
 
     private void SpawnZone()
     {
         var randomModifier = ZoneModifiers[UnityEngine.Random.Range(0, ZoneModifiers.Length)];
 
-        var randomPosition = new Vector2(UnityEngine.Random.Range(-GridRadius, GridRadius), UnityEngine.Random.Range(-GridRadius, GridRadius));
+        var randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth, _gridWidth), UnityEngine.Random.Range(-_gridHeight, _gridHeight));
         var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius).Where(x => x.GetComponent<GridCell>() != null).Select(x => x.GetComponent<GridCell>());
         
         foreach (var overlappedCell in overlappedCells)

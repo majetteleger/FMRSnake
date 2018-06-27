@@ -21,20 +21,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    public GameObject SegmentPrefab;
     public Bar Bar;
+    public Bar[] Bars;
     public AudioClip LowBeat;
     public AudioClip HighBeat;
     public float MoveTime;
-    public GameObject SegmentPrefab;
-    public Bar[] Bars;
     
-    private Transform _tailParent;
-    private Vector3 _lastSegmentPosition;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
     private GridPlayground _gridPlayground;
     private GridCell _currentCell;
-    private Vector3 _lastDirection;
+    private Segment _headSegment;
+    private Segment _lastSegment;
+    private Queue<Vector3> _moveQueue;
+    private bool _moving;
 
     private Button[] _buttons = {
         new Button(0, new Vector2(-1, 0), false),
@@ -45,14 +46,13 @@ public class Player : MonoBehaviour
     
 	private void Start()
     {
-        _tailParent = new GameObject("Tail Parent").GetComponent<Transform>();
-
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
 
-        Instantiate(SegmentPrefab, transform);
-        
-        _lastDirection = Vector3.right;
+        _headSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        _lastSegment = _headSegment;
+
+        _moveQueue = new Queue<Vector3>();
     }
 
     private void Update()
@@ -136,27 +136,39 @@ public class Player : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(DoDie());
-
-        var childrenSegments = _tailParent.GetComponentsInChildren<Segment>();
-
-        foreach (var childrenSegment in childrenSegments)
-        {
-            Destroy(childrenSegment.gameObject);
-        }
     }
 
     private IEnumerator DoDie()
     {
         yield return new WaitForSeconds(1);
         //end sequence
-
+        
         MainManager.Instance.TransitionToLeaderBoard();
+    }
+
+    public void Destroy()
+    {
+        if (_lastSegment == null)
+        {
+            return;
+        }
+
+        var tempSegment = _lastSegment;
+
+        while (tempSegment.PreviouSegment != null)
+        {
+            var segmentToDestroy = tempSegment.gameObject;
+            tempSegment = tempSegment.PreviouSegment;
+
+            Destroy(segmentToDestroy);
+        }
+
+        Destroy(gameObject);
     }
 
     public void StartGame()
     {
         StartCoroutine(Beat());
-        _tailParent.transform.position = transform.position;
     }
 
     private IEnumerator Beat()
@@ -206,7 +218,7 @@ public class Player : MonoBehaviour
 
         if (offButtons.Count == 1)
         {
-            Move(offButtons[0].Direction);
+            QueueMove(offButtons[0].Direction);
 
             return true;
         }
@@ -214,22 +226,25 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    public void Move(Vector3 direction)
+    public void QueueMove(Vector3 direction)
     {
-        for (var i = 0; i < _tailParent.childCount; i++)
+        if (_moving)
         {
-            _tailParent.GetChild(i).GetComponent<Segment>().Move();
+            _moveQueue.Enqueue(direction);
+            return;
         }
 
-        if (_tailParent.childCount > 0)
-        {
-            _lastSegmentPosition = _tailParent.GetChild(_tailParent.childCount - 1).position;
-        }
+        Move(direction);
+    }
 
-        _prevHeadPosition = transform.position;
+    private void Move(Vector3 direction)
+    {
+        _moving = true;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
         var movement = transform.DOMove(playerMoveDestination, MoveTime);
+
+        _headSegment.Move(playerMoveDestination);
 
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
         {
@@ -238,54 +253,20 @@ public class Player : MonoBehaviour
 
             Camera.main.transform.DOMove(cameraMoveDestination, MoveTime);
         }
-        
-        // Horizontal to vertical
-        if (Mathf.Abs(_lastDirection.x) > Mathf.Abs(_lastDirection.y) && Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
-        {
-            if (direction.y > 0)
-            {
-                transform.DORotate(new Vector3(0f, 0f, 90f), MoveTime);
-            }
-            else if (direction.y < 0)
-            {
-                transform.DORotate(new Vector3(0f, 0f, -90f), MoveTime);
-            }
-        }
-        // Vertical to horizontal
-        else if (Mathf.Abs(_lastDirection.x) < Mathf.Abs(_lastDirection.y) && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-        {
-            if (direction.x > 0)
-            {
-                transform.DORotate(new Vector3(0f, 0f, 0f), MoveTime);
-            }
-            else if (direction.x < 0)
-            {
-                transform.DORotate(new Vector3(0f, 0f, 180f), MoveTime);
-            }
-        }
-
-        _lastDirection = direction;
 
         movement.onComplete += MovementCallback;
     }
     
     public void Grow()
     {
-        var newSegment = (Segment) null;
+        var newSegment = Instantiate(SegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<Segment>();
 
-        if (_tailParent.childCount > 0)
-        {
-            newSegment = Instantiate(SegmentPrefab, _lastSegmentPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
-            newSegment.LastDirection = _lastSegmentPosition - newSegment.transform.position;
-        }
-        else
-        {
-            newSegment = Instantiate(SegmentPrefab, _prevHeadPosition, Quaternion.identity, _tailParent).GetComponent<Segment>();
-            newSegment.LastDirection = _lastDirection;
-        }
+        var pastLastSegment = _lastSegment;
+        _lastSegment.NextSegment = newSegment;
+        newSegment.PreviouSegment = pastLastSegment;
+        _lastSegment = newSegment;
 
         newSegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-        newSegment.Player = this;
     }
 
     private void MovementCallback()
@@ -298,5 +279,13 @@ public class Player : MonoBehaviour
         }
 
         //Debug.Log(debugString);
+
+        _moving = false;
+
+        if (_moveQueue.Count > 0)
+        {
+            var direction = _moveQueue.Dequeue();
+            Move(direction);
+        }
     }
 }
