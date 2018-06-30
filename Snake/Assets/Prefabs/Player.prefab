@@ -194,10 +194,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb381cb79d31d5c4d8d2daa7d3606c23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SegmentPrefab: {fileID: 1543097799535132, guid: 4024311788a325543aadeb4e0eb28166,
+    type: 2}
+  DummySegmentPrefab: {fileID: 1619358785635866, guid: e6e33590af92aa947bdce501acbd7336,
+    type: 2}
   Bar: {fileID: 11400000, guid: 894e19a1fe05bb64f9d83ea4c217c5d2, type: 2}
+  Bars: []
   LowBeat: {fileID: 8300000, guid: 9d5310aa53c3d014da87f24a40d9f58c, type: 3}
   HighBeat: {fileID: 8300000, guid: abb5d45889e5860459917ae8a66f62fd, type: 3}
   MoveTime: 0.5
-  SegmentPrefab: {fileID: 1543097799535132, guid: 4024311788a325543aadeb4e0eb28166,
-    type: 2}
-  Bars: []
+  IntermediateSegments: 4
