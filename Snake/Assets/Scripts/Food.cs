@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    public GridPlayground.Zone Zone;
+    public Zone Zone { get; set; }
 }

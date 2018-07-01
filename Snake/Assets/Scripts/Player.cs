@@ -169,6 +169,7 @@ public class Player : MonoBehaviour
 
         if (food != null)
         {
+            food.Zone.FoodObjects.Remove(food);
             food.Zone.TryClear();
             Destroy(other.gameObject);
             Grow();
