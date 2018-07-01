@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         // destroy zones
-        
+        _gridPlayground.ClearAllCells();
         MainManager.Instance.TransitionToLeaderBoard();
     }
 

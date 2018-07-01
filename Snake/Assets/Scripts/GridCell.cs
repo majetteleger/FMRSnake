@@ -14,8 +14,19 @@ public class GridCell : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Modify(ZoneModifier zoneModifier)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        _spriteRenderer.color = zoneModifier.Color;
+        if (other.gameObject == Content)
+        {
+            Content = null;
+        }
+    }
+
+    public void Modify()
+    {
+        if (ZoneModifier != null)
+        {
+            _spriteRenderer.color = ZoneModifier.Color;
+        }
     }
 }

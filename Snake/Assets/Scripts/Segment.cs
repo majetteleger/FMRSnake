@@ -41,6 +41,7 @@ public class Segment : MonoBehaviour
         if (gridCell != null)
         {
             CurrentCell = gridCell;
+            CurrentCell.Content = gameObject;
         }
     }
     
