@@ -45,7 +45,7 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
-        
+
         _selectedLineIndex = 1;
         TransitionToMainMenu();
     }

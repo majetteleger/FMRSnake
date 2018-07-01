@@ -4,15 +4,45 @@ using UnityEngine;
 
 public class DummySegment : MonoBehaviour
 {
-    public void UpdatePosition(Segment frontSegment, Segment backSegment, int intermediateIndex, int intermediateCount)
+    public enum UpdateType
     {
-        var frontSegmentPosition = frontSegment.transform.position;
-        var backSegmentPosition = backSegment.transform.position;
-        
+        Normal,
+        HorizontalToVertical,
+        VerticalToHorizontal
+    }
+
+    public void UpdatePosition(Vector3 frontSegmentPosition, Vector3 backSegmentPosition, int intermediateIndex, int intermediateCount, UpdateType updateType)
+    {
         // Find a way to make it do the corner turn
+    
+        var computedPosition = backSegmentPosition + (((frontSegmentPosition - backSegmentPosition) / (float)(intermediateCount + 1)) * (intermediateIndex + 1));
+        transform.position = computedPosition;
 
-        var position = backSegmentPosition + (((frontSegmentPosition - backSegmentPosition) / (float)(intermediateCount + 1)) * (intermediateIndex + 1));
-
-        transform.position = position;
+        /*if (updateType == UpdateType.VerticalToHorizontal)
+        {
+            if (!Mathf.Approximately(computedPosition.y, frontSegmentPosition.y))
+            { 
+                newPosition.y = computedPosition.y;
+            }
+            else
+            {
+                newPosition.x = computedPosition.x;
+            }
+        }
+        else if(updateType == UpdateType.HorizontalToVertical)
+        {
+            if (!Mathf.Approximately(computedPosition.x, frontSegmentPosition.x))
+            {
+                newPosition.x = computedPosition.x;
+            }
+            else
+            {
+                newPosition.y = computedPosition.y;
+            }
+        }
+        else if(updateType == UpdateType.Normal)
+        {
+            newPosition = computedPosition;
+        }*/
     }
 }

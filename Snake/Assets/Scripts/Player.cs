@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
         //_buttons[2] = Input.GetKey(KeyCode.RightArrow);
         //_buttons[3] = Input.GetKey(KeyCode.DownArrow);
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        /*if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             _buttons[0].IsOn = true;
         }
@@ -108,6 +108,54 @@ public class Player : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.DownArrow))
         {
             _buttons[3].IsOn = false;
+        }*/
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            _buttons[0].IsOn = false;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            _buttons[0].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = false;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            _buttons[1].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = false;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            _buttons[2].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            _buttons[3].IsOn = true;
         }
     }
 
@@ -119,6 +167,7 @@ public class Player : MonoBehaviour
 
         if (food != null)
         {
+            food.Zone.TryClear();
             Destroy(other.gameObject);
             Grow();
         }
@@ -275,7 +324,8 @@ public class Player : MonoBehaviour
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-            newDummySegment.UpdatePosition(newSegment.PreviouSegment, newSegment, i, IntermediateSegments); // doesnt to its job
+            newDummySegment.UpdatePosition(newSegment.PreviouSegment.transform.position, newSegment.transform.position, i, IntermediateSegments, DummySegment.UpdateType.Normal); 
+            // doesnt to its job
 
             newSegment.FrontDummySegments[i] = newDummySegment;
         }

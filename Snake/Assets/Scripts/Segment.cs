@@ -27,7 +27,7 @@ public class Segment : MonoBehaviour
             for (var i = 0; i < FrontDummySegments.Length; i++)
             {
                 var frontDummySegment = FrontDummySegments[i];
-                frontDummySegment.UpdatePosition(PreviouSegment, this, i, MainManager.Instance.Player.IntermediateSegments);
+                frontDummySegment.UpdatePosition(PreviouSegment.transform.position, transform.position, i, MainManager.Instance.Player.IntermediateSegments, DummySegment.UpdateType.HorizontalToVertical);
             }
 
             transform.hasChanged = false;
