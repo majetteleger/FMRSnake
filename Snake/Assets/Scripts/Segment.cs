@@ -12,11 +12,26 @@ public class Segment : MonoBehaviour
     public Segment PreviouSegment { get; set; }
     public Segment NextSegment { get; set; }
     public GridCell CurrentCell { get; set; }
+    public DummySegment[] FrontDummySegments { get; set; }
 
     private void Start()
     {
         Shape.GetComponent<SpriteRenderer>().size = new Vector2(GridPlayground.Instance.CellSize, GridPlayground.Instance.CellSize);
         transform.DOScale(Vector3.one, ScaleUpTime).SetEase(Ease.OutBack, 2);
+    }
+
+    private void Update()
+    {
+        if (transform.hasChanged && FrontDummySegments != null)
+        {
+            for (var i = 0; i < FrontDummySegments.Length; i++)
+            {
+                var frontDummySegment = FrontDummySegments[i];
+                frontDummySegment.UpdatePosition(PreviouSegment, this, i, MainManager.Instance.Player.IntermediateSegments);
+            }
+
+            transform.hasChanged = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -43,4 +58,6 @@ public class Segment : MonoBehaviour
     {
         return PreviouSegment.CurrentCell;
     }
+
+
 }

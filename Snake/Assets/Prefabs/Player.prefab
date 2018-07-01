@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4303970583655792}
-  - component: {fileID: 58975621187168274}
+  - component: {fileID: 61686148671716706}
   - component: {fileID: 50866512634235036}
   - component: {fileID: 82241954958985526}
   - component: {fileID: 114743679671747348}
@@ -63,21 +63,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &58975621187168274
-CircleCollider2D:
+--- !u!61 &61686148671716706
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1465107564994596}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Size: {x: 0.5, y: 0.5}
+  m_EdgeRadius: 0
 --- !u!82 &82241954958985526
 AudioSource:
   m_ObjectHideFlags: 1
@@ -186,8 +196,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SegmentPrefab: {fileID: 1543097799535132, guid: 4024311788a325543aadeb4e0eb28166,
     type: 2}
+  DummySegmentPrefab: {fileID: 1619358785635866, guid: e6e33590af92aa947bdce501acbd7336,
+    type: 2}
   Bar: {fileID: 11400000, guid: 894e19a1fe05bb64f9d83ea4c217c5d2, type: 2}
   Bars: []
   LowBeat: {fileID: 8300000, guid: 9d5310aa53c3d014da87f24a40d9f58c, type: 3}
   HighBeat: {fileID: 8300000, guid: abb5d45889e5860459917ae8a66f62fd, type: 3}
   MoveTime: 0.5
+  IntermediateSegments: 4

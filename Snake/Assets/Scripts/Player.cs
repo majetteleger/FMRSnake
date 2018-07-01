@@ -22,11 +22,13 @@ public class Player : MonoBehaviour
     }
 
     public GameObject SegmentPrefab;
+    public GameObject DummySegmentPrefab;
     public Bar Bar;
     public Bar[] Bars;
     public AudioClip LowBeat;
     public AudioClip HighBeat;
     public float MoveTime;
+    public int IntermediateSegments;
 
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
@@ -264,13 +266,23 @@ public class Player : MonoBehaviour
     public void Grow()
     {
         var newSegment = Instantiate(SegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<Segment>();
-
+        newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
+        
         var pastLastSegment = _lastSegment;
         _lastSegment.NextSegment = newSegment;
         newSegment.PreviouSegment = pastLastSegment;
         _lastSegment = newSegment;
 
         newSegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
+
+        for (var i = 0; i < IntermediateSegments; i++)
+        {
+            var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
+            newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
+            newDummySegment.UpdatePosition(newSegment.PreviouSegment, newSegment, i, IntermediateSegments); // doesnt to its job
+
+            newSegment.FrontDummySegments[i] = newDummySegment;
+        }
     }
 
     private void MovementCallback()
