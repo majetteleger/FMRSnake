@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    public ZoneModifier ZoneModifier;
-    public GameObject Content;
+    public float ColorAlpha;
+
+    public ZoneModifier ZoneModifier { get; set; }
+    public GameObject Content { get; set; }
 
     private SpriteRenderer _spriteRenderer;
 
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
+        Modify();
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -26,7 +31,7 @@ public class GridCell : MonoBehaviour
     {
         if (ZoneModifier != null)
         {
-            _spriteRenderer.color = ZoneModifier.Color;
+            _spriteRenderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, ColorAlpha);
         }
     }
 }

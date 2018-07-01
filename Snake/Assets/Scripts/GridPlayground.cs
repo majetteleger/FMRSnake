@@ -26,7 +26,6 @@ public class GridPlayground : MonoBehaviour
 
     private float _gridHeight;
     private float _gridWidth;
-    private float _foodSpawnTimer;
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
     
@@ -53,7 +52,6 @@ public class GridPlayground : MonoBehaviour
 
 	private void Start()
 	{
-	    _foodSpawnTimer = FoodSpawnTime;
 	    _zoneSpawnTimer = ZoneSpawnTime;
     }
 	
@@ -113,7 +111,7 @@ public class GridPlayground : MonoBehaviour
         do
         {
             randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth / 2f, _gridWidth / 2f), UnityEngine.Random.Range(-_gridHeight / 2f, _gridHeight / 2f));
-            overlappingZone = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Where(x => x.GetComponent<Zone>() != null).Count() > 0;
+            overlappingZone = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Where(x => x.GetComponent<Zone>() != null).Any();
             tries++;
         }
         while (overlappingZone && tries < maxTries);

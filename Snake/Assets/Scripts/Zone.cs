@@ -17,16 +17,20 @@ public class Zone : MonoBehaviour
     {
         if (FoodObjects.Count == 0)
         {
-            foreach (var cell in GridCells)
-            {
-                cell.ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
-                cell.Modify();
-
-                MainManager.Instance.GridPlayground.ZonesSpawned--;
-
-                GiveScore();
-            }
+            Clear();
+            GiveScore();
         }
+    }
+
+    public void Clear()
+    {
+        foreach (var cell in GridCells)
+        {
+            cell.ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
+            cell.Modify();
+        }
+
+        MainManager.Instance.GridPlayground.ZonesSpawned--;
     }
 
     public void GiveScore()

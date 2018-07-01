@@ -76,44 +76,46 @@ public class Player : MonoBehaviour
         //_buttons[2] = Input.GetKey(KeyCode.RightArrow);
         //_buttons[3] = Input.GetKey(KeyCode.DownArrow);
 
-        /*if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            _buttons[1].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            _buttons[1].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _buttons[2].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            _buttons[2].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            _buttons[3].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            _buttons[3].IsOn = false;
-        }*/
-
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            _buttons[0].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            _buttons[0].IsOn = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            _buttons[1].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            _buttons[1].IsOn = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            _buttons[2].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            _buttons[2].IsOn = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            _buttons[3].IsOn = false;
+        }
+
+        // DEBUG CONTROLS
+
+        /*if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
             _buttons[0].IsOn = false;
             _buttons[1].IsOn = true;
             _buttons[2].IsOn = true;
@@ -158,7 +160,7 @@ public class Player : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.DownArrow))
         {
             _buttons[3].IsOn = true;
-        }
+        }*/
     }
 
     private void OnTriggerEnter2D(Collider2D other)
