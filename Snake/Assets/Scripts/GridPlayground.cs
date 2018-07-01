@@ -34,6 +34,7 @@ public class GridPlayground : MonoBehaviour
     public float CellSpacing;
 	public float FoodSpawnTime;
     public ZoneModifier[] ZoneModifiers;
+    public ZoneModifier NoneZoneModifier;
 	public float ZoneSpawnTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
@@ -119,8 +120,8 @@ public class GridPlayground : MonoBehaviour
 
         foreach (var overlappedCell in overlappedCells)
         {
-            overlappedCell.ZoneModifiers.Add(randomModifier);
-            overlappedCell.Modify(randomModifier);
+            overlappedCell.ZoneModifier = randomModifier;
+            overlappedCell.Modify();
         }
         
         var tempZoneCells = new List<GridCell>(overlappedCells);
@@ -150,6 +151,15 @@ public class GridPlayground : MonoBehaviour
         foreach (var cell in _cells)
         {
             cell.GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
+
+    public void ClearAllCells()
+    {
+        for (int i = 0; i < _cells.Length; i++)
+        {
+            _cells[i].ZoneModifier = NoneZoneModifier;
+            _cells[i].Modify();
         }
     }
 }

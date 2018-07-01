@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     public float MoveTime;
     public int IntermediateSegments;
 
+    private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
     private GridPlayground _gridPlayground;
@@ -43,15 +44,16 @@ public class Player : MonoBehaviour
         new Button(0, new Vector2(-1, 0), false),
         new Button(1, new Vector2(0, 1), false),
         new Button(2, new Vector2(1, 0), false),
-        new Button(3, new Vector2(0, -1), false), 
+        new Button(3, new Vector2(0, -1), false),
     };
-    
-	private void Start()
+
+    private void Start()
     {
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
-
+        _playerCollider = GetComponent<CircleCollider2D>();
         _headSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        Destroy(_headSegment.GetComponent<BoxCollider2D>());
         _lastSegment = _headSegment;
 
         _moveQueue = new Queue<Vector3>();
@@ -179,7 +181,7 @@ public class Player : MonoBehaviour
         else if (segment != null)
         {
             Debug.Log("Colliding with Tail!");
-            //StartCoroutine(Die());
+            Die();
         }
     }
 
@@ -192,8 +194,9 @@ public class Player : MonoBehaviour
     private IEnumerator DoDie()
     {
         yield return new WaitForSeconds(1);
-        //end sequence
-        
+
+        // destroy zones
+        _gridPlayground.ClearAllCells();
         MainManager.Instance.TransitionToLeaderBoard();
     }
 
@@ -219,6 +222,7 @@ public class Player : MonoBehaviour
 
     public void StartGame()
     {
+        _playerCollider.enabled = true;
         StartCoroutine(Beat());
     }
 
@@ -292,6 +296,7 @@ public class Player : MonoBehaviour
     {
         _moving = true;
 
+
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
         var movement = transform.DOMove(playerMoveDestination, MoveTime);
 
@@ -335,13 +340,13 @@ public class Player : MonoBehaviour
     {
         var debugString = string.Empty;
 
-        for (var i = 0; i < _currentCell.ZoneModifiers.Count; i++)
+        if (_currentCell != null)
         {
-            debugString += _currentCell.ZoneModifiers[i].Color + (i != _currentCell.ZoneModifiers.Count - 1 ? ", " : string.Empty);
+            //debugString += _currentCell.ZoneModifier.Color;
         }
 
         //Debug.Log(debugString);
-
+        
         _moving = false;
 
         if (_moveQueue.Count > 0)
