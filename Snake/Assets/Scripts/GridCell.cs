@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    public List<ZoneModifier> ZoneModifiers;
+    public ZoneModifier ZoneModifier;
     public GameObject Content;
 
     private SpriteRenderer _spriteRenderer;
 
     private void Start()
     {
-        ZoneModifiers = new List<ZoneModifier>();
-
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

@@ -118,7 +118,7 @@ public class GridPlayground : MonoBehaviour
         
         foreach (var overlappedCell in overlappedCells)
         {
-            overlappedCell.ZoneModifiers.Add(randomModifier);
+            overlappedCell.ZoneModifier = randomModifier;
             overlappedCell.Modify(randomModifier);
         }
     }

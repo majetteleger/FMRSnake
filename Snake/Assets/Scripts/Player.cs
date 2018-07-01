@@ -132,7 +132,7 @@ public class Player : MonoBehaviour
         else if (segment != null)
         {
             Debug.Log("Colliding with Tail!");
-            //StartCoroutine(Die());
+            Die();
         }
     }
 
@@ -145,7 +145,8 @@ public class Player : MonoBehaviour
     private IEnumerator DoDie()
     {
         yield return new WaitForSeconds(1);
-        //end sequence
+
+        // destroy zones
         
         MainManager.Instance.TransitionToLeaderBoard();
     }
@@ -291,10 +292,7 @@ public class Player : MonoBehaviour
 
         if (_currentCell != null)
         {
-            for (var i = 0; i < _currentCell.ZoneModifiers.Count; i++)
-            {
-                debugString += _currentCell.ZoneModifiers[i].Color + (i != _currentCell.ZoneModifiers.Count - 1 ? ", " : string.Empty);
-            }
+            //debugString += _currentCell.ZoneModifier.Color;
         }
 
         //Debug.Log(debugString);
