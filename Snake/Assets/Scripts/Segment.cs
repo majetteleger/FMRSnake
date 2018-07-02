@@ -6,9 +6,9 @@ using DG.Tweening;
 
 public class Segment : MonoBehaviour
 {
-    public float ScaleUpTime;
     public Transform Shape;
-    
+    public SpriteRenderer Center;
+
     public Segment PreviouSegment { get; set; }
     public Segment NextSegment { get; set; }
     public GridCell CurrentCell { get; set; }
@@ -17,7 +17,6 @@ public class Segment : MonoBehaviour
     private void Start()
     {
         Shape.GetComponent<SpriteRenderer>().size = new Vector2(GridPlayground.Instance.CellSize, GridPlayground.Instance.CellSize);
-        transform.DOScale(Vector3.one, ScaleUpTime).SetEase(Ease.OutBack, 2);
     }
 
     private void Update()
@@ -44,7 +43,17 @@ public class Segment : MonoBehaviour
             CurrentCell.Content = gameObject;
         }
     }
-    
+
+    public bool TryShowCenter(float probability)
+    {
+        if (PreviouSegment == null || !PreviouSegment.Center.enabled && UnityEngine.Random.Range(0f, 1f) < probability)
+        {
+            Center.enabled = true;
+        }
+
+        return Center.enabled;
+    }
+
     public void Move(Vector3 destination, bool mainMenu = true)
     {
         if (FrontDummySegments != null)

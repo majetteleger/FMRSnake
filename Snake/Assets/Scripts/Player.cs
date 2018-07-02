@@ -29,8 +29,10 @@ public class Player : MonoBehaviour
     public AudioClip HighBeat;
     public float MoveTime;
     public int IntermediateSegments;
+    public float CenterAppearProbabilityIncrement;
 
     public Vector3 LastDirection { get; set; }
+    public float CenterAppearProbability { get; set; }
 
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
@@ -40,6 +42,7 @@ public class Player : MonoBehaviour
     private Segment _headSegment;
     private Segment _lastSegment;
     private Queue<Vector3> _moveQueue;
+    private Queue<bool> _growQueue;
     private bool _moving;
     private Transform _segmentsContainer;
 
@@ -55,11 +58,15 @@ public class Player : MonoBehaviour
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
+
         _headSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        _headSegment.Center.enabled = true;
         Destroy(_headSegment.GetComponent<BoxCollider2D>());
+
         _lastSegment = _headSegment;
 
         _moveQueue = new Queue<Vector3>();
+        _growQueue = new Queue<bool>();
 
         _segmentsContainer = new GameObject("Segments").transform;
     }
@@ -179,7 +186,7 @@ public class Player : MonoBehaviour
             food.Zone.FoodObjects.Remove(food);
             food.Zone.TryClear();
             Destroy(other.gameObject);
-            Grow();
+            QueueGrow();
         }
         else if (gridCell != null)
         {
@@ -307,6 +314,17 @@ public class Player : MonoBehaviour
         Move(direction);
     }
 
+    public void QueueGrow()
+    {
+        if (_moving)
+        {
+            _growQueue.Enqueue(true);
+            return;
+        }
+
+        Grow();
+    }
+
     private void Move(Vector3 direction)
     {
         _moving = true;
@@ -331,7 +349,11 @@ public class Player : MonoBehaviour
     
     public void Grow()
     {
-        var newSegment = Instantiate(SegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<Segment>();
+        var spawnPosition = /*MainManager.Instance.CurrentState == MainManager.GameState.Play
+            ? _lastSegment.PreviouSegment.transform.position
+            :*/ _lastSegment.transform.position;
+
+        var newSegment = Instantiate(SegmentPrefab, spawnPosition, Quaternion.identity).GetComponent<Segment>();
         newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
         newSegment.transform.SetParent(_segmentsContainer, true);
 
@@ -341,6 +363,17 @@ public class Player : MonoBehaviour
         _lastSegment = newSegment;
 
         newSegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
+        
+        var centerShown = newSegment.TryShowCenter(CenterAppearProbability);
+
+        if (centerShown)
+        {
+            CenterAppearProbability = 0f;
+        }
+        else
+        {
+            CenterAppearProbability += CenterAppearProbabilityIncrement;
+        }
 
         for (var i = 0; i < IntermediateSegments; i++)
         {
@@ -361,6 +394,12 @@ public class Player : MonoBehaviour
         {
             var direction = _moveQueue.Dequeue();
             Move(direction);
+        }
+
+        if (_growQueue.Count > 0)
+        {
+            _growQueue.Dequeue();
+            Grow();
         }
     }
 }

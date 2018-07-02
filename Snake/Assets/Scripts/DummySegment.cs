@@ -39,6 +39,10 @@ public class DummySegment : MonoBehaviour
                 _initialized = true;
             };
         }
+        else
+        {
+            transform.position = frontSegment.FrontDummySegments[intermediateIndex].transform.position;
+        }
     }
 
     public void UpdatePosition(Vector3 frontSegmentPosition, Vector3 backSegmentPosition, int intermediateIndex, int intermediateCount, UpdateType updateType)
