@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     public float MoveTime;
     public int IntermediateSegments;
 
+    public Vector3 LastDirection { get; set; }
+
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour
     private Segment _lastSegment;
     private Queue<Vector3> _moveQueue;
     private bool _moving;
+    private Transform _segmentsContainer;
 
     private Button[] _buttons = {
         new Button(0, new Vector2(-1, 0), false),
@@ -57,6 +60,8 @@ public class Player : MonoBehaviour
         _lastSegment = _headSegment;
 
         _moveQueue = new Queue<Vector3>();
+
+        _segmentsContainer = new GameObject("Segments").transform;
     }
 
     private void Update()
@@ -220,6 +225,13 @@ public class Player : MonoBehaviour
             Destroy(segmentToDestroy);
         }
 
+        var dummySegments = FindObjectsOfType<DummySegment>();
+
+        foreach (var dummySegment in dummySegments)
+        {
+            Destroy(dummySegment.gameObject);
+        }
+
         Destroy(gameObject);
     }
 
@@ -299,6 +311,7 @@ public class Player : MonoBehaviour
     {
         _moving = true;
 
+        LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
         var movement = transform.DOMove(playerMoveDestination, MoveTime);
@@ -320,7 +333,8 @@ public class Player : MonoBehaviour
     {
         var newSegment = Instantiate(SegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<Segment>();
         newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
-        
+        newSegment.transform.SetParent(_segmentsContainer, true);
+
         var pastLastSegment = _lastSegment;
         _lastSegment.NextSegment = newSegment;
         newSegment.PreviouSegment = pastLastSegment;
@@ -332,8 +346,8 @@ public class Player : MonoBehaviour
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-            newDummySegment.UpdatePosition(newSegment.PreviouSegment.transform.position, newSegment.transform.position, i, IntermediateSegments, DummySegment.UpdateType.Normal); 
-            // doesnt to its job
+            newDummySegment.Initialize(newSegment.PreviouSegment, newSegment, i, IntermediateSegments, MoveTime);
+            newDummySegment.transform.SetParent(_segmentsContainer, true);
 
             newSegment.FrontDummySegments[i] = newDummySegment;
         }
@@ -341,15 +355,6 @@ public class Player : MonoBehaviour
 
     private void MovementCallback()
     {
-        var debugString = string.Empty;
-
-        if (_currentCell != null)
-        {
-            //debugString += _currentCell.ZoneModifier.Color;
-        }
-
-        //Debug.Log(debugString);
-        
         _moving = false;
 
         if (_moveQueue.Count > 0)

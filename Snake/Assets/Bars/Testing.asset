@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Beats:
   - IsHigh: 0
-    Delay: 0.25
+    Delay: 0.2
   - IsHigh: 0
-    Delay: 0.25
+    Delay: 0.2
   - IsHigh: 1
-    Delay: 0.25
+    Delay: 0.2

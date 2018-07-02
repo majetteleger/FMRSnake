@@ -47,18 +47,32 @@ public class Segment : MonoBehaviour
     
     public void Move(Vector3 destination, bool mainMenu = true)
     {
-        transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        if (FrontDummySegments != null)
+        {
+            foreach (var frontDummySegment in FrontDummySegments)
+            {
+                frontDummySegment.InitializeMove();
+            }
+        }
+        
+        var movement = transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        movement.onComplete += MoveCallback;
 
         if (NextSegment != null)
         {
             NextSegment.Move(transform.position);
         }
     }
-    
-    private GridCell GetPreviousSegmentCell()
+
+    private void MoveCallback()
     {
-        return PreviouSegment.CurrentCell;
+        if (FrontDummySegments != null)
+        {
+            for (var i = 0; i < FrontDummySegments.Length; i++)
+            {
+                var frontDummySegment = FrontDummySegments[i];
+                frontDummySegment.SetForNextMove(i, MainManager.Instance.Player.IntermediateSegments);
+            }
+        }
     }
-
-
 }
