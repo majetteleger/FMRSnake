@@ -104,19 +104,19 @@ public class GridPlayground : MonoBehaviour
         var randomModifier = ZoneModifiers[UnityEngine.Random.Range(0, ZoneModifiers.Length)];
 
         var randomPosition = Vector2.zero;
-        var overlappingZone = false;
+        var overlappingZoneOrPlayer = false;
         var tries = 0;
         var maxTries = 10;
 
         do
         {
             randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth / 2f, _gridWidth / 2f), UnityEngine.Random.Range(-_gridHeight / 2f, _gridHeight / 2f));
-            overlappingZone = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Where(x => x.GetComponent<Zone>() != null).Any();
+            overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
             tries++;
         }
-        while (overlappingZone && tries < maxTries);
+        while (overlappingZoneOrPlayer && tries < maxTries);
 
-        if(overlappingZone)
+        if(overlappingZoneOrPlayer)
         {
             return;
         }
