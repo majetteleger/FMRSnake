@@ -13,3 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color: {r: 1, g: 1, b: 0, a: 1}
   Radius: 1.5
+  FoodSpawnCount: 3

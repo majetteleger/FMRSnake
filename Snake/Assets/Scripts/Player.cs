@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -30,8 +29,11 @@ public class Player : MonoBehaviour
     public AudioClip HighBeat;
     public float MoveTime;
     public int IntermediateSegments;
+    public float CenterAppearProbabilityIncrement;
 
-    private Image _beatIndicator;
+    public Vector3 LastDirection { get; set; }
+    public float CenterAppearProbability { get; set; }
+
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
@@ -40,26 +42,33 @@ public class Player : MonoBehaviour
     private Segment _headSegment;
     private Segment _lastSegment;
     private Queue<Vector3> _moveQueue;
+    private Queue<bool> _growQueue;
     private bool _moving;
+    private Transform _segmentsContainer;
 
     private Button[] _buttons = {
-        new Button(0, Vector2.left, false),
-        new Button(1, Vector2.up, false),
-        new Button(2, Vector2.right, false),
-        new Button(3, Vector2.down, false),
+        new Button(0, new Vector2(-1, 0), false),
+        new Button(1, new Vector2(0, 1), false),
+        new Button(2, new Vector2(1, 0), false),
+        new Button(3, new Vector2(0, -1), false),
     };
 
     private void Start()
     {
-        _beatIndicator = MainPanel.Instance.BeatIndicator;
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
+
         _headSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        _headSegment.Center.enabled = true;
         Destroy(_headSegment.GetComponent<BoxCollider2D>());
+
         _lastSegment = _headSegment;
 
         _moveQueue = new Queue<Vector3>();
+        _growQueue = new Queue<bool>();
+
+        _segmentsContainer = new GameObject("Segments").transform;
     }
 
     private void Update()
@@ -73,7 +82,6 @@ public class Player : MonoBehaviour
         {
             Bar = Bars[UnityEngine.Random.Range(0, Bars.Length)];
         }
-
         // // Simpler but seems to bug sometimes when I mash keys quickly
         //_buttons[0] = Input.GetKey(KeyCode.LeftArrow);
         //_buttons[1] = Input.GetKey(KeyCode.UpArrow);
@@ -115,6 +123,56 @@ public class Player : MonoBehaviour
         {
             _buttons[3].IsOn = false;
         }
+
+        // DEBUG CONTROLS
+
+        /*if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            _buttons[0].IsOn = false;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            _buttons[0].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = false;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            _buttons[1].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = false;
+            _buttons[3].IsOn = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            _buttons[2].IsOn = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            _buttons[0].IsOn = true;
+            _buttons[1].IsOn = true;
+            _buttons[2].IsOn = true;
+            _buttons[3].IsOn = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            _buttons[3].IsOn = true;
+        }*/
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -125,8 +183,10 @@ public class Player : MonoBehaviour
 
         if (food != null)
         {
+            food.Zone.FoodObjects.Remove(food);
+            food.Zone.TryClear();
             Destroy(other.gameObject);
-            Grow();
+            QueueGrow();
         }
         else if (gridCell != null)
         {
@@ -172,6 +232,13 @@ public class Player : MonoBehaviour
             Destroy(segmentToDestroy);
         }
 
+        var dummySegments = FindObjectsOfType<DummySegment>();
+
+        foreach (var dummySegment in dummySegments)
+        {
+            Destroy(dummySegment.gameObject);
+        }
+
         Destroy(gameObject);
     }
 
@@ -200,8 +267,6 @@ public class Player : MonoBehaviour
                     FailMove();
                 }
             }
-
-            _beatIndicator.fillAmount = (float)(i+1) / (float)Bar.Beats.Count;
 
             _beatSource.Play();
 
@@ -249,10 +314,22 @@ public class Player : MonoBehaviour
         Move(direction);
     }
 
+    public void QueueGrow()
+    {
+        if (_moving)
+        {
+            _growQueue.Enqueue(true);
+            return;
+        }
+
+        Grow();
+    }
+
     private void Move(Vector3 direction)
     {
         _moving = true;
 
+        LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
         var movement = transform.DOMove(playerMoveDestination, MoveTime);
@@ -272,21 +349,38 @@ public class Player : MonoBehaviour
     
     public void Grow()
     {
-        var newSegment = Instantiate(SegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<Segment>();
+        var spawnPosition = /*MainManager.Instance.CurrentState == MainManager.GameState.Play
+            ? _lastSegment.PreviouSegment.transform.position
+            :*/ _lastSegment.transform.position;
+
+        var newSegment = Instantiate(SegmentPrefab, spawnPosition, Quaternion.identity).GetComponent<Segment>();
         newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
-        
+        newSegment.transform.SetParent(_segmentsContainer, true);
+
         var pastLastSegment = _lastSegment;
         _lastSegment.NextSegment = newSegment;
         newSegment.PreviouSegment = pastLastSegment;
         _lastSegment = newSegment;
 
         newSegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
+        
+        var centerShown = newSegment.TryShowCenter(CenterAppearProbability);
+
+        if (centerShown)
+        {
+            CenterAppearProbability = 0f;
+        }
+        else
+        {
+            CenterAppearProbability += CenterAppearProbabilityIncrement;
+        }
 
         for (var i = 0; i < IntermediateSegments; i++)
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-            newDummySegment.UpdatePosition(newSegment.PreviouSegment, newSegment, i, IntermediateSegments); // doesnt to its job
+            newDummySegment.Initialize(newSegment.PreviouSegment, newSegment, i, IntermediateSegments, MoveTime);
+            newDummySegment.transform.SetParent(_segmentsContainer, true);
 
             newSegment.FrontDummySegments[i] = newDummySegment;
         }
@@ -294,21 +388,18 @@ public class Player : MonoBehaviour
 
     private void MovementCallback()
     {
-        var debugString = string.Empty;
-
-        if (_currentCell != null)
-        {
-            debugString += _currentCell.ZoneModifier.Color;
-        }
-
-        //Debug.Log(debugString);
-        
         _moving = false;
 
         if (_moveQueue.Count > 0)
         {
             var direction = _moveQueue.Dequeue();
             Move(direction);
+        }
+
+        if (_growQueue.Count > 0)
+        {
+            _growQueue.Dequeue();
+            Grow();
         }
     }
 }

@@ -193,4 +193,5 @@ MonoBehaviour:
   LowBeat: {fileID: 8300000, guid: 9d5310aa53c3d014da87f24a40d9f58c, type: 3}
   HighBeat: {fileID: 8300000, guid: abb5d45889e5860459917ae8a66f62fd, type: 3}
   MoveTime: 0.5
-  IntermediateSegments: 4
+  IntermediateSegments: 8
+  CenterAppearProbabilityIncrement: 0.33

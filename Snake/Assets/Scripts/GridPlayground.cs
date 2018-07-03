@@ -11,6 +11,7 @@ public class GridPlayground : MonoBehaviour
     public GameObject CellPrefab;
 	public GameObject PlayerPrefab;
 	public GameObject FoodPrefab;
+	public GameObject ZoneCenterPrefab;
     public SpriteRenderer BackgroundRenderer;
     public float CellSize;
     public float CellSpacing;
@@ -18,15 +19,16 @@ public class GridPlayground : MonoBehaviour
     public ZoneModifier[] ZoneModifiers;
     public ZoneModifier NoneZoneModifier;
 	public float ZoneSpawnTime;
+	public int MaxZoneSpawned;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
+    public int ZonesSpawned { get; set; }
 
     private float _gridHeight;
     private float _gridWidth;
-    private float _foodSpawnTimer;
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
-
+    
     private void Awake()
     {
         Instance = this;
@@ -50,7 +52,6 @@ public class GridPlayground : MonoBehaviour
 
 	private void Start()
 	{
-	    _foodSpawnTimer = FoodSpawnTime;
 	    _zoneSpawnTimer = ZoneSpawnTime;
     }
 	
@@ -60,47 +61,30 @@ public class GridPlayground : MonoBehaviour
 	    {
 	        return;
 	    }
-
-        if (_foodSpawnTimer > 0f)
-		{
-			_foodSpawnTimer -= Time.deltaTime;
-			
-			if(_foodSpawnTimer < 0)
-			{
-				SpawnFood();
-				_foodSpawnTimer = FoodSpawnTime;
-			}
-		}
-
+        
 	    if (_zoneSpawnTimer > 0f)
 	    {
 	        _zoneSpawnTimer -= Time.deltaTime;
 
 	        if (_zoneSpawnTimer < 0)
 	        {
-	            SpawnZone();
+	            TrySpawnZone();
 	            _zoneSpawnTimer = ZoneSpawnTime;
 	        }
 	    }
     }
 	
-	private void SpawnFood()
+	private Food SpawnFood(GridCell cell)
 	{
-        var randomCell = GetRandomEmptyCell();
+        var newFood = Instantiate(FoodPrefab, cell.transform);
+        cell.Content = newFood;
 
-        if (randomCell == null)
-            return;
-
-        //var randomCell = _cells[UnityEngine.Random.Range(0, _cells.Length)];
-
-        GameObject newFood = Instantiate(FoodPrefab, randomCell.transform);
-
-        randomCell.Content = newFood;
+        return newFood.GetComponent<Food>();
     }
 
-    private GridCell GetRandomEmptyCell()
+    private GridCell GetRandomEmptyCell(GridCell[] sourceCells)
     {
-        var emptyCells = _cells.Where(cell => cell.Content == null).ToArray();
+        var emptyCells = sourceCells.Where(cell => cell.Content == null).ToArray();
 
         if (emptyCells.Length == 0)
         {
@@ -110,33 +94,56 @@ public class GridPlayground : MonoBehaviour
         return emptyCells[UnityEngine.Random.Range(0, emptyCells.Length)];
     }
 
-    private void SpawnZone()
+    private void TrySpawnZone()
     {
+        if(ZonesSpawned >= MaxZoneSpawned)
+        {
+            return;
+        }
+
         var randomModifier = ZoneModifiers[UnityEngine.Random.Range(0, ZoneModifiers.Length)];
 
-        var randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth, _gridWidth), UnityEngine.Random.Range(-_gridHeight, _gridHeight));
+        var randomPosition = Vector2.zero;
+        var overlappingZoneOrPlayer = false;
+        var tries = 0;
+        var maxTries = 10;
+
+        do
+        {
+            randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth / 2f, _gridWidth / 2f), UnityEngine.Random.Range(-_gridHeight / 2f, _gridHeight / 2f));
+            overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
+            tries++;
+        }
+        while (overlappingZoneOrPlayer && tries < maxTries);
+
+        if(overlappingZoneOrPlayer)
+        {
+            return;
+        }
+
         var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius).Where(x => x.GetComponent<GridCell>() != null).Select(x => x.GetComponent<GridCell>());
-        
+
         foreach (var overlappedCell in overlappedCells)
         {
             overlappedCell.ZoneModifier = randomModifier;
             overlappedCell.Modify();
         }
-    }
 
-    public void ShowCells()
-    {
-        foreach (var cell in _cells)
-        {
-            cell.GetComponent<SpriteRenderer>().enabled = true;
-        }
-    }
+        var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
+        newZone.Initialize(overlappedCells.ToArray());
 
-    public void HideCells()
-    {
-        foreach (var cell in _cells)
+        ZonesSpawned++;
+
+        var tempZoneCells = new List<GridCell>(overlappedCells);
+
+        for (var i = 0; i < randomModifier.FoodSpawnCount; i++)
         {
-            cell.GetComponent<SpriteRenderer>().enabled = false;
+            var cell = GetRandomEmptyCell(tempZoneCells.ToArray());
+            var food = SpawnFood(cell);
+            food.Zone = newZone;
+
+            tempZoneCells.Remove(cell);
+            newZone.FoodObjects.Add(food);
         }
     }
 

@@ -6,9 +6,9 @@ using DG.Tweening;
 
 public class Segment : MonoBehaviour
 {
-    public float ScaleUpTime;
     public Transform Shape;
-    
+    public SpriteRenderer Center;
+
     public Segment PreviouSegment { get; set; }
     public Segment NextSegment { get; set; }
     public GridCell CurrentCell { get; set; }
@@ -17,7 +17,6 @@ public class Segment : MonoBehaviour
     private void Start()
     {
         Shape.GetComponent<SpriteRenderer>().size = new Vector2(GridPlayground.Instance.CellSize, GridPlayground.Instance.CellSize);
-        transform.DOScale(Vector3.one, ScaleUpTime).SetEase(Ease.OutBack, 2);
     }
 
     private void Update()
@@ -27,7 +26,7 @@ public class Segment : MonoBehaviour
             for (var i = 0; i < FrontDummySegments.Length; i++)
             {
                 var frontDummySegment = FrontDummySegments[i];
-                frontDummySegment.UpdatePosition(PreviouSegment, this, i, MainManager.Instance.Player.IntermediateSegments);
+                frontDummySegment.UpdatePosition(PreviouSegment.transform.position, transform.position, i, MainManager.Instance.Player.IntermediateSegments, DummySegment.UpdateType.HorizontalToVertical);
             }
 
             transform.hasChanged = false;
@@ -44,21 +43,45 @@ public class Segment : MonoBehaviour
             CurrentCell.Content = gameObject;
         }
     }
-    
+
+    public bool TryShowCenter(float probability)
+    {
+        if (PreviouSegment == null || !PreviouSegment.Center.enabled && UnityEngine.Random.Range(0f, 1f) < probability)
+        {
+            Center.enabled = true;
+        }
+
+        return Center.enabled;
+    }
+
     public void Move(Vector3 destination, bool mainMenu = true)
     {
-        transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        if (FrontDummySegments != null)
+        {
+            foreach (var frontDummySegment in FrontDummySegments)
+            {
+                frontDummySegment.InitializeMove();
+            }
+        }
+        
+        var movement = transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        movement.onComplete += MoveCallback;
 
         if (NextSegment != null)
         {
             NextSegment.Move(transform.position);
         }
     }
-    
-    private GridCell GetPreviousSegmentCell()
+
+    private void MoveCallback()
     {
-        return PreviouSegment.CurrentCell;
+        if (FrontDummySegments != null)
+        {
+            for (var i = 0; i < FrontDummySegments.Length; i++)
+            {
+                var frontDummySegment = FrontDummySegments[i];
+                frontDummySegment.SetForNextMove(i, MainManager.Instance.Player.IntermediateSegments);
+            }
+        }
     }
-
-
 }

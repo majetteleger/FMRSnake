@@ -824,7 +824,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f422343d04aa6e48b5e71e52d97d62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BeatIndicator: {fileID: 1333369777}
   Header: {fileID: 1950938820}
   MainMenuHeader: Game Title
   BuildYourSnakeHeader: Build Your Snake
@@ -995,7 +994,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 675001787}
-  - {fileID: 1333369776}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1230,78 +1228,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1333369775
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1549473507289570, guid: ddbeb2756fd1b4c47825b6365b3eba8c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1333369776}
-  - component: {fileID: 1333369778}
-  - component: {fileID: 1333369777}
-  m_Layer: 5
-  m_Name: BeatIndicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1333369776
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 224658210017022080, guid: ddbeb2756fd1b4c47825b6365b3eba8c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1333369775}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1127560959}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1333369777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114142581360405366, guid: ddbeb2756fd1b4c47825b6365b3eba8c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1333369775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 629a375fc5f57c942974e81637fd9312, type: 3}
-  m_Type: 3
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 2
---- !u!222 &1333369778
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 222346757194568538, guid: ddbeb2756fd1b4c47825b6365b3eba8c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1333369775}
 --- !u!1 &1423733470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1601,6 +1527,8 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 1465107564994596, guid: 44840f4d2931fda44af7f96f5b921e1d,
     type: 2}
   FoodPrefab: {fileID: 1759906511235116, guid: 1f9e7abec7c43904e8656e1f3f3f2e49, type: 2}
+  ZoneCenterPrefab: {fileID: 1236019600459416, guid: f9232322672fd684b8a2778bd4df27c7,
+    type: 2}
   BackgroundRenderer: {fileID: 5532908}
   CellSize: 0.5
   CellSpacing: 0.05
@@ -1610,8 +1538,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 88e4d82e1c0bf984baa340f19b82f981, type: 2}
   - {fileID: 11400000, guid: a949fb77090c00b49ba1133ff0902360, type: 2}
   - {fileID: 11400000, guid: 7e358b2ee6c1a3341a12afecd7d0666a, type: 2}
-  NoneZoneModifier: {fileID: 0}
+  NoneZoneModifier: {fileID: 11400000, guid: 09e7c2ebd83771d4aa040fe1463af40f, type: 2}
   ZoneSpawnTime: 2
+  MaxZoneSpawned: 5
 --- !u!4 &1943199895
 Transform:
   m_ObjectHideFlags: 0
@@ -1658,7 +1587,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -60}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1950938819
