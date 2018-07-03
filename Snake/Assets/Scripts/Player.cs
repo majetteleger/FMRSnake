@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class Player : MonoBehaviour
     public float MoveTime;
     public int IntermediateSegments;
 
+    private Image _beatIndicator;
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private AudioSource _beatSource;
@@ -41,14 +43,15 @@ public class Player : MonoBehaviour
     private bool _moving;
 
     private Button[] _buttons = {
-        new Button(0, new Vector2(-1, 0), false),
-        new Button(1, new Vector2(0, 1), false),
-        new Button(2, new Vector2(1, 0), false),
-        new Button(3, new Vector2(0, -1), false),
+        new Button(0, Vector2.left, false),
+        new Button(1, Vector2.up, false),
+        new Button(2, Vector2.right, false),
+        new Button(3, Vector2.down, false),
     };
 
     private void Start()
     {
+        _beatIndicator = MainPanel.Instance.BeatIndicator;
         _beatSource = GetComponent<AudioSource>();
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
@@ -70,6 +73,7 @@ public class Player : MonoBehaviour
         {
             Bar = Bars[UnityEngine.Random.Range(0, Bars.Length)];
         }
+
         // // Simpler but seems to bug sometimes when I mash keys quickly
         //_buttons[0] = Input.GetKey(KeyCode.LeftArrow);
         //_buttons[1] = Input.GetKey(KeyCode.UpArrow);
@@ -197,6 +201,8 @@ public class Player : MonoBehaviour
                 }
             }
 
+            _beatIndicator.fillAmount = (float)(i+1) / (float)Bar.Beats.Count;
+
             _beatSource.Play();
 
             yield return new WaitForSeconds(Bar.Beats[i].Delay);
@@ -292,7 +298,7 @@ public class Player : MonoBehaviour
 
         if (_currentCell != null)
         {
-            //debugString += _currentCell.ZoneModifier.Color;
+            debugString += _currentCell.ZoneModifier.Color;
         }
 
         //Debug.Log(debugString);

@@ -7,6 +7,7 @@ public class MainPanel : MonoBehaviour
 {
     public static MainPanel Instance;
 
+    public Image BeatIndicator;
     public Text Header; 
     public string MainMenuHeader;
     public string BuildYourSnakeHeader;
