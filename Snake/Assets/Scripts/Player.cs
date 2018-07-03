@@ -34,9 +34,9 @@ public class Player : MonoBehaviour
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
 
+    private List<AudioSource> _beatSources;
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
-    private AudioSource _beatSource;
     private GridPlayground _gridPlayground;
     private GridCell _currentCell;
     private Segment _headSegment;
@@ -47,15 +47,19 @@ public class Player : MonoBehaviour
     private Transform _segmentsContainer;
 
     private Button[] _buttons = {
-        new Button(0, new Vector2(-1, 0), false),
-        new Button(1, new Vector2(0, 1), false),
-        new Button(2, new Vector2(1, 0), false),
-        new Button(3, new Vector2(0, -1), false),
+        new Button(0, Vector2.left, false),
+        new Button(1, Vector2.up, false),
+        new Button(2, Vector2.right, false),
+        new Button(3, Vector2.down, false),
     };
 
     private void Start()
     {
-        _beatSource = GetComponent<AudioSource>();
+        _beatSources = new List<AudioSource>();
+        _beatSources.Add(gameObject.AddComponent<AudioSource>());
+        _beatSources[0].clip = LowBeat;
+        _beatSources.Add(gameObject.AddComponent<AudioSource>());
+        _beatSources[1].clip = HighBeat;
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
 
@@ -252,13 +256,23 @@ public class Player : MonoBehaviour
     {
         for (var i = 0; i < Bar.Beats.Count; i++)
         {
+
+            MainPanel.Instance.BeatIndicator.DOFillAmount((float)(i+1) / (float)Bar.Beats.Count, Bar.Beats[i].Delay).SetEase(Ease.Linear).OnComplete(BeatIndicatorEndCallback);
+
+            yield return new WaitForSeconds(Bar.Beats[i].Delay);
+
+            if (i == Bar.Beats.Count - 1)
+            {
+                MainPanel.Instance.BeatIndicator.fillAmount = 0;
+            }
+
             if (!Bar.Beats[i].IsHigh)
             {
-                _beatSource.clip = LowBeat;
+                _beatSources[0].Play();
             }
             else
             {
-                _beatSource.clip = HighBeat;
+                _beatSources[1].Play();
 
                 var success = AttemptMove();
 
@@ -268,12 +282,16 @@ public class Player : MonoBehaviour
                 }
             }
 
-            _beatSource.Play();
 
-            yield return new WaitForSeconds(Bar.Beats[i].Delay);
+
         }
 
         StartCoroutine(Beat());
+    }
+
+    private void BeatIndicatorEndCallback()
+    {
+        MainPanel.Instance.BeatIndicator.transform.DOPunchScale(Vector3.one/4,0.2f);
     }
 
     private void FailMove()
