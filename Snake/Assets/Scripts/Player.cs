@@ -28,11 +28,60 @@ public class Player : MonoBehaviour
     public AudioClip LowBeat;
     public AudioClip HighBeat;
     public float MoveTime;
+    public int MaxMovementMultipler;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
 
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
+
+    public int Score
+    {
+        get
+        {
+            return _score;
+        }
+        set
+        {
+            _score = value;
+            MainPanel.Instance.UpdateScore(_score, _score == 0);
+        }
+    }
+
+    public int MovementMultiplier
+    {
+        get
+        {
+            return _movementMultiplier;
+        }
+        set
+        {
+            if (value > MaxMovementMultipler)
+            {
+                return;
+            }
+
+            _movementMultiplier = value;
+            MainPanel.Instance.UpdateMovementMultiplier(_movementMultiplier, false);
+        }
+    }
+
+    private int Length
+    {
+        get
+        {
+            var length = 0;
+            var nextSegment = _headSegment;
+
+            while (nextSegment != null)
+            {
+                length++;
+                nextSegment = nextSegment.NextSegment;
+            }
+
+            return length;
+        }
+    }
 
     private List<AudioSource> _beatSources;
     private CircleCollider2D _playerCollider;
@@ -45,6 +94,8 @@ public class Player : MonoBehaviour
     private Queue<bool> _growQueue;
     private bool _moving;
     private Transform _segmentsContainer;
+    private int _score;
+    private int _movementMultiplier;
 
     private Button[] _buttons = {
         new Button(0, Vector2.left, false),
@@ -187,6 +238,7 @@ public class Player : MonoBehaviour
 
         if (food != null)
         {
+            GiveScore(food.Zone.ZoneModifier.FoodScore, false, true);
             food.Zone.FoodObjects.Remove(food);
             food.Zone.TryClear();
             Destroy(other.gameObject);
@@ -202,6 +254,11 @@ public class Player : MonoBehaviour
             Debug.Log("Colliding with Tail!");
             Die();
         }
+    }
+
+    public void GiveScore(int baseScore, bool lengthMultiplication, bool movementMultiplication)
+    {
+        Score += baseScore * (lengthMultiplication ? Length : 1) * (movementMultiplication ? _movementMultiplier : 1);
     }
 
     public void Die()
@@ -249,6 +306,9 @@ public class Player : MonoBehaviour
     public void StartGame()
     {
         _playerCollider.enabled = true;
+        Score = 0;
+        MovementMultiplier = 1;
+
         StartCoroutine(Beat());
     }
 
@@ -296,7 +356,10 @@ public class Player : MonoBehaviour
 
     private void FailMove()
     {
-        //Debug.Log("Did not move!");
+        if (MovementMultiplier != 1)
+        {
+            MovementMultiplier = 1;
+        }
     }
 
     private bool AttemptMove()
@@ -345,6 +408,8 @@ public class Player : MonoBehaviour
 
     private void Move(Vector3 direction)
     {
+        MovementMultiplier++;
+
         _moving = true;
 
         LastDirection = direction;

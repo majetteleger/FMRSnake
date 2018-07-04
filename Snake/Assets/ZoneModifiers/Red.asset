@@ -14,3 +14,5 @@ MonoBehaviour:
   Color: {r: 1, g: 0, b: 0, a: 1}
   Radius: 1.5
   FoodSpawnCount: 3
+  ClearBaseScore: 100
+  FoodScore: 50

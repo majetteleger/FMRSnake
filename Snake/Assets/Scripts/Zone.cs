@@ -6,10 +6,12 @@ public class Zone : MonoBehaviour
 {
     public GridCell[] GridCells { get; set; }
     public List<Food> FoodObjects { get; set; }
+    public ZoneModifier ZoneModifier { get; set; }
 
-    public void Initialize(GridCell[] gridCells)
+    public void Initialize(GridCell[] gridCells, ZoneModifier zoneModifier)
     {
         GridCells = gridCells;
+        ZoneModifier = zoneModifier;
         FoodObjects = new List<Food>();
     }
     
@@ -18,7 +20,6 @@ public class Zone : MonoBehaviour
         if (FoodObjects.Count == 0)
         {
             Clear();
-            GiveScore();
         }
     }
 
@@ -31,10 +32,7 @@ public class Zone : MonoBehaviour
         }
 
         MainManager.Instance.GridPlayground.ZonesSpawned--;
-    }
 
-    public void GiveScore()
-    {
-        Debug.Log("Implement scoring");
+        MainManager.Instance.Player.GiveScore(ZoneModifier.ClearBaseScore, true, true);
     }
 }

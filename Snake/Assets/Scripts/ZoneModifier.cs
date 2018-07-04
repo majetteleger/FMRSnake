@@ -8,4 +8,6 @@ public class ZoneModifier : ScriptableObject
     public Color Color;
     public float Radius;
     public int FoodSpawnCount;
+    public int ClearBaseScore;
+    public int FoodScore;
 }

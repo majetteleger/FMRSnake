@@ -130,7 +130,7 @@ public class GridPlayground : MonoBehaviour
         }
 
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
-        newZone.Initialize(overlappedCells.ToArray());
+        newZone.Initialize(overlappedCells.ToArray(), randomModifier);
 
         ZonesSpawned++;
 
