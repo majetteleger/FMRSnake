@@ -954,7 +954,7 @@ MonoBehaviour:
   BuildYourSnakeHeader: Build Your Snake
   LeaderBoardHeader: Leader Board
   PlaySubPanel: {fileID: 180480001}
-  BeatIndicator: {fileID: 1086401350}
+  BeatIndicator: {fileID: 1086401352}
   ScoreText: {fileID: 2004496221}
   MovementMultiplierText: {fileID: 366578595}
   ScoreUpdateTime: 0.5
@@ -1048,7 +1048,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1086401349}
   - component: {fileID: 1086401351}
-  - component: {fileID: 1086401350}
+  - component: {fileID: 1086401352}
   m_Layer: 5
   m_Name: BeatIndicator
   m_TagString: Untagged
@@ -1074,7 +1074,13 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1086401350
+--- !u!222 &1086401351
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1086401348}
+--- !u!114 &1086401352
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1082,31 +1088,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1086401348}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: c43bf06fc4098f64eb2b31a2e9f8cc40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 629a375fc5f57c942974e81637fd9312, type: 3}
-  m_Type: 3
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 2
---- !u!222 &1086401351
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1086401348}
+  Quarter: {fileID: 21300000, guid: 6489b2f810479b941bc84290e53044cc, type: 3}
+  Third: {fileID: 0}
+  Half: {fileID: 0}
 --- !u!1 &1127560955
 GameObject:
   m_ObjectHideFlags: 0

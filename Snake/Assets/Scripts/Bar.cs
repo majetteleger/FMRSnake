@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// TEST
 [CreateAssetMenu(fileName = "New Bar", menuName = "Bar")]
 public class Bar : ScriptableObject
 {

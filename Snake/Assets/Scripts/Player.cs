@@ -23,10 +23,6 @@ public class Player : MonoBehaviour
 
     public GameObject SegmentPrefab;
     public GameObject DummySegmentPrefab;
-    public Bar Bar;
-    public Bar[] Bars;
-    public AudioClip LowBeat;
-    public AudioClip HighBeat;
     public float MoveTime;
     public int MaxMovementMultipler;
     public int IntermediateSegments;
@@ -83,7 +79,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    private List<AudioSource> _beatSources;
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private GridPlayground _gridPlayground;
@@ -96,6 +91,7 @@ public class Player : MonoBehaviour
     private Transform _segmentsContainer;
     private int _score;
     private int _movementMultiplier;
+    private BeatIndicator _beatIndicator;
 
     private Button[] _buttons = {
         new Button(0, Vector2.left, false),
@@ -106,11 +102,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _beatSources = new List<AudioSource>();
-        _beatSources.Add(gameObject.AddComponent<AudioSource>());
-        _beatSources[0].clip = LowBeat;
-        _beatSources.Add(gameObject.AddComponent<AudioSource>());
-        _beatSources[1].clip = HighBeat;
+        _beatIndicator = MainPanel.Instance.BeatIndicator;
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
 
@@ -132,16 +124,6 @@ public class Player : MonoBehaviour
         {
             return;
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Bar = Bars[UnityEngine.Random.Range(0, Bars.Length)];
-        }
-        // // Simpler but seems to bug sometimes when I mash keys quickly
-        //_buttons[0] = Input.GetKey(KeyCode.LeftArrow);
-        //_buttons[1] = Input.GetKey(KeyCode.UpArrow);
-        //_buttons[2] = Input.GetKey(KeyCode.RightArrow);
-        //_buttons[3] = Input.GetKey(KeyCode.DownArrow);
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -309,52 +291,11 @@ public class Player : MonoBehaviour
         Score = 0;
         MovementMultiplier = 1;
 
-        StartCoroutine(Beat());
+        _beatIndicator.CreateIndicator();
+        _beatIndicator.StartBeat();
     }
 
-    private IEnumerator Beat()
-    {
-        for (var i = 0; i < Bar.Beats.Count; i++)
-        {
-
-            MainPanel.Instance.BeatIndicator.DOFillAmount((float)(i+1) / (float)Bar.Beats.Count, Bar.Beats[i].Delay).SetEase(Ease.Linear).OnComplete(BeatIndicatorEndCallback);
-
-            yield return new WaitForSeconds(Bar.Beats[i].Delay);
-
-            if (i == Bar.Beats.Count - 1)
-            {
-                MainPanel.Instance.BeatIndicator.fillAmount = 0;
-            }
-
-            if (!Bar.Beats[i].IsHigh)
-            {
-                _beatSources[0].Play();
-            }
-            else
-            {
-                _beatSources[1].Play();
-
-                var success = AttemptMove();
-
-                if (!success)
-                {
-                    FailMove();
-                }
-            }
-
-
-
-        }
-
-        StartCoroutine(Beat());
-    }
-
-    private void BeatIndicatorEndCallback()
-    {
-        MainPanel.Instance.BeatIndicator.transform.DOPunchScale(Vector3.one/4,0.2f);
-    }
-
-    private void FailMove()
+    public void FailMove()
     {
         if (MovementMultiplier != 1)
         {
@@ -362,7 +303,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private bool AttemptMove()
+    public bool AttemptMove()
     {
         var offButtons = new List<Button>();
 

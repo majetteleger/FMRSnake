@@ -18,7 +18,7 @@ public class MainPanel : MonoBehaviour
     [Header("Play")]
 
     public GameObject PlaySubPanel;
-    public Image BeatIndicator;
+    public BeatIndicator BeatIndicator;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
