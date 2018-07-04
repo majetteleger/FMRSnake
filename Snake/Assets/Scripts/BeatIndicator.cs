@@ -153,6 +153,11 @@ public class BeatIndicator : MonoBehaviour {
         beatLight.Light.DOColor(STMYellow, .1f);
     }
 
+    internal void StopBeat()
+    {
+        StopAllCoroutines();
+    }
+
     //private void ResetSection(Image section)
     //{
     //    section.transform.localScale = Vector3.zero;

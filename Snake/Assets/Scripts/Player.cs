@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     public int MaxMovementMultipler;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
-
+    public string PlayerName;
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
 
@@ -245,8 +245,14 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        StopAllCoroutines();
+        MainPanel.Instance.BeatIndicator.StopBeat();
+        LogScoreToLeaderBoard();
         StartCoroutine(DoDie());
+    }
+
+    private void LogScoreToLeaderBoard()
+    {
+        Leaderboard.Record(PlayerName, Score);
     }
 
     private IEnumerator DoDie()
