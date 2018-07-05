@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42853218c6b72ea4d92eccbcfea46784, type: 3}
   m_Name: Blue
   m_EditorClassIdentifier: 
-  Color: {r: 0, g: 0, b: 1, a: 1}
+  Color: {r: 0, g: 0, b: 1, a: 0.78431374}
   Radius: 2.5
   FoodSpawnCount: 4
   ClearBaseScore: 100

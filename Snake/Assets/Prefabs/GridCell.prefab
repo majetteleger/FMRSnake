@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ColorAlpha: 0.25
+  ZoneModifier: {fileID: 0}
 --- !u!212 &212556160698541856
 SpriteRenderer:
   m_ObjectHideFlags: 1

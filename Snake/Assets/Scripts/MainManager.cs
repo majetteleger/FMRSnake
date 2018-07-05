@@ -176,6 +176,7 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToLeaderBoard();
+        GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
 
         var foodObjects = FindObjectsOfType<Food>();

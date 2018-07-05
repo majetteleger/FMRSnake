@@ -246,6 +246,15 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
+        //for (int i = 0; i < _segmentsContainer.childCount; i++)
+        //{
+        //    if (_segmentsContainer.GetChild(i).GetComponent<BoxCollider2D>())
+        //    {
+        //        _segmentsContainer.GetChild(i).GetComponent<BoxCollider2D>().enabled = false;
+        //    }
+
+        //}
+        _playerCollider.enabled = false;
         MainPanel.Instance.BeatIndicator.StopBeat();
         LogScoreToLeaderBoard();
         StartCoroutine(DoDie());

@@ -6,7 +6,7 @@ public class GridCell : MonoBehaviour
 {
     public float ColorAlpha;
 
-    public ZoneModifier ZoneModifier { get; set; }
+    public ZoneModifier ZoneModifier;// { get; set; }
     public GameObject Content { get; set; }
 
     private SpriteRenderer _spriteRenderer;
@@ -31,7 +31,7 @@ public class GridCell : MonoBehaviour
     {
         if (ZoneModifier != null)
         {
-            _spriteRenderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, ColorAlpha);
+            _spriteRenderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, ZoneModifier.Color.a);
         }
     }
 }
