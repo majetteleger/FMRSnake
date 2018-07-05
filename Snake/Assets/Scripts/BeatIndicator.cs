@@ -17,6 +17,7 @@ public class BeatIndicator : MonoBehaviour {
     //public Sprite Third;
     //public Sprite Half;
 
+    private Bar _startingBar;
     private List<BeatLight> _beatLights;
     private List<AudioSource> _beatSources;
     //private Sprite _currentSection;
@@ -29,6 +30,7 @@ public class BeatIndicator : MonoBehaviour {
         _beatSources[0].clip = LowBeat;
         _beatSources.Add(gameObject.AddComponent<AudioSource>());
         _beatSources[1].clip = HighBeat;
+        _startingBar = Bar;
     }
 	
 	// Update is called once per frame
@@ -40,7 +42,7 @@ public class BeatIndicator : MonoBehaviour {
     {
         Bar = newBar;
 
-        if (_beatLights != null)
+        if (_beatLights.Count > 0)
         {
             for (int i = 0; i < _beatLights.Count; i++)
             {
@@ -153,8 +155,15 @@ public class BeatIndicator : MonoBehaviour {
         beatLight.Light.DOColor(STMYellow, .1f);
     }
 
-    internal void StopBeat()
+    public void StopBeat()
     {
+        if (_beatLights.Count > 0)
+        {
+            for (int i = 0; i < _beatLights.Count; i++)
+            {
+                Destroy(_beatLights[i].gameObject);
+            }
+        }
         StopAllCoroutines();
     }
 
