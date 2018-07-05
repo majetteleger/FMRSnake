@@ -26,9 +26,12 @@ public class GridPlayground : MonoBehaviour
     public int ObstacleLifeTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
+    [SerializeField]
     public int ZonesSpawned { get; set; }
     public int ObstaclesSpawned { get; set; }
 
+    private Transform _zonesParent;
+    public List<Zone> _zones = new List<Zone>();
     private Player _player;
     private float _obstacleSpawnTimer;
     private float _gridHeight;
@@ -38,6 +41,7 @@ public class GridPlayground : MonoBehaviour
     
     private void Awake()
     {
+        _zonesParent = new GameObject("Zones").transform;
         Instance = this;
 
         _gridWidth = BackgroundRenderer.sprite.rect.size.x / 100f;
@@ -57,7 +61,16 @@ public class GridPlayground : MonoBehaviour
         _cells = GetComponentsInChildren<GridCell>();
     }
 
-	private void Start()
+    public void ResetZones()
+    {
+        for (int i = 0; i < _zones.Count; i++)
+        {
+            Destroy(_zones[i].gameObject);
+        }
+        _zones.Clear();
+    }
+
+    private void Start()
 	{
 	    _zoneSpawnTimer = ZoneSpawnTime;
         _obstacleSpawnTimer = ObstacleSpawnTime;
@@ -188,6 +201,8 @@ public class GridPlayground : MonoBehaviour
 
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
         newZone.Initialize(overlappedCells.ToArray(), randomModifier);
+        _zones.Add(newZone);
+        newZone.transform.parent = _zonesParent;
 
         ZonesSpawned++;
 

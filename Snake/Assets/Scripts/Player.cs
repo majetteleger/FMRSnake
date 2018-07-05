@@ -441,4 +441,9 @@ public class Player : MonoBehaviour
             Grow();
         }
     }
+
+    public void TryAddInput()
+    {
+
+    }
 }

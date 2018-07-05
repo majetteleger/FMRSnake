@@ -56,6 +56,7 @@ public class MainPanel : MonoBehaviour
 
     public void TransitionToLeaderBoard()
     {
+        GridPlayground.Instance.ResetZones();
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
         UpdateHighscores();

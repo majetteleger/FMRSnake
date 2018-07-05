@@ -13,10 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Beats:
   - IsHigh: 0
-    Delay: 0.5
+    Delay: 0.3
   - IsHigh: 0
-    Delay: 0.5
+    Delay: 0.3
   - IsHigh: 0
-    Delay: 0.5
+    Delay: 0.3
   - IsHigh: 1
-    Delay: 0.5
+    Delay: 0.3
