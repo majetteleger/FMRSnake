@@ -14,3 +14,6 @@ MonoBehaviour:
   Color: {r: 1, g: 1, b: 1, a: 1}
   Radius: 0
   FoodSpawnCount: 0
+  ClearBaseScore: 0
+  FoodScore: 0
+  Bar: {fileID: 11400000, guid: fca0d95d25fb6244e8f3bd16fccdc564, type: 2}

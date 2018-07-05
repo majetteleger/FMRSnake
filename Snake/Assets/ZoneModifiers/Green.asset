@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: Green
   m_EditorClassIdentifier: 
   Color: {r: 0, g: 1, b: 0, a: 1}
-  Radius: 1.5
+  Radius: 2
   FoodSpawnCount: 3
   ClearBaseScore: 100
   FoodScore: 50
+  Bar: {fileID: 11400000, guid: 9fe96c30bb27341458d702e271e82adb, type: 2}

@@ -230,6 +230,7 @@ public class Player : MonoBehaviour
         {
             gridCell.Content = gameObject;
             _currentCell = gridCell;
+            MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
         }
         else if (segment != null)
         {
@@ -259,7 +260,6 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-        // destroy zones
         _gridPlayground.ClearAllCells();
         MainManager.Instance.TransitionToLeaderBoard();
     }
