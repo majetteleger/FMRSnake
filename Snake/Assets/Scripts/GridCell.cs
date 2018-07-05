@@ -4,19 +4,27 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
+    public Sprite ObstacleSprite;
     public float ColorAlpha;
-
-    public ZoneModifier ZoneModifier;// { get; set; }
+    public bool IsObstacle;
+    public int ObstacleTime;
+    public ZoneModifier ZoneModifier { get; set; }
     public GameObject Content { get; set; }
 
     private SpriteRenderer _spriteRenderer;
+    private Sprite _blankSprite;
 
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-
+        _blankSprite = _spriteRenderer.sprite;
         ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
         Modify();
+    }
+
+    private void Update()
+    {
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -31,7 +39,15 @@ public class GridCell : MonoBehaviour
     {
         if (ZoneModifier != null)
         {
+            _spriteRenderer.drawMode = SpriteDrawMode.Tiled;
+            _spriteRenderer.sprite = _blankSprite;
             _spriteRenderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, ZoneModifier.Color.a);
+        }
+
+        if (IsObstacle)
+        {
+            _spriteRenderer.drawMode = SpriteDrawMode.Simple;
+            _spriteRenderer.sprite = ObstacleSprite;
         }
     }
 }

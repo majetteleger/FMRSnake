@@ -17,7 +17,6 @@ public class BeatIndicator : MonoBehaviour {
     //public Sprite Third;
     //public Sprite Half;
 
-    private Bar _startingBar;
     private List<BeatLight> _beatLights;
     private List<AudioSource> _beatSources;
     //private Sprite _currentSection;
@@ -30,7 +29,6 @@ public class BeatIndicator : MonoBehaviour {
         _beatSources[0].clip = LowBeat;
         _beatSources.Add(gameObject.AddComponent<AudioSource>());
         _beatSources[1].clip = HighBeat;
-        _startingBar = Bar;
     }
 	
 	// Update is called once per frame

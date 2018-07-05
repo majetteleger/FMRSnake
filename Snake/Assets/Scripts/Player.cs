@@ -215,6 +215,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         var food = other.GetComponent<Food>();
+        var obstacle = other.GetComponent<Obstacle>();
         var gridCell = other.GetComponent<GridCell>();
         var segment = other.GetComponent<Segment>();
 
@@ -226,17 +227,24 @@ public class Player : MonoBehaviour
             Destroy(other.gameObject);
             QueueGrow();
         }
-        else if (gridCell != null)
+        else if (obstacle != null)
         {
-            gridCell.Content = gameObject;
-            _currentCell = gridCell;
-            MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+            Debug.Log("Colliding with Obstacle!");
+            Die();
         }
         else if (segment != null)
         {
             Debug.Log("Colliding with Tail!");
             Die();
         }
+
+        if (gridCell != null)
+        {
+            gridCell.Content = gameObject;
+            _currentCell = gridCell;
+            MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+        }
+
     }
 
     public void GiveScore(int baseScore, bool lengthMultiplication, bool movementMultiplication)
@@ -246,7 +254,6 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-
         _playerCollider.enabled = false;
         MainPanel.Instance.BeatIndicator.StopBeat();
         LogScoreToLeaderBoard();

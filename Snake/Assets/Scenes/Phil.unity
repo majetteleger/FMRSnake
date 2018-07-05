@@ -137,7 +137,7 @@ Transform:
   m_GameObject: {fileID: 5532906}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8712927, y: 0.8712927, z: 1}
   m_Children: []
   m_Father: {fileID: 1300028046}
   m_RootOrder: 1
@@ -317,7 +317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &180480002
 RectTransform:
   m_ObjectHideFlags: 0
@@ -363,7 +363,7 @@ Transform:
   m_GameObject: {fileID: 250394354}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 615, y: 480, z: 1}
+  m_LocalScale: {x: 535.4753, y: 417.93195, z: 1}
   m_Children: []
   m_Father: {fileID: 1300028046}
   m_RootOrder: 0
@@ -595,7 +595,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10, y: -50}
-  m_SizeDelta: {x: 22, y: 22}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &366578594
 MonoBehaviour:
@@ -622,7 +622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23529413, g: 0.23529413, b: 0.23529413, a: 0.78431374}
+  m_Color: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1008,7 +1008,7 @@ GameObject:
   - component: {fileID: 655666999}
   - component: {fileID: 655667000}
   m_Layer: 0
-  m_Name: stations
+  m_Name: Stations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1024,8 +1024,8 @@ Transform:
   m_LocalPosition: {x: -0.82299984, y: -0.956, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1300028046}
-  m_RootOrder: 2
+  m_Father: {fileID: 1226262698}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &655667000
 SpriteRenderer:
@@ -1345,7 +1345,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -17.900024, y: -15.991669}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1086401350
 MonoBehaviour:
@@ -1782,6 +1782,7 @@ Transform:
   - {fileID: 576035967}
   - {fileID: 1213611969}
   - {fileID: 1631214256}
+  - {fileID: 655666999}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1886,7 +1887,6 @@ Transform:
   m_Children:
   - {fileID: 250394355}
   - {fileID: 5532907}
-  - {fileID: 655666999}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1926,7 +1926,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 48, y: 36}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1331504072
 MonoBehaviour:
@@ -2295,6 +2295,8 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 1465107564994596, guid: 44840f4d2931fda44af7f96f5b921e1d,
     type: 2}
   FoodPrefab: {fileID: 1759906511235116, guid: 1f9e7abec7c43904e8656e1f3f3f2e49, type: 2}
+  ObstaclePrefab: {fileID: 1041944177873670, guid: 48f8b218a02d14f499b1eb495e4665e4,
+    type: 2}
   ZoneCenterPrefab: {fileID: 1236019600459416, guid: f9232322672fd684b8a2778bd4df27c7,
     type: 2}
   BackgroundRenderer: {fileID: 5532908}
@@ -2308,7 +2310,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7e358b2ee6c1a3341a12afecd7d0666a, type: 2}
   NoneZoneModifier: {fileID: 11400000, guid: 09e7c2ebd83771d4aa040fe1463af40f, type: 2}
   ZoneSpawnTime: 2
-  MaxZoneSpawned: 5
+  MaxZoneSpawned: 20
+  ObstacleSpawnTime: 3
+  MaxObstaclesSpawned: 40
+  ObstacleLifeTime: 15
 --- !u!4 &1943199895
 Transform:
   m_ObjectHideFlags: 0
@@ -2512,10 +2517,10 @@ RectTransform:
   m_Father: {fileID: 1331504071}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 24, y: -18}
-  m_SizeDelta: {x: 8, y: 16}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2004496220
 MonoBehaviour:
