@@ -64,6 +64,13 @@ public class MainPanel : MonoBehaviour
 
     private void UpdateHighscores()
     {
+        var content = LeaderboardPanel.GetComponent<ScrollRect>().content;
+
+        for (int i = 0; i < content.childCount; i++)
+        {
+            Destroy(content.GetChild(i).gameObject);
+        }
+
         for (int i = 0; i < Leaderboard.EntryCount; ++i)
         {
             var entry = Leaderboard.GetEntry(i);
