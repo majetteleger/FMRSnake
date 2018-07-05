@@ -1377,7 +1377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43bf06fc4098f64eb2b31a2e9f8cc40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bar: {fileID: 11400000, guid: 894e19a1fe05bb64f9d83ea4c217c5d2, type: 2}
+  Bar: {fileID: 11400000, guid: fca0d95d25fb6244e8f3bd16fccdc564, type: 2}
   LowBeat: {fileID: 8300000, guid: 9d5310aa53c3d014da87f24a40d9f58c, type: 3}
   HighBeat: {fileID: 8300000, guid: abb5d45889e5860459917ae8a66f62fd, type: 3}
   BeatLightPrefab: {fileID: 1129263122999832, guid: 35156a2da395378408ff98d8a9323ae3,
