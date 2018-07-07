@@ -11,6 +11,7 @@ public class GridPlayground : MonoBehaviour
     public GameObject CellPrefab;
 	public GameObject PlayerPrefab;
 	public GameObject FoodPrefab;
+    public GameObject ObstaclePrefab;
 	public GameObject ZoneCenterPrefab;
     public SpriteRenderer BackgroundRenderer;
     public float CellSize;
@@ -20,10 +21,19 @@ public class GridPlayground : MonoBehaviour
     public ZoneModifier NoneZoneModifier;
 	public float ZoneSpawnTime;
 	public int MaxZoneSpawned;
+    public float ObstacleSpawnTime;
+    public int MaxObstaclesSpawned;
+    public int ObstacleLifeTime;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
+    [SerializeField]
     public int ZonesSpawned { get; set; }
+    public int ObstaclesSpawned { get; set; }
 
+    private Transform _zonesParent;
+    public List<Zone> _zones = new List<Zone>();
+    private Player _player;
+    private float _obstacleSpawnTimer;
     private float _gridHeight;
     private float _gridWidth;
     private float _zoneSpawnTimer;
@@ -31,10 +41,11 @@ public class GridPlayground : MonoBehaviour
     
     private void Awake()
     {
+        _zonesParent = new GameObject("Zones").transform;
         Instance = this;
 
-        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 84f;
-        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 84f;
+        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 100f;
+        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 100f;
 
         for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
         {
@@ -50,9 +61,19 @@ public class GridPlayground : MonoBehaviour
         _cells = GetComponentsInChildren<GridCell>();
     }
 
-	private void Start()
+    public void ResetZones()
+    {
+        for (int i = 0; i < _zones.Count; i++)
+        {
+            Destroy(_zones[i].gameObject);
+        }
+        _zones.Clear();
+    }
+
+    private void Start()
 	{
 	    _zoneSpawnTimer = ZoneSpawnTime;
+        _obstacleSpawnTimer = ObstacleSpawnTime;
     }
 	
 	private void Update()
@@ -72,8 +93,27 @@ public class GridPlayground : MonoBehaviour
 	            _zoneSpawnTimer = ZoneSpawnTime;
 	        }
 	    }
+
+        if (_obstacleSpawnTimer > 0)
+        {
+            _obstacleSpawnTimer -= Time.deltaTime;
+
+            if (_obstacleSpawnTimer < 0)
+            {
+                TrySpawnObstacle();
+                _obstacleSpawnTimer = ObstacleSpawnTime;
+            }
+        }
     }
 	
+    private Obstacle SpawnObstacle(GridCell cell)
+    {
+        var newObstacle = Instantiate(ObstaclePrefab, cell.transform);
+        cell.Content = newObstacle;
+
+        return newObstacle.GetComponent<Obstacle>();
+    }
+
 	private Food SpawnFood(GridCell cell)
 	{
         var newFood = Instantiate(FoodPrefab, cell.transform);
@@ -94,9 +134,39 @@ public class GridPlayground : MonoBehaviour
         return emptyCells[UnityEngine.Random.Range(0, emptyCells.Length)];
     }
 
+    private void TrySpawnObstacle()
+    {
+        if (ObstaclesSpawned > MaxObstaclesSpawned)
+        {
+            return;
+        }
+
+        // yea i know it's long...
+        var aroundPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, 5).Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null).ToList();
+        var closeToPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, 1).Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null).ToArray();
+
+        for (int i = 0; i < closeToPlayer.Length; i++)
+        {
+            if (aroundPlayer.Contains(closeToPlayer[i]))
+            {
+                aroundPlayer.Remove(closeToPlayer[i]);
+            }
+        }
+
+        Debug.Log(aroundPlayer.Count);
+
+        var cell = aroundPlayer[UnityEngine.Random.Range(0, aroundPlayer.Count)].GetComponent<GridCell>();
+
+        var newObstacle = SpawnObstacle(cell);
+
+        newObstacle.LifeTime = ObstacleLifeTime;
+
+        ObstaclesSpawned++;
+    }
+
     private void TrySpawnZone()
     {
-        if(ZonesSpawned >= MaxZoneSpawned)
+        if (ZonesSpawned >= MaxZoneSpawned)
         {
             return;
         }
@@ -131,6 +201,8 @@ public class GridPlayground : MonoBehaviour
 
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
         newZone.Initialize(overlappedCells.ToArray(), randomModifier);
+        _zones.Add(newZone);
+        newZone.transform.parent = _zonesParent;
 
         ZonesSpawned++;
 

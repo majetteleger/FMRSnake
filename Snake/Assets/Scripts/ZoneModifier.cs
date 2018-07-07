@@ -10,4 +10,5 @@ public class ZoneModifier : ScriptableObject
     public int FoodSpawnCount;
     public int ClearBaseScore;
     public int FoodScore;
+    public Bar Bar;
 }

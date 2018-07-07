@@ -18,11 +18,13 @@ public class MainPanel : MonoBehaviour
     [Header("Play")]
 
     public GameObject PlaySubPanel;
-    public Image BeatIndicator;
+    public BeatIndicator BeatIndicator;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
     public float MovementMultiplierUpdateTime;
+    public GameObject LeaderboardPanel;
+    public GameObject EntryPrefab;
 
     private float _displayedScore;
 
@@ -34,25 +36,49 @@ public class MainPanel : MonoBehaviour
     public void TransitionToMainMenu()
     {
         PlaySubPanel.SetActive(false);
+        LeaderboardPanel.SetActive(false);
         Header.text = MainMenuHeader;
     }
 
     public void TransitionToBuildYourSnake()
     {
         PlaySubPanel.SetActive(false);
+        LeaderboardPanel.SetActive(false);
         Header.text = BuildYourSnakeHeader;
     }
 
     public void TransitionToPlay()
     {
         PlaySubPanel.SetActive(true);
+        LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
     }
 
     public void TransitionToLeaderBoard()
     {
+        GridPlayground.Instance.ResetZones();
         PlaySubPanel.SetActive(false);
+        LeaderboardPanel.SetActive(true);
+        UpdateHighscores();
         Header.text = LeaderBoardHeader;
+    }
+
+    private void UpdateHighscores()
+    {
+        var content = LeaderboardPanel.GetComponent<ScrollRect>().content;
+
+        for (int i = 0; i < content.childCount; i++)
+        {
+            Destroy(content.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < Leaderboard.EntryCount; ++i)
+        {
+            var entry = Leaderboard.GetEntry(i);
+
+            var entryText = Instantiate(EntryPrefab, LeaderboardPanel.GetComponent<ScrollRect>().content).GetComponent<Text>();
+            entryText.text = entry.Name + ": " + entry.Score;
+        }
     }
 
     public void UpdateScore(int score, bool instant)
