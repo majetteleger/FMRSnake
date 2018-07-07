@@ -178,13 +178,6 @@ public class MainManager : MonoBehaviour
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
-
-        var foodObjects = FindObjectsOfType<Food>();
-
-        foreach (var foodObject in foodObjects)
-        {
-            Destroy(foodObject.gameObject);
-        }
     }
 
     public void ResetSnake()

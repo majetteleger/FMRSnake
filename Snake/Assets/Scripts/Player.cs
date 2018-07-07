@@ -270,6 +270,21 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         _gridPlayground.ClearAllCells();
+
+        var foodObjects = FindObjectsOfType<Food>();
+
+        foreach (var foodObject in foodObjects)
+        {
+            Destroy(foodObject.gameObject);
+        }
+
+        var zoneIndicators = FindObjectsOfType<ZoneIndicator>();
+
+        foreach (var zoneIndicator in zoneIndicators)
+        {
+            Destroy(zoneIndicator.gameObject);
+        }
+
         MainManager.Instance.TransitionToLeaderBoard();
     }
 
