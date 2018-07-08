@@ -103,6 +103,10 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(true);
         LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
+
+        // IDEA: could fade control a bit during play mode to make it less intrusive
+        // ALSO: move them up so they don't get in the way of the indicators?
+
         PlayControls.ApplyControls();
     }
 

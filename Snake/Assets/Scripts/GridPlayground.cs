@@ -153,7 +153,7 @@ public class GridPlayground : MonoBehaviour
             }
         }
 
-        Debug.Log(aroundPlayer.Count);
+        //Debug.Log(aroundPlayer.Count);
 
         var cell = aroundPlayer[UnityEngine.Random.Range(0, aroundPlayer.Count)].GetComponent<GridCell>();
 

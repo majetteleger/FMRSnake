@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222576813241899732}
   - component: {fileID: 114784724160050732}
   - component: {fileID: 114183231822624688}
+  - component: {fileID: 114942233084389458}
   m_Layer: 5
   m_Name: ZoneIndicator
   m_TagString: Untagged
@@ -69,6 +70,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114942233084389458
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1415997703523002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c3cf5fca185704aaad30690e680dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &222576813241899732
 CanvasRenderer:
   m_ObjectHideFlags: 1
