@@ -53,6 +53,9 @@ public class ZoneIndicator : MonoBehaviour
         var newPositionX = Mathf.Clamp(zonePosition.x, 0f + ScreenBorderOffset, 1f - ScreenBorderOffset);
         var newPositionY = Mathf.Clamp(zonePosition.y, 0f + ScreenBorderOffset, 1f - ScreenBorderOffset);
 
+        // can we clamp by pixel value and not by percentage of screen?
+        // can we avoid overlap with other ui elements?
+
         transform.position = Camera.main.ViewportToScreenPoint(new Vector3(newPositionX, newPositionY, 0f));
 
         var targetPosLocal = Camera.main.transform.InverseTransformPoint(_targetZone.transform.position);
