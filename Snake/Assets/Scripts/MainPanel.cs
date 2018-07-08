@@ -1,19 +1,62 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainPanel : MonoBehaviour
 {
+    [Serializable]
+    public class ControlsText
+    {
+        public string Up;
+        public string Right;
+        public string Down;
+        public string Left;
+
+        public void ApplyControls()
+        {
+            Instance.UpControlText.text = Up;
+            Instance.UpControlImage.DOFade(string.IsNullOrEmpty(Up) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+            Instance.RightControlText.text = Right;
+            Instance.RightControlImage.DOFade(string.IsNullOrEmpty(Right) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+            Instance.DownControlText.text = Down;
+            Instance.DownControlImage.DOFade(string.IsNullOrEmpty(Down) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+            Instance.LeftControlText.text = Left;
+            Instance.LeftControlImage.DOFade(string.IsNullOrEmpty(Left) ? 0.5f : 1f, Instance.ControlsFadeTime);
+        }
+    }
+
     public static MainPanel Instance;
 
     [Header("General")]
 
     public Text Header;
+    public Text UpControlText;
+    public Image UpControlImage;
+    public Text RightControlText;
+    public Image RightControlImage;
+    public Text DownControlText;
+    public Image DownControlImage;
+    public Text LeftControlText;
+    public Image LeftControlImage;
+    public float ControlsFadeTime;
+    public float ControlsFadeValue;
+
+    [Header("MainMenu")]
+
     public string MainMenuHeader;
+    public ControlsText MainMenuControls;
+
+    [Header("BuildYourSnake")]
+
     public string BuildYourSnakeHeader;
-    public string LeaderBoardHeader;
+    public ControlsText BuildYourSnakeControls;
 
     [Header("Play")]
 
@@ -25,7 +68,13 @@ public class MainPanel : MonoBehaviour
     public float MovementMultiplierUpdateTime;
     public GameObject LeaderboardPanel;
     public GameObject EntryPrefab;
+    public ControlsText PlayControls;
 
+    [Header("LeaderBoard")]
+
+    public string LeaderBoardHeader;
+    public ControlsText LeaderBoardControls;
+    
     private float _displayedScore;
 
     private void Awake()
@@ -38,6 +87,7 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
         Header.text = MainMenuHeader;
+        MainMenuControls.ApplyControls();
     }
 
     public void TransitionToBuildYourSnake()
@@ -45,6 +95,7 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
         Header.text = BuildYourSnakeHeader;
+        BuildYourSnakeControls.ApplyControls();
     }
 
     public void TransitionToPlay()
@@ -52,6 +103,7 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(true);
         LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
+        PlayControls.ApplyControls();
     }
 
     public void TransitionToLeaderBoard()
@@ -61,6 +113,7 @@ public class MainPanel : MonoBehaviour
         LeaderboardPanel.SetActive(true);
         UpdateHighscores();
         Header.text = LeaderBoardHeader;
+        LeaderBoardControls.ApplyControls();
     }
 
     private void UpdateHighscores()
@@ -105,6 +158,56 @@ public class MainPanel : MonoBehaviour
         if (!instant)
         {
             MovementMultiplierText.transform.DOPunchScale(Vector3.one * 0.1f * mutliplier, MovementMultiplierUpdateTime, 10, 0f);
+        }
+    }
+
+    public void ControlToggle(KeyCode keyCode, bool toggle)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.UpArrow:
+
+                if (UpControlText.text == string.Empty)
+                {
+                    break;
+                }
+
+                UpControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+                break;
+
+            case KeyCode.RightArrow:
+
+                if (RightControlText.text == string.Empty)
+                {
+                    break;
+                }
+
+                RightControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+                break;
+
+            case KeyCode.DownArrow:
+
+                if (DownControlText.text == string.Empty)
+                {
+                    break;
+                }
+
+                DownControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+                break;
+
+            case KeyCode.LeftArrow:
+
+                if (LeftControlText.text == string.Empty)
+                {
+                    break;
+                }
+
+                LeftControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+
+                break;
         }
     }
 

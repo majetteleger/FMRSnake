@@ -7,17 +7,17 @@ using System;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    public struct Button
+    public class Button
     {
-        public int Index;
         public Vector3 Direction;
+        public KeyCode KeyCode;
         public bool IsOn;
 
-        public Button(int index, Vector3 direction, bool isOn)
+        public Button(Vector3 direction, KeyCode keyCode)
         {
-            Index = index;
             Direction = direction;
-            IsOn = isOn;
+            KeyCode = keyCode;
+            IsOn = false;
         }
     }
 
@@ -94,10 +94,10 @@ public class Player : MonoBehaviour
     private BeatIndicator _beatIndicator;
 
     private Button[] _buttons = {
-        new Button(0, Vector2.left, false),
-        new Button(1, Vector2.up, false),
-        new Button(2, Vector2.right, false),
-        new Button(3, Vector2.down, false),
+        new Button(Vector2.left, KeyCode.LeftArrow),
+        new Button(Vector2.up, KeyCode.UpArrow),
+        new Button(Vector2.right, KeyCode.RightArrow),
+        new Button(Vector2.down, KeyCode.DownArrow),
     };
 
     private void Start()
@@ -120,96 +120,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        foreach (var button in _buttons)
         {
-            return;
+            if (Input.GetKeyDown(button.KeyCode))
+            {
+                button.IsOn = true;
+                MainPanel.Instance.ControlToggle(button.KeyCode, true);
+            }
+            else if (Input.GetKeyUp(button.KeyCode))
+            {
+                button.IsOn = false;
+                MainPanel.Instance.ControlToggle(button.KeyCode, false);
+            }
         }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            _buttons[1].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            _buttons[1].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _buttons[2].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            _buttons[2].IsOn = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            _buttons[3].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            _buttons[3].IsOn = false;
-        }
-
-        // DEBUG CONTROLS
-
-        /*if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = false;
-            _buttons[1].IsOn = true;
-            _buttons[2].IsOn = true;
-            _buttons[3].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            _buttons[0].IsOn = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            _buttons[0].IsOn = true;
-            _buttons[1].IsOn = false;
-            _buttons[2].IsOn = true;
-            _buttons[3].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            _buttons[1].IsOn = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _buttons[0].IsOn = true;
-            _buttons[1].IsOn = true;
-            _buttons[2].IsOn = false;
-            _buttons[3].IsOn = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            _buttons[2].IsOn = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            _buttons[0].IsOn = true;
-            _buttons[1].IsOn = true;
-            _buttons[2].IsOn = true;
-            _buttons[3].IsOn = false;
-        }
-        else if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            _buttons[3].IsOn = true;
-        }*/
     }
 
     private void OnTriggerEnter2D(Collider2D other)
