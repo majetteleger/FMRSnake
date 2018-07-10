@@ -92,8 +92,9 @@ MonoBehaviour:
     type: 2}
   DummySegmentPrefab: {fileID: 1619358785635866, guid: e6e33590af92aa947bdce501acbd7336,
     type: 2}
-  MoveTime: 0.5
+  MoveTime: 0.1
   MaxMovementMultipler: 10
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
   PlayerName: Phil
+  HasMoved: 0

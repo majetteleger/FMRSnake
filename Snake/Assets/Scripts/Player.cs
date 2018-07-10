@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
     public string PlayerName;
+    public bool HasMoved;
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
 
@@ -120,17 +121,37 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        foreach (var button in _buttons)
+        //foreach (var button in _buttons)
+        //{
+        //    if (Input.GetKeyDown(button.KeyCode))
+        //    {
+        //        button.IsOn = true;
+        //        MainPanel.Instance.ControlToggle(button.KeyCode, true);
+        //    }
+        //    else if (Input.GetKeyUp(button.KeyCode))
+        //    {
+        //        button.IsOn = false;
+        //        MainPanel.Instance.ControlToggle(button.KeyCode, false);
+        //    }
+        //}
+
+        if (MainPanel.Instance.BeatIndicator.IsHot && !HasMoved)
         {
-            if (Input.GetKeyDown(button.KeyCode))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                button.IsOn = true;
-                MainPanel.Instance.ControlToggle(button.KeyCode, true);
+                QueueMove(Vector3.up);
             }
-            else if (Input.GetKeyUp(button.KeyCode))
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                button.IsOn = false;
-                MainPanel.Instance.ControlToggle(button.KeyCode, false);
+                QueueMove(Vector3.down);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                QueueMove(Vector3.right);
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                QueueMove(Vector3.left);
             }
         }
     }
@@ -165,7 +186,10 @@ public class Player : MonoBehaviour
         {
             gridCell.Content = gameObject;
             _currentCell = gridCell;
-            MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+            if (MainPanel.Instance.BeatIndicator.Bar != _currentCell.ZoneModifier.Bar)
+            {
+                MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+            }
         }
 
     }
@@ -245,7 +269,8 @@ public class Player : MonoBehaviour
         MovementMultiplier = 1;
 
         _beatIndicator.CreateIndicator();
-        _beatIndicator.StartBeat();
+        _beatIndicator.StartMetronome();
+        //_beatIndicator.StartBeat();
     }
 
     public void FailMove()
@@ -280,6 +305,13 @@ public class Player : MonoBehaviour
 
     public void QueueMove(Vector3 direction)
     {
+        HasMoved = true;
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentBeat != null)
+        {
+            _beatIndicator.CurrentBeat.Light.color = Color.green;
+        }
+
         if (_moving)
         {
             _moveQueue.Enqueue(direction);
