@@ -123,7 +123,7 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateIndicator()
     {
-        var halfScreen = BeatsParent.GetComponent<RectTransform>().rect.width;
+        var halfScreen = MainPanel.Instance.GetComponent<RectTransform>().rect.width;
         var numberOfBeats = Bar.Beats.Count;
         float totalTimeOfBar = 0;
         for (int i = 0; i < Bar.Beats.Count; i++)

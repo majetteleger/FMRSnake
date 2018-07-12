@@ -70,10 +70,18 @@ public class MainPanel : MonoBehaviour
     public GameObject EntryPrefab;
     public ControlsText PlayControls;
 
+    [Header("PlayerNameEnter")]
+    public ControlsText PlayerNameEnterControls;
+    public ControlsText PlayerNameEnterConfirmControls;
+
     [Header("LeaderBoard")]
 
     public GameObject LeaderBoardSubPanel;
     public string LeaderBoardHeader;
+    public int TopDisplayedEntries;
+    public int DisplayedEntriesBeforePlayer;
+    public int DisplayedEntriesAfterPlayer;
+    public Text LeaderboardText;
     public ControlsText LeaderBoardControls;
     
     private float _displayedScore;
@@ -82,7 +90,7 @@ public class MainPanel : MonoBehaviour
     {
         Instance = this;
     }
-
+    
     public void TransitionToMainMenu()
     {
         PlaySubPanel.SetActive(false);
@@ -111,6 +119,11 @@ public class MainPanel : MonoBehaviour
         PlayControls.ApplyControls();
     }
 
+    public void TransitionToPlayerNameEnter()
+    {
+        PlayerNameEnterControls.ApplyControls();
+    }
+
     public void TransitionToLeaderBoard()
     {
         GridPlayground.Instance.ResetZones();
@@ -118,7 +131,6 @@ public class MainPanel : MonoBehaviour
         LeaderboardPanel.SetActive(true);
         Header.text = LeaderBoardHeader;
         LeaderBoardControls.ApplyControls();
-
         DisplayLeaderBoard();
     }
     
@@ -199,21 +211,56 @@ public class MainPanel : MonoBehaviour
         }
     }
 
-    public void AskForPlayerName()
-    {
-
-    }
-
-    public void ConfirmPlayerName()
-    {
-        var playerName = string.Empty;
-
-        MainManager.Instance.SaveScore(playerName);
-        DisplayLeaderBoard();
-    }
-
     private void DisplayLeaderBoard()
     {
+        var leaderboardString = string.Empty;
+        var currentPlayerLeaderboardIndex = MainManager.Instance.CurrentPlayerLeaderboardIndex;
+
+        for (var i = 0; i < TopDisplayedEntries && i < MainManager.Instance.LeaderBoard.Count; i++)
+        {
+            Mathf.Clamp(i, 0, MainManager.Instance.LeaderBoard.Count - 1);
+
+            var leaderBoardEntry = MainManager.Instance.LeaderBoard[i];
+            leaderboardString += string.Format("\n{3}{0}\t\t{1}\t\t{2}{3}", 
+                i + 1, 
+                leaderBoardEntry.DisplayName, 
+                leaderBoardEntry.Score,
+                i == currentPlayerLeaderboardIndex ? "***" : string.Empty
+            );
+        }
+        
+        var bot = currentPlayerLeaderboardIndex - DisplayedEntriesBeforePlayer;
+
+        if (bot <= TopDisplayedEntries)
+        {
+            bot = TopDisplayedEntries;
+        }
+        else
+        {
+            leaderboardString += "\n...";
+        }
+
+        var top = bot + DisplayedEntriesBeforePlayer + DisplayedEntriesAfterPlayer;
+
+        for (var i = bot; i < top && i < MainManager.Instance.LeaderBoard.Count; i++)
+        {
+            Mathf.Clamp(i, 0, MainManager.Instance.LeaderBoard.Count - 1);
+
+            var leaderBoardEntry = MainManager.Instance.LeaderBoard[i];
+            leaderboardString += string.Format("\n{3}{0}\t\t{1}\t\t{2}{3}", 
+                i + 1, 
+                leaderBoardEntry.DisplayName, 
+                leaderBoardEntry.Score,
+                i == currentPlayerLeaderboardIndex ? "***" : string.Empty
+            );
+        }
+
+        if (top < MainManager.Instance.LeaderBoard.Count)
+        {
+            leaderboardString += "\n...";
+        }
+        
+        LeaderboardText.text = leaderboardString;
     }
 
     private IEnumerator DoUpdateScore(int score)

@@ -5,86 +5,143 @@ using UnityEngine.UI;
 
 public class PlayerNamePanel : MonoBehaviour
 {
+    public static PlayerNamePanel Instance;
+
     private const string _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public Text[] CharacterSlots;
+    public CharacterSlot[] CharacterSlots;
 
     private int[] _characterSlotContentIndices;
     private int _currentlySelectedSlotIndex;
-    private bool _shown;
 
-    private void Update()
+    private void Awake()
     {
-        if(!_shown)
-        {
-            return;
-        }
+        Instance = this;
+    }
+    
+    private void OnEnable()
+    {
+        _characterSlotContentIndices = new int[CharacterSlots.Length];
+        _currentlySelectedSlotIndex = 0;
+        UpdateSelection();
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        foreach (var characterSlot in CharacterSlots)
         {
-            _characterSlotContentIndices[_currentlySelectedSlotIndex]--;
-
-            if (_characterSlotContentIndices[_currentlySelectedSlotIndex] < 0)
+            if (characterSlot.IsConfirm)
             {
-                _characterSlotContentIndices[_currentlySelectedSlotIndex] = _alphabet.Length - 1;
+                continue;
             }
 
-            UpdateCharacterSlot();
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _currentlySelectedSlotIndex++;
-
-            if (_currentlySelectedSlotIndex >= CharacterSlots.Length)
-            {
-                _currentlySelectedSlotIndex = 0;
-            }
-
-            UpdateSelection();
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            _characterSlotContentIndices[_currentlySelectedSlotIndex]++;
-
-            if (_characterSlotContentIndices[_currentlySelectedSlotIndex] >= _alphabet.Length)
-            {
-                _characterSlotContentIndices[_currentlySelectedSlotIndex] = 0;
-            }
-
-            UpdateCharacterSlot();
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _currentlySelectedSlotIndex--;
-
-            if(_currentlySelectedSlotIndex < 0)
-            {
-                _currentlySelectedSlotIndex = CharacterSlots.Length - 1;
-            }
-
-            UpdateSelection();
+            characterSlot.Character.text = "A";
         }
     }
-
-    public void Show()
+    
+    public void Input(KeyCode keyCode)
     {
-        _shown = true;
-    }
+        switch (keyCode)
+        {
+            case KeyCode.UpArrow:
 
-    public void Hide()
-    {
-        _shown = false;
+                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
+                {
+                    break;
+                }
+
+                _characterSlotContentIndices[_currentlySelectedSlotIndex]--;
+
+                if (_characterSlotContentIndices[_currentlySelectedSlotIndex] < 0)
+                {
+                    _characterSlotContentIndices[_currentlySelectedSlotIndex] = _alphabet.Length - 1;
+                }
+
+                UpdateCharacterSlot();
+
+                break;
+
+            case KeyCode.RightArrow:
+
+                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
+                {
+                    ConfirmName();
+                    break;
+                }
+
+                _currentlySelectedSlotIndex++;
+                
+                UpdateSelection();
+
+                break;
+
+            case KeyCode.DownArrow:
+
+                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
+                {
+                    break;
+                }
+
+                _characterSlotContentIndices[_currentlySelectedSlotIndex]++;
+
+                if (_characterSlotContentIndices[_currentlySelectedSlotIndex] >= _alphabet.Length)
+                {
+                    _characterSlotContentIndices[_currentlySelectedSlotIndex] = 0;
+                }
+
+                UpdateCharacterSlot();
+
+                break;
+
+            case KeyCode.LeftArrow:
+
+                if (_currentlySelectedSlotIndex == 0)
+                {
+                    break;
+                }
+
+                _currentlySelectedSlotIndex--;
+                
+                UpdateSelection();
+
+                break;
+        }
     }
 
     private void UpdateCharacterSlot()
     {
-        CharacterSlots[_currentlySelectedSlotIndex].text = _alphabet[_characterSlotContentIndices[_currentlySelectedSlotIndex]].ToString();
+        CharacterSlots[_currentlySelectedSlotIndex].Character.text = _alphabet[_characterSlotContentIndices[_currentlySelectedSlotIndex]].ToString();
     }
 
     private void UpdateSelection()
     {
+        if (CharacterSlots[_currentlySelectedSlotIndex].IsConfirm)
+        {
+            MainPanel.Instance.PlayerNameEnterConfirmControls.ApplyControls();
+        }
+        else
+        {
+            MainPanel.Instance.PlayerNameEnterControls.ApplyControls();
+        }
 
+        for (var i = 0; i < CharacterSlots.Length; i++)
+        {
+            CharacterSlots[i].Toggle(i == _currentlySelectedSlotIndex);
+        }
     }
 
+    private void ConfirmName()
+    {
+        var playerName = string.Empty;
 
+        foreach (var characterSlot in CharacterSlots)
+        {
+            if (characterSlot.IsConfirm)
+            {
+                continue;
+            }
+
+            playerName += characterSlot.Character.text;
+        }
+
+        MainManager.Instance.SaveScore(playerName);
+        MainManager.Instance.TransitionToLeaderBoard();
+    }
 }

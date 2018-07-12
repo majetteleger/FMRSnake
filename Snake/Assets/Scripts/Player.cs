@@ -201,17 +201,6 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        _playerCollider.enabled = false;
-        MainPanel.Instance.BeatIndicator.StopBeat();
-        MainPanel.Instance.AskForPlayerName();
-
-        StartCoroutine(DoDie());
-    }
-    
-    private IEnumerator DoDie()
-    {
-        yield return new WaitForSeconds(1);
-
         _gridPlayground.ClearAllCells();
 
         var foodObjects = FindObjectsOfType<Food>();
@@ -228,9 +217,11 @@ public class Player : MonoBehaviour
             Destroy(zoneIndicator.gameObject);
         }
 
-        MainManager.Instance.TransitionToLeaderBoard();
+        _playerCollider.enabled = false;
+        MainPanel.Instance.BeatIndicator.StopBeat();
+        MainManager.Instance.TransitionToPlayerEnterName();
     }
-
+    
     public void Destroy()
     {
         if (_lastSegment == null)

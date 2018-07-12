@@ -24,6 +24,7 @@ public class MainManager : MonoBehaviour
         MainMenu,
         BuildYourSnake,
         Play,
+        PlayerNameEnter,
         LeaderBoard
     }
 
@@ -43,15 +44,23 @@ public class MainManager : MonoBehaviour
     public MetroLine[] MetroLines;
     public GameObject MetroLinesContainer;
 
+    [Header("UI")]
+    public PlayerNamePanel PlayerNamePanel;
+
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
     public LeaderBoardEntry CurrentPlayerEntry { get; set; }
     public List<LeaderBoardEntry> LeaderBoard { get; set; }
 
+    public int CurrentPlayerLeaderboardIndex
+    {
+        get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
+    }
+
     private int _selectedLineIndex;
     private int _newLeaderBoardId;
-    
+
     private void Awake()
     {
         Instance = this;
@@ -135,11 +144,35 @@ public class MainManager : MonoBehaviour
             case GameState.Play:
 
                 // DEBUG
-                /*if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     Player.Die();
-                }*/
+                }
                 //
+
+                break;
+
+            case GameState.PlayerNameEnter:
+
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    PlayerNamePanel.Input(KeyCode.RightArrow);
+                }
+
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    PlayerNamePanel.Input(KeyCode.LeftArrow);
+                }
+
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    PlayerNamePanel.Input(KeyCode.UpArrow);
+                }
+
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    PlayerNamePanel.Input(KeyCode.DownArrow);
+                }
 
                 break;
 
@@ -185,17 +218,25 @@ public class MainManager : MonoBehaviour
         Player.StartGame();
     }
 
+    public void TransitionToPlayerEnterName()
+    {
+        CurrentState = GameState.PlayerNameEnter;
+        PlayerNamePanel.gameObject.SetActive(true);
+        MainPanel.Instance.TransitionToPlayerNameEnter();
+    }
+
     public void TransitionToLeaderBoard()
     {
         CurrentState = GameState.LeaderBoard;
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
+        PlayerNamePanel.gameObject.SetActive(false);
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
     }
-
+    
     public void ResetSnake()
     {
         if (Player != null)
@@ -217,12 +258,16 @@ public class MainManager : MonoBehaviour
         PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
 
         CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score);
-
+        LeaderBoard.Add(CurrentPlayerEntry);
+        LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
+        
         _newLeaderBoardId++;
     }
 
     private void LoadLeaderBoard()
     {
+        LeaderBoard.Clear();
+
         var currentId = 0;
         var currentIdString = currentId.ToString();
         var currentValue = PlayerPrefs.GetString(currentIdString);
