@@ -179,15 +179,11 @@ public class Player : MonoBehaviour
     {
         _playerCollider.enabled = false;
         MainPanel.Instance.BeatIndicator.StopBeat();
-        LogScoreToLeaderBoard();
+        MainPanel.Instance.AskForPlayerName();
+
         StartCoroutine(DoDie());
     }
-
-    private void LogScoreToLeaderBoard()
-    {
-        Leaderboard.Record(PlayerName, Score);
-    }
-
+    
     private IEnumerator DoDie()
     {
         yield return new WaitForSeconds(1);

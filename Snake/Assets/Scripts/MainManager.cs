@@ -7,6 +7,18 @@ using UnityEngine;
 
 public class MainManager : MonoBehaviour
 {
+    public class LeaderBoardEntry
+    {
+        public string DisplayName;
+        public int Score;
+
+        public LeaderBoardEntry(string displayName, int score)
+        {
+            DisplayName = displayName;
+            Score = score;
+        }
+    }
+    
     public enum GameState
     {
         MainMenu,
@@ -34,8 +46,11 @@ public class MainManager : MonoBehaviour
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
+    public LeaderBoardEntry CurrentPlayerEntry { get; set; }
+    public List<LeaderBoardEntry> LeaderBoard { get; set; }
 
     private int _selectedLineIndex;
+    private int _newLeaderBoardId;
     
     private void Awake()
     {
@@ -45,7 +60,8 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
-
+        LeaderBoard = new List<LeaderBoardEntry>();
+            
         _selectedLineIndex = 1;
         TransitionToMainMenu();
     }
@@ -119,10 +135,10 @@ public class MainManager : MonoBehaviour
             case GameState.Play:
 
                 // DEBUG
-                if (Input.GetKeyDown(KeyCode.Escape))
+                /*if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     Player.Die();
-                }
+                }*/
                 //
 
                 break;
@@ -146,6 +162,7 @@ public class MainManager : MonoBehaviour
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToMainMenu();
         ResetSnake();
+        LoadLeaderBoard();
     }
 
     public void TransitionToBuildYourSnake()
@@ -166,7 +183,6 @@ public class MainManager : MonoBehaviour
         MainPanel.Instance.TransitionToPlay();
 
         Player.StartGame();
-        //GridPlayground.ShowCells();
     }
 
     public void TransitionToLeaderBoard()
@@ -193,6 +209,36 @@ public class MainManager : MonoBehaviour
         var spawnPosition = FindNearestCellPosition(approximatePosition);
 
         Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
+    }
+    
+    public void SaveScore(string displayName)
+    {
+        var newValue = string.Format("{0}:{1}", displayName, Player.Score);
+        PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
+
+        CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score);
+
+        _newLeaderBoardId++;
+    }
+
+    private void LoadLeaderBoard()
+    {
+        var currentId = 0;
+        var currentIdString = currentId.ToString();
+        var currentValue = PlayerPrefs.GetString(currentIdString);
+
+        while (!string.IsNullOrEmpty(currentValue))
+        {
+            var values = currentValue.Split(':');
+            LeaderBoard.Add(new LeaderBoardEntry(values[0], int.Parse(values[1])));
+
+            currentId++;
+            currentIdString = currentId.ToString();
+            currentValue = PlayerPrefs.GetString(currentIdString);
+        }
+
+        LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
+        _newLeaderBoardId = currentId;
     }
 
     private void AddPlayer()

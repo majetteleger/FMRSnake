@@ -72,6 +72,7 @@ public class MainPanel : MonoBehaviour
 
     [Header("LeaderBoard")]
 
+    public GameObject LeaderBoardSubPanel;
     public string LeaderBoardHeader;
     public ControlsText LeaderBoardControls;
     
@@ -115,29 +116,12 @@ public class MainPanel : MonoBehaviour
         GridPlayground.Instance.ResetZones();
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
-        UpdateHighscores();
         Header.text = LeaderBoardHeader;
         LeaderBoardControls.ApplyControls();
+
+        DisplayLeaderBoard();
     }
-
-    private void UpdateHighscores()
-    {
-        var content = LeaderboardPanel.GetComponent<ScrollRect>().content;
-
-        for (int i = 0; i < content.childCount; i++)
-        {
-            Destroy(content.GetChild(i).gameObject);
-        }
-
-        for (int i = 0; i < Leaderboard.EntryCount; ++i)
-        {
-            var entry = Leaderboard.GetEntry(i);
-
-            var entryText = Instantiate(EntryPrefab, LeaderboardPanel.GetComponent<ScrollRect>().content).GetComponent<Text>();
-            entryText.text = entry.Name + ": " + entry.Score;
-        }
-    }
-
+    
     public void UpdateScore(int score, bool instant)
     {
         StopAllCoroutines();
@@ -213,6 +197,23 @@ public class MainPanel : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void AskForPlayerName()
+    {
+
+    }
+
+    public void ConfirmPlayerName()
+    {
+        var playerName = string.Empty;
+
+        MainManager.Instance.SaveScore(playerName);
+        DisplayLeaderBoard();
+    }
+
+    private void DisplayLeaderBoard()
+    {
     }
 
     private IEnumerator DoUpdateScore(int score)
