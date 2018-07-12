@@ -9,10 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17c05632b17078e45b46737cc968b600, type: 3}
-  m_Name: Fast
+  m_Name: GreenBar
   m_EditorClassIdentifier: 
   Beats:
+  - IsHigh: 1
+    Delay: 0.5
   - IsHigh: 0
     Delay: 0.5
-  - IsHigh: 1
+  - IsHigh: 0
     Delay: 0.5

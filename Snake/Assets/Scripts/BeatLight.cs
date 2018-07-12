@@ -16,4 +16,9 @@ public class BeatLight : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void ResetColor()
+    {
+        Light.color = Color.black;
+    }
 }
