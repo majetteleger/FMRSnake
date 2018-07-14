@@ -38,8 +38,8 @@ public class Metronome : MonoBehaviour {
         //    MainManager.Instance.Player.FailMove();
         //}
 
-        BeatIndicator.IsHot = false;
-        MainManager.Instance.Player.HasMoved = false;
+        /*BeatIndicator.IsHot = false;
+        MainManager.Instance.Player.HasMoved = false;*/
         
     }
 }

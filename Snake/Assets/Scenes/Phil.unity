@@ -4015,7 +4015,14 @@ MonoBehaviour:
   MaxZoneSpawned: 20
   ObstacleSpawnTime: 3
   MaxObstaclesSpawned: 40
-  ObstacleLifeTime: 10
+  ObstacleShapes:
+  - {fileID: 11400000, guid: 3061ac252930e5543b63ebfd8b23c26b, type: 2}
+  - {fileID: 11400000, guid: ca999cbe07417084986128e7555888f4, type: 2}
+  - {fileID: 11400000, guid: e2883fb6508e02d4883c36ea6fd84767, type: 2}
+  - {fileID: 11400000, guid: 6494bd600047f83418958c416e986774, type: 2}
+  - {fileID: 11400000, guid: 3ead1db50cd01c241ac77698afa05911, type: 2}
+  - {fileID: 11400000, guid: 366726c25fc5f004b8be6bf2e5e9ffaa, type: 2}
+  - {fileID: 11400000, guid: 1ae947184faaed84ba3300175bc66068, type: 2}
   _zones: []
 --- !u!4 &1943199895
 Transform:
