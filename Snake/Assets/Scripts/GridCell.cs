@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GridCell : MonoBehaviour
@@ -49,5 +51,61 @@ public class GridCell : MonoBehaviour
             _spriteRenderer.drawMode = SpriteDrawMode.Simple;
             _spriteRenderer.sprite = ObstacleSprite;
         }
+    }
+
+    public GridCell GetAdjacentCell(ObstacleShape.Direction direction)
+    {
+        var adjacentColliders = Physics2D.OverlapCircleAll(transform.position, GridPlayground.Instance.CellSize * 1.5f);
+
+        foreach (var adjacentCollider in adjacentColliders)
+        {
+            var adjacentCell = adjacentCollider.gameObject.GetComponent<GridCell>();
+
+            if (adjacentCell == null || adjacentCell == this)
+            {
+                continue;
+            }
+
+            switch (direction)
+            {
+                case ObstacleShape.Direction.Up:
+
+                    if (adjacentCell.transform.position.y > transform.position.y && Math.Abs(adjacentCell.transform.position.x - transform.position.x) < 0.1f)
+                    {
+                        return adjacentCell;
+                    }
+
+                    continue;
+
+                case ObstacleShape.Direction.Right:
+
+                    if (adjacentCell.transform.position.x > transform.position.x && Math.Abs(adjacentCell.transform.position.y - transform.position.y) < 0.1f)
+                    {
+                        return adjacentCell;
+                    }
+
+                    continue;
+
+                case ObstacleShape.Direction.Down:
+
+                    if (adjacentCell.transform.position.y < transform.position.y && Math.Abs(adjacentCell.transform.position.x - transform.position.x) < 0.1f)
+                    {
+                        return adjacentCell;
+                    }
+
+                    continue;
+
+                case ObstacleShape.Direction.Left:
+
+                    if (adjacentCell.transform.position.x < transform.position.x && Math.Abs(adjacentCell.transform.position.y - transform.position.y) < 0.1f)
+                    {
+                        return adjacentCell;
+                    }
+
+                    continue;
+            }
+        }
+
+        return null;
     }
 }

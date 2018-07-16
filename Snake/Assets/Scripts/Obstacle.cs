@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour {
-
-    public float LifeTime { get; set; }
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+public class Obstacle : MonoBehaviour
+{
+    public float LifeTime;
+    
+	void Update ()
+    {
 		if (LifeTime > 0)
         {
             LifeTime -= Time.deltaTime;
@@ -21,6 +16,8 @@ public class Obstacle : MonoBehaviour {
             {
                 GridPlayground.Instance.ObstaclesSpawned--;
                 Destroy(gameObject);
+
+                // SHOULD WE ALSO NOTIFY THE CELL THAT ITS CONTENT IS DESTROYED?
             }
         }
 	}

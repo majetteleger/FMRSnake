@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GridPlayground : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class GridPlayground : MonoBehaviour
 	public int MaxZoneSpawned;
     public float ObstacleSpawnTime;
     public int MaxObstaclesSpawned;
-    public int ObstacleLifeTime;
+    public ObstacleShape[] ObstacleShapes;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
     [SerializeField]
@@ -106,12 +107,12 @@ public class GridPlayground : MonoBehaviour
         }
     }
 	
-    private Obstacle SpawnObstacle(GridCell cell)
+    private void SpawnObstacle(GridCell cell)
     {
         var newObstacle = Instantiate(ObstaclePrefab, cell.transform);
         cell.Content = newObstacle;
 
-        return newObstacle.GetComponent<Obstacle>();
+        ObstaclesSpawned++;
     }
 
 	private Food SpawnFood(GridCell cell)
@@ -156,12 +157,24 @@ public class GridPlayground : MonoBehaviour
         //Debug.Log(aroundPlayer.Count);
 
         var cell = aroundPlayer[UnityEngine.Random.Range(0, aroundPlayer.Count)].GetComponent<GridCell>();
+        
+        var shape = ObstacleShapes[Random.Range(0, ObstacleShapes.Length)];
+        var newCell = cell;
+        var directionIndex = 0;
 
-        var newObstacle = SpawnObstacle(cell);
+        do
+        {
+            SpawnObstacle(newCell);
 
-        newObstacle.LifeTime = ObstacleLifeTime;
+            if (directionIndex >= shape.ShapeDirections.Length)
+            {
+                break;
+            }
+            
+            newCell = newCell.GetAdjacentCell(shape.ShapeDirections[directionIndex]);
+            directionIndex++;
 
-        ObstaclesSpawned++;
+        } while (newCell != null && newCell.Content == null);
     }
 
     private void TrySpawnZone()
