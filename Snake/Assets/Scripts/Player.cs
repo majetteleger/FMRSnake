@@ -255,7 +255,7 @@ public class Player : MonoBehaviour
         Score = 0;
         MovementMultiplier = 1;
 
-        _beatIndicator.CreateIndicator();
+        _beatIndicator.CreateIndicator(true);
         _beatIndicator.StartMetronome();
         //_beatIndicator.StartBeat();
     }

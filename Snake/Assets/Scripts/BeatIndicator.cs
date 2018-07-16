@@ -8,7 +8,7 @@ using System;
 public class BeatIndicator : MonoBehaviour {
 
     public Bar Bar;
-    public GameObject MetronomePrefab;
+    public Metronome Metronome;
     public GameObject BeatPrefab;
     public Transform BeatsParent;
     public float BeatSpeed;
@@ -21,8 +21,7 @@ public class BeatIndicator : MonoBehaviour {
     public BeatLight CurrentBeat { get; set; }
     public float BeatWindowPadding;
     public bool IsHot { get; set; }
-
-    private GameObject _metronome;
+    
     private float beatTimer;
     private List<BeatLight> _beatLights;
     private List<AudioSource> _beatSources;
@@ -79,22 +78,24 @@ public class BeatIndicator : MonoBehaviour {
 
     public void StartMetronome()
     {
-        _metronome = Instantiate(MetronomePrefab, transform);
-        _metronome.GetComponent<RectTransform>().sizeDelta = new Vector2(BeatsParent.GetComponent<RectTransform>().rect.size.y, BeatsParent.GetComponent<RectTransform>().rect.size.y);
-        _metronome.GetComponent<Metronome>().BeatIndicator = this;
+        var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
+        Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
+
+        Metronome.GetComponent<Metronome>().BeatIndicator = this;
+
         MoveMetronome();
     }
 
     private void MoveMetronome()
     {
-        _metronome.transform.DOMoveX(Camera.main.ViewportToScreenPoint(new Vector3(1, 0.9f, 10)).x, BeatSpeed).SetEase(Ease.Linear).OnComplete(ResetMetronome);
+        Metronome.transform.DOMoveX(Camera.main.ViewportToScreenPoint(new Vector3(1, 0.9f, 10)).x, BeatSpeed).SetEase(Ease.Linear).OnComplete(ResetMetronome);
     }
 
     private void ResetMetronome()
     {
-        var metronomePos = _metronome.GetComponent<RectTransform>().position;
+        var metronomePos = Metronome.GetComponent<RectTransform>().position;
         metronomePos.x = 0;
-        _metronome.GetComponent<RectTransform>().position = metronomePos;
+        Metronome.GetComponent<RectTransform>().position = metronomePos;
 
         for (int i = 0; i < _beatLights.Count; i++)
         {
@@ -117,11 +118,11 @@ public class BeatIndicator : MonoBehaviour {
         }
 
         CreateIndicator();
-        _metronome.transform.DOKill();
+        Metronome.transform.DOKill();
         ResetMetronome();
     }
 
-    public void CreateIndicator()
+    public void CreateIndicator(bool firstTime = false)
     {
         var halfScreen = MainPanel.Instance.GetComponent<RectTransform>().rect.width;
         var numberOfBeats = Bar.Beats.Count;
@@ -138,12 +139,19 @@ public class BeatIndicator : MonoBehaviour {
         for (int i = 0; i < Bar.Beats.Count; i++)
         {
             var beatLight = Instantiate(BeatLightPrefab, BeatsParent).GetComponent<BeatLight>();
+            
+            var xPos = (Bar.Beats[i].Delay * i / totalTimeOfBar * (Screen.width/2f));
 
-            beatLight.GetComponent<RectTransform>().sizeDelta = new Vector2(BeatsParent.GetComponent<RectTransform>().rect.size.y,BeatsParent.GetComponent<RectTransform>().rect.size.y);
-
-            var xPos = (Bar.Beats[i].Delay * i / totalTimeOfBar * BeatsParent.GetComponent<RectTransform>().rect.size.x) - BeatsParent.GetComponent<RectTransform>().rect.size.x / 2;
-
-            beatLight.GetComponent<RectTransform>().DOAnchorPosX(xPos, .3f);
+            if(firstTime)
+            {
+                var yPos = beatLight.GetComponent<RectTransform>().anchoredPosition.y;
+                beatLight.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
+            }
+            else
+            {
+                beatLight.GetComponent<RectTransform>().DOAnchorPosX(xPos, .3f);
+            }
+            
 
             beatLight.Light.color = STMYellow;
 
@@ -200,7 +208,7 @@ public class BeatIndicator : MonoBehaviour {
                 Destroy(_beatLights[i].gameObject);
             }
         }
-        Destroy(_metronome);
+        Destroy(Metronome);
         StopAllCoroutines();
     }
 }
