@@ -256,9 +256,8 @@ public class Player : MonoBehaviour
         MovementMultiplier = 1;
 
         _beatIndicator.CreatePassiveBeats();
-        _beatIndicator.CreateIndicator(true);
+        //_beatIndicator.CreateIndicator(true);
         _beatIndicator.StartMetronome();
-        //_beatIndicator.StartBeat();
     }
 
     public void FailMove()

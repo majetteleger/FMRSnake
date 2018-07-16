@@ -43,7 +43,7 @@ public class BeatIndicator : MonoBehaviour {
 
     private void MoveMetronome()
     {
-        Metronome.transform.DOMoveX(Camera.main.ViewportToScreenPoint(new Vector3(1, 0.9f, 10)).x, BeatSpeed).SetEase(Ease.Linear).OnComplete(ResetMetronome);
+        Metronome.transform.DOMoveX(_passiveBeats[_passiveBeats.Count - 1].GetComponent<RectTransform>().anchoredPosition.x, BeatSpeed).SetEase(Ease.Linear).OnComplete(ResetMetronome);
     }
 
     private void ResetMetronome()
@@ -52,16 +52,18 @@ public class BeatIndicator : MonoBehaviour {
         metronomePos.x = 0;
         Metronome.GetComponent<RectTransform>().position = metronomePos;
 
-        for (int i = 0; i < _beatLights.Count; i++)
-        {
-            _beatLights[i].ResetColor();
-        }
+        //for (int i = 0; i < _beatLights.Count; i++)
+        //{
+        //    _beatLights[i].ResetColor();
+        //}
 
         MoveMetronome();
     }
 
     public void CreatePassiveBeats()
     {
+        _passiveBeats = new List<PassiveBeat>();
+
         for (int i = 0; i < 9; i++)
         {
             if (i == 0)
