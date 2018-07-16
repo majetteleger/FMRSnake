@@ -9,72 +9,27 @@ public class BeatIndicator : MonoBehaviour {
 
     public Bar Bar;
     public Metronome Metronome;
+    public GameObject PassiveBeatPrefab;
     public GameObject BeatPrefab;
     public Transform BeatsParent;
     public float BeatSpeed;
-    public AudioClip LowBeat;
-    public AudioClip HighBeat;
     public GameObject BeatLightPrefab;
-    public Color STMYellow;
 
-    public Color STMBlue;
-    public BeatLight CurrentBeat { get; set; }
-    public float BeatWindowPadding;
+    public UIBeat CurrentBeat { get; set; }
     public bool IsHot { get; set; }
-    
-    private float beatTimer;
-    private List<BeatLight> _beatLights;
+
+    private List<PassiveBeat> _passiveBeats;
+    private List<ActiveBeat> _beatLights;
     private List<AudioSource> _beatSources;
-    private float wtv;
 
     // Use this for initialization
     void Start () {
-        beatTimer = Bar.Beats[0].Delay;
-
-        _beatSources = new List<AudioSource>();
-        _beatSources.Add(gameObject.AddComponent<AudioSource>());
-        _beatSources[0].clip = LowBeat;
-        _beatSources.Add(gameObject.AddComponent<AudioSource>());
-        _beatSources[1].clip = HighBeat;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //if (beatTimer <= (Bar.Beats[beatIndex].Delay / 2))
-        //{
-        //    IsHot = true;
-        //}
-        //else if (beatTimer <= Bar.Beats[beatIndex].Delay - (Bar.Beats[beatIndex].Delay / 2))
-        //{
-        //    IsHot = false;
-        //    MainManager.Instance.Player.HasMoved = false;
-        //}
+    void Update() {
 
-        //if (beatTimer > 0)
-        //{
-        //    beatTimer -= Time.deltaTime;
-
-        //    if (beatTimer <= 0)
-        //    {
-        //        _beatSources[0].Play();
-        //        beatIndex++;
-
-        //        if (beatIndex > Bar.Beats.Count - 1)
-        //        {
-        //            beatIndex = 0;
-        //            SpawnMetronome();
-        //        }
-
-        //        beatTimer = Bar.Beats[beatIndex].Delay;
-        //    }
-        //}
 	}
-
-    public void Play()
-    {
-        _beatSources[0].Play();
-    }
 
     public void StartMetronome()
     {
@@ -83,7 +38,7 @@ public class BeatIndicator : MonoBehaviour {
 
         Metronome.GetComponent<Metronome>().BeatIndicator = this;
 
-        MoveMetronome();
+        ResetMetronome();
     }
 
     private void MoveMetronome()
@@ -103,6 +58,24 @@ public class BeatIndicator : MonoBehaviour {
         }
 
         MoveMetronome();
+    }
+
+    public void CreatePassiveBeats()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            if (i == 0)
+            {
+                continue;
+            }
+
+            var passiveBeat = Instantiate(PassiveBeatPrefab, transform).GetComponent<PassiveBeat>(); 
+            _passiveBeats.Add(passiveBeat);
+            var yPos = 0;
+            var xPos = ((Screen.width / 9) * i) - Screen.width/2;
+
+            passiveBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
+        }
     }
 
     public void UpdateIndicator(Bar newBar)
@@ -134,11 +107,11 @@ public class BeatIndicator : MonoBehaviour {
 
         BeatSpeed = totalTimeOfBar * 2f;
 
-        _beatLights = new List<BeatLight>();
+        _beatLights = new List<ActiveBeat>();
 
         for (int i = 0; i < Bar.Beats.Count; i++)
         {
-            var beatLight = Instantiate(BeatLightPrefab, BeatsParent).GetComponent<BeatLight>();
+            var beatLight = Instantiate(BeatLightPrefab, BeatsParent).GetComponent<ActiveBeat>();
             
             var xPos = (Bar.Beats[i].Delay * i / totalTimeOfBar * (Screen.width/2f));
 
@@ -153,62 +126,9 @@ public class BeatIndicator : MonoBehaviour {
             }
             
 
-            beatLight.Light.color = STMYellow;
+            //beatLight.Light.color = STMYellow;
 
             _beatLights.Add(beatLight);
         }
-    }
-
-    public void StartBeat()
-    {
-        //StartCoroutine(Beat());
-    }
-
-    private IEnumerator Beat()
-    {
-        for (var i = 0; i < Bar.Beats.Count; i++)
-        {
-            yield return new WaitForSeconds(Bar.Beats[i].Delay);
-
-            IsHot = true;
-
-            yield return new WaitForSeconds(BeatWindowPadding);
-
-            if (!Bar.Beats[i].IsHigh)
-            {
-                _beatSources[0].Play();
-            }
-            else
-            {
-                _beatSources[1].Play();
-            }
-
-            yield return new WaitForSeconds(BeatWindowPadding);
-
-            IsHot = false;
-        }
-
-        Debug.Log(wtv);
-        wtv = 0f;
-        StartCoroutine(Beat());
-
-    }
-
-    private void ResetLight(BeatLight beatLight)
-    {
-        beatLight.Light.DOColor(STMYellow, .1f);
-    }
-
-    public void StopBeat()
-    {
-        if (_beatLights.Count > 0)
-        {
-            for (int i = 0; i < _beatLights.Count; i++)
-            {
-                Destroy(_beatLights[i].gameObject);
-            }
-        }
-        Destroy(Metronome);
-        StopAllCoroutines();
     }
 }

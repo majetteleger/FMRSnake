@@ -218,7 +218,7 @@ public class Player : MonoBehaviour
         }
 
         _playerCollider.enabled = false;
-        MainPanel.Instance.BeatIndicator.StopBeat();
+        //MainPanel.Instance.BeatIndicator.StopBeat();
         MainManager.Instance.TransitionToPlayerEnterName();
     }
     
@@ -255,6 +255,7 @@ public class Player : MonoBehaviour
         Score = 0;
         MovementMultiplier = 1;
 
+        _beatIndicator.CreatePassiveBeats();
         _beatIndicator.CreateIndicator(true);
         _beatIndicator.StartMetronome();
         //_beatIndicator.StartBeat();
@@ -296,7 +297,12 @@ public class Player : MonoBehaviour
 
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentBeat != null)
         {
-            _beatIndicator.CurrentBeat.Light.color = Color.green;
+            if (_beatIndicator.CurrentBeat is ActiveBeat)
+            {
+                var activeBeat = _beatIndicator.CurrentBeat as ActiveBeat;
+                activeBeat.Light.color = Color.green;
+            }
+
         }
 
         if (_moving)

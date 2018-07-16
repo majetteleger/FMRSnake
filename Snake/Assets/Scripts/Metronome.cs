@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Metronome : MonoBehaviour {
 
-    public BeatIndicator BeatIndicator { get; set; }
+    public BeatIndicator BeatIndicator;
+
 
 	// Use this for initialization
 	void Start () {
@@ -13,20 +14,31 @@ public class Metronome : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (BeatIndicator.CurrentBeat != null && !BeatIndicator.CurrentBeat.HasPlayed)
+        {
+            if (Vector2.Distance(GetComponent<RectTransform>().anchoredPosition, BeatIndicator.CurrentBeat.GetComponent<RectTransform>().anchoredPosition) <= Mathf.Epsilon)
+            {
+                BeatIndicator.CurrentBeat.PlayBeat();
+                BeatIndicator.CurrentBeat.HasPlayed = true;
+            }
+        }
 	}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var beatLight = other.GetComponent<BeatLight>();
+        var activeBeat = other.GetComponent<ActiveBeat>();
+        var passiveBeat = other.GetComponent<PassiveBeat>();
 
-        if (beatLight != null)
+        if (activeBeat != null)
         {
-            beatLight.Light.color = Color.red;
-            BeatIndicator.Play();
+            activeBeat.Light.color = Color.red;
             BeatIndicator.IsHot = true;
             Debug.Log("ON");
-            BeatIndicator.CurrentBeat = beatLight;
+            BeatIndicator.CurrentBeat = activeBeat;
+        }
+        else if (passiveBeat != null)
+        {
+            BeatIndicator.CurrentBeat = passiveBeat;
         }
     }
 

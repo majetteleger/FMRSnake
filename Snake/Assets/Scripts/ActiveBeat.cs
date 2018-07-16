@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BeatLight : MonoBehaviour {
+public class ActiveBeat : UIBeat {
 
     public Image Light;
 
