@@ -5,12 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Bar", menuName = "Bar")]
 public class Bar : ScriptableObject
 {
-    public List<Beat> Beats;
+    public bool[] Beats = new bool[8];
 }
 
 [System.Serializable]
 public struct Beat
 {
-    public bool IsHigh;
-    public float Delay;
+    
 }

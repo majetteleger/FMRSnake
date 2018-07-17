@@ -4,13 +4,4 @@ using UnityEngine;
 
 public class PassiveBeat : UIBeat {
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

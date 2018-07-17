@@ -188,7 +188,7 @@ public class Player : MonoBehaviour
             _currentCell = gridCell;
             if (MainPanel.Instance.BeatIndicator.Bar != _currentCell.ZoneModifier.Bar)
             {
-                MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+                MainPanel.Instance.BeatIndicator.UpdateBar(_currentCell.ZoneModifier.Bar);
             }
         }
 
@@ -256,7 +256,7 @@ public class Player : MonoBehaviour
         MovementMultiplier = 1;
 
         _beatIndicator.CreatePassiveBeats();
-        //_beatIndicator.CreateIndicator(true);
+        _beatIndicator.CreateActiveBeats();
         _beatIndicator.StartMetronome();
     }
 

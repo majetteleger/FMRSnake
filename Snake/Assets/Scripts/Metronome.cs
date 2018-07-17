@@ -16,7 +16,7 @@ public class Metronome : MonoBehaviour {
 	void Update () {
         if (BeatIndicator.CurrentBeat != null && !BeatIndicator.CurrentBeat.HasPlayed)
         {
-            if (Vector2.Distance(GetComponent<RectTransform>().anchoredPosition, BeatIndicator.CurrentBeat.GetComponent<RectTransform>().anchoredPosition) <= Mathf.Epsilon)
+            if (Vector2.Distance(GetComponent<RectTransform>().anchoredPosition, BeatIndicator.CurrentBeat.GetComponent<RectTransform>().anchoredPosition) <= 5)
             {
                 BeatIndicator.CurrentBeat.PlayBeat();
                 BeatIndicator.CurrentBeat.HasPlayed = true;
@@ -44,8 +44,14 @@ public class Metronome : MonoBehaviour {
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        BeatIndicator.IsHot = false;
-        MainManager.Instance.Player.HasMoved = false;
-        Debug.Log("OFF");
+        var activeBeat = other.GetComponent<ActiveBeat>();
+
+        if (activeBeat != null)
+        {
+            BeatIndicator.IsHot = false;
+            MainManager.Instance.Player.HasMoved = false;
+            Debug.Log("OFF");
+        }
+
     }
 }
