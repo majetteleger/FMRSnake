@@ -25,21 +25,15 @@ public class Metronome : MonoBehaviour {
             beatLight.Light.color = Color.red;
             BeatIndicator.Play();
             BeatIndicator.IsHot = true;
+            Debug.Log("ON");
             BeatIndicator.CurrentBeat = beatLight;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        //var beatLight = other.GetComponent<BeatLight>();
-
-        //if (beatLight.Light.color == Color.red)
-        //{
-        //    MainManager.Instance.Player.FailMove();
-        //}
-
-        /*BeatIndicator.IsHot = false;
-        MainManager.Instance.Player.HasMoved = false;*/
-        
+        BeatIndicator.IsHot = false;
+        MainManager.Instance.Player.HasMoved = false;
+        Debug.Log("OFF");
     }
 }
