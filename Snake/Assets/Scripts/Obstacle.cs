@@ -5,8 +5,10 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
     public float LifeTime;
+
+    public GridCell Cell { get; set; }
     
-	void Update ()
+    void Update ()
     {
 		if (LifeTime > 0)
         {
@@ -15,9 +17,8 @@ public class Obstacle : MonoBehaviour
             if (LifeTime <= 0)
             {
                 GridPlayground.Instance.ObstaclesSpawned--;
+                Cell.Content = null;
                 Destroy(gameObject);
-
-                // SHOULD WE ALSO NOTIFY THE CELL THAT ITS CONTENT IS DESTROYED?
             }
         }
 	}

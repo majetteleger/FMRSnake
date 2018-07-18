@@ -24,7 +24,6 @@ public class MainManager : MonoBehaviour
         MainMenu,
         BuildYourSnake,
         Play,
-        PlayerNameEnter,
         LeaderBoard
     }
 
@@ -52,6 +51,7 @@ public class MainManager : MonoBehaviour
     public GridPlayground GridPlayground { get; set; }
     public LeaderBoardEntry CurrentPlayerEntry { get; set; }
     public List<LeaderBoardEntry> LeaderBoard { get; set; }
+    public string CurrentPlayerName { get; set; }
 
     public int CurrentPlayerLeaderboardIndex
     {
@@ -121,41 +121,6 @@ public class MainManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    AddPlayer();
-                }
-
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    RemovePlayer();
-                }
-
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    TransitionToPlay();
-                }
-
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    TransitionToMainMenu();
-                }
-
-                break;
-
-            case GameState.Play:
-
-                // DEBUG
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    Player.Die();
-                }
-                //
-
-                break;
-
-            case GameState.PlayerNameEnter:
-
-                if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
                     PlayerNamePanel.Input(KeyCode.RightArrow);
                 }
 
@@ -176,6 +141,17 @@ public class MainManager : MonoBehaviour
 
                 break;
 
+            case GameState.Play:
+
+                // DEBUG
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    Player.Die();
+                }
+                //
+
+                break;
+                
             case GameState.LeaderBoard:
 
                 if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -201,11 +177,18 @@ public class MainManager : MonoBehaviour
     public void TransitionToBuildYourSnake()
     {
         CurrentState = GameState.BuildYourSnake;
-        Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
+        //Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
+        PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
 
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
+
+        for (var i = 0; i < 3; i++)
+        {
+            Player.QueueGrow();
+            Player.QueueMove(Vector3.right);
+        }
     }
 
     public void TransitionToPlay()
@@ -214,24 +197,18 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(false);
         MainPanel.Instance.TransitionToPlay();
-
+        PlayerNamePanel.gameObject.SetActive(false);
         Player.StartGame();
     }
-
-    public void TransitionToPlayerEnterName()
-    {
-        CurrentState = GameState.PlayerNameEnter;
-        PlayerNamePanel.gameObject.SetActive(true);
-        MainPanel.Instance.TransitionToPlayerNameEnter();
-    }
-
+    
     public void TransitionToLeaderBoard()
     {
         CurrentState = GameState.LeaderBoard;
+        SaveScore(CurrentPlayerName);
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
-        PlayerNamePanel.gameObject.SetActive(false);
+        
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
@@ -284,19 +261,6 @@ public class MainManager : MonoBehaviour
 
         LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
         _newLeaderBoardId = currentId;
-    }
-
-    private void AddPlayer()
-    {
-        Player.Grow();
-        Player.QueueMove(Vector3.right);
-
-        //
-    }
-
-    private void RemovePlayer()
-    {
-        //
     }
     
     private void UpdateSelectedLine(bool off = false)

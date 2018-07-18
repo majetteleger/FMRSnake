@@ -24,6 +24,8 @@ public class GridPlayground : MonoBehaviour
 	public int MaxZoneSpawned;
     public float ObstacleSpawnTime;
     public int MaxObstaclesSpawned;
+    public float AroundPlayerThreshold;
+    public float ClosePlayerThreshold;
     public ObstacleShape[] ObstacleShapes;
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
@@ -111,6 +113,7 @@ public class GridPlayground : MonoBehaviour
     {
         var newObstacle = Instantiate(ObstaclePrefab, cell.transform);
         cell.Content = newObstacle;
+        newObstacle.GetComponent<Obstacle>().Cell = cell;
 
         ObstaclesSpawned++;
     }
@@ -141,21 +144,12 @@ public class GridPlayground : MonoBehaviour
         {
             return;
         }
-
-        // yea i know it's long...
-        var aroundPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, 5).Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null).ToList();
-        var closeToPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, 1).Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null).ToArray();
-
-        for (int i = 0; i < closeToPlayer.Length; i++)
-        {
-            if (aroundPlayer.Contains(closeToPlayer[i]))
-            {
-                aroundPlayer.Remove(closeToPlayer[i]);
-            }
-        }
-
-        //Debug.Log(aroundPlayer.Count);
-
+        
+        var aroundPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, AroundPlayerThreshold)
+            .Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null)
+            .Where(x => Vector2.Distance(x.transform.position, MainManager.Instance.Player.transform.position) >= ClosePlayerThreshold)
+            .ToList();
+        
         var cell = aroundPlayer[UnityEngine.Random.Range(0, aroundPlayer.Count)].GetComponent<GridCell>();
         
         var shape = ObstacleShapes[Random.Range(0, ObstacleShapes.Length)];
@@ -166,7 +160,7 @@ public class GridPlayground : MonoBehaviour
         {
             SpawnObstacle(newCell);
 
-            if (directionIndex >= shape.ShapeDirections.Length)
+            if (directionIndex >= shape.ShapeDirections.Length || Vector2.Distance(newCell.transform.position, MainManager.Instance.Player.transform.position) < ClosePlayerThreshold)
             {
                 break;
             }

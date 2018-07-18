@@ -112,9 +112,13 @@ public class PlayerNamePanel : MonoBehaviour
 
     private void UpdateSelection()
     {
-        if (CharacterSlots[_currentlySelectedSlotIndex].IsConfirm)
+        if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
         {
             MainPanel.Instance.PlayerNameEnterConfirmControls.ApplyControls();
+        }
+        else if(_currentlySelectedSlotIndex == 0)
+        {
+            MainPanel.Instance.PlayerNameEnterLeftControls.ApplyControls();
         }
         else
         {
@@ -141,7 +145,7 @@ public class PlayerNamePanel : MonoBehaviour
             playerName += characterSlot.Character.text;
         }
 
-        MainManager.Instance.SaveScore(playerName);
-        MainManager.Instance.TransitionToLeaderBoard();
+        MainManager.Instance.CurrentPlayerName = playerName;
+        MainManager.Instance.TransitionToPlay();
     }
 }

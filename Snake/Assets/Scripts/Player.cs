@@ -217,9 +217,16 @@ public class Player : MonoBehaviour
             Destroy(zoneIndicator.gameObject);
         }
 
+        var obstacles = FindObjectsOfType<Obstacle>();
+
+        foreach (var obstacle in obstacles)
+        {
+            Destroy(obstacle.gameObject);
+        }
+
         _playerCollider.enabled = false;
         MainPanel.Instance.BeatIndicator.StopBeat();
-        MainManager.Instance.TransitionToPlayerEnterName();
+        MainManager.Instance.TransitionToLeaderBoard();
     }
     
     public void Destroy()
@@ -328,17 +335,14 @@ public class Player : MonoBehaviour
         LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
-        var movement = transform.DOMove(playerMoveDestination, MoveTime);
+        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
 
         _headSegment.Move(playerMoveDestination);
 
-        if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
-        {
-            var cameraMoveDestination = playerMoveDestination;
-            cameraMoveDestination.z = -10f;
+        var cameraMoveDestination = playerMoveDestination;
+        cameraMoveDestination.z = -10f;
 
-            Camera.main.transform.DOMove(cameraMoveDestination, MoveTime);
-        }
+        Camera.main.transform.DOMove(cameraMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
 
         movement.onComplete += MovementCallback;
     }
@@ -375,7 +379,7 @@ public class Player : MonoBehaviour
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-            newDummySegment.Initialize(newSegment.PreviouSegment, newSegment, i, IntermediateSegments, MoveTime);
+            newDummySegment.Initialize(newSegment.PreviouSegment, newSegment, i, IntermediateSegments, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
             newDummySegment.transform.SetParent(_segmentsContainer, true);
 
             newSegment.FrontDummySegments[i] = newDummySegment;
