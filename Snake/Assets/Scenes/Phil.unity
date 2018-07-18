@@ -2486,6 +2486,7 @@ MonoBehaviour:
   Tempo: 120
   BeatLightPrefab: {fileID: 1129263122999832, guid: 35156a2da395378408ff98d8a9323ae3,
     type: 2}
+  _metronomeStartPos: {x: 0, y: 0}
 --- !u!114 &1086401354
 MonoBehaviour:
   m_ObjectHideFlags: 0

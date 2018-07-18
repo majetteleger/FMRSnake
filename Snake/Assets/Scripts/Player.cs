@@ -268,40 +268,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool AttemptMove()
-    {
-        var offButtons = new List<Button>();
-
-        for (var i = 0; i < _buttons.Length; i++)
-        {
-            if (!_buttons[i].IsOn)
-            {
-                offButtons.Add(_buttons[i]);
-            }
-        }
-
-        if (offButtons.Count == 1)
-        {
-            QueueMove(offButtons[0].Direction);
-
-            return true;
-        }
-
-        return false;
-    }
-
     public void QueueMove(Vector3 direction)
     {
         HasMoved = true;
-
-        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentBeat != null)
+                                        
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
-            if (_beatIndicator.CurrentBeat is ActiveBeat)
-            {
-                var activeBeat = _beatIndicator.CurrentBeat as ActiveBeat;
-                activeBeat.Light.color = Color.green;
-            }
-
+            _beatIndicator.CurrentActiveBeat.Light.color = Color.green;
+            _beatIndicator.CurrentActiveBeat.Activated = true;
         }
 
         if (_moving)

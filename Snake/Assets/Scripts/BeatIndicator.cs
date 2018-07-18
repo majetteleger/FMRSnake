@@ -14,10 +14,11 @@ public class BeatIndicator : MonoBehaviour {
     public float Tempo;
     public GameObject BeatLightPrefab;
 
-    public UIBeat CurrentBeat { get; set; }
+    public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
 
     private Vector2 _metronomeStartPos;
+    private float _halfDistance;
     private List<PassiveBeat> _passiveBeats;
     private List<ActiveBeat> _activeBeats;
     private List<AudioSource> _beatSources;
@@ -43,7 +44,7 @@ public class BeatIndicator : MonoBehaviour {
 
     private void MoveMetronome()
     {
-        Metronome.GetComponent<RectTransform>().DOAnchorPosX(_passiveBeats[_passiveBeats.Count - 1].GetComponent<RectTransform>().anchoredPosition.x, Tempo / 60 * 2).SetEase(Ease.Linear).OnComplete(ResetMetronome);
+        Metronome.GetComponent<RectTransform>().DOAnchorPosX(_passiveBeats[_passiveBeats.Count - 1].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance, Tempo / 60 * 2).SetEase(Ease.Linear).OnComplete(ResetMetronome);
     }
 
     private void ResetMetronome()
@@ -57,10 +58,11 @@ public class BeatIndicator : MonoBehaviour {
             _passiveBeats[i].HasPlayed = false;
         }
 
-        //for (int i = 0; i < _beatLights.Count; i++)
-        //{
-        //    _beatLights[i].ResetColor();
-        //}
+        for (int i = 0; i < _activeBeats.Count; i++)
+        {
+            _activeBeats[i].ResetColor();
+            _activeBeats[i].HasPlayed = false;
+        }
 
         MoveMetronome();
     }
@@ -77,15 +79,25 @@ public class BeatIndicator : MonoBehaviour {
 
             if (i == 0)
             {
-                _metronomeStartPos = new Vector2(xPos, yPos);
                 continue;
             }
 
             var passiveBeat = Instantiate(PassiveBeatPrefab, transform).GetComponent<PassiveBeat>();
             _passiveBeats.Add(passiveBeat);
+            passiveBeat.name = "PassiveBeat " + (i - 1).ToString();
 
             passiveBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
         }
+
+        SetMetronomeStartingPos();
+    }
+
+    private void SetMetronomeStartingPos()
+    {
+        var yPos = 0;
+        var xPos = - Screen.width / 2;
+        _halfDistance = (Vector2.Distance(_passiveBeats[4].GetComponent<RectTransform>().anchoredPosition, _passiveBeats[5].GetComponent<RectTransform>().anchoredPosition)) / 2;
+        _metronomeStartPos = new Vector2(xPos + _halfDistance, yPos);
     }
 
     public void UpdateBar(Bar newBar)
@@ -122,12 +134,12 @@ public class BeatIndicator : MonoBehaviour {
                     _activeBeats.Add(activeBeat);
                 }
                 else // this is an OFFBEAT
-                {
-                    //var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
-                    //var yPos = 0;
-                    //var xPos = _passiveBeats[i + _passiveBeats.Count / 2].GetComponent<RectTransform>().anchoredPosition.x + (Vector2.Distance(_passiveBeats[i + _passiveBeats.Count / 2].GetComponent<RectTransform>().anchoredPosition, _passiveBeats[(i + 1) + _passiveBeats.Count / 2].GetComponent<RectTransform>().anchoredPosition)) / 2;
-                    //activeBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
-                    //_activeBeats.Add(activeBeat);
+                { 
+                    var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+                    var yPos = 0;
+                    var xPos = _passiveBeats[Mathf.FloorToInt(i / 2) + 4].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
+                    activeBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
+                    _activeBeats.Add(activeBeat);
                 }
             }
         }
