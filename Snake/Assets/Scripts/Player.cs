@@ -188,7 +188,7 @@ public class Player : MonoBehaviour
             _currentCell = gridCell;
             if (MainPanel.Instance.BeatIndicator.Bar != _currentCell.ZoneModifier.Bar)
             {
-                MainPanel.Instance.BeatIndicator.UpdateIndicator(_currentCell.ZoneModifier.Bar);
+                MainPanel.Instance.BeatIndicator.UpdateBar(_currentCell.ZoneModifier.Bar);
             }
         }
 
@@ -262,9 +262,9 @@ public class Player : MonoBehaviour
         Score = 0;
         MovementMultiplier = 1;
 
-        _beatIndicator.CreateIndicator(true);
+        _beatIndicator.CreatePassiveBeats();
+        _beatIndicator.CreateActiveBeats();
         _beatIndicator.StartMetronome();
-        //_beatIndicator.StartBeat();
     }
 
     public void FailMove()
@@ -301,9 +301,9 @@ public class Player : MonoBehaviour
     {
         HasMoved = true;
 
-        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentBeat != null)
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
-            _beatIndicator.CurrentBeat.Light.color = Color.green;
+            _beatIndicator.CurrentActiveBeat.Light.color = Color.green;
         }
 
         if (_moving)
