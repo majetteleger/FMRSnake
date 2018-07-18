@@ -81,7 +81,7 @@ public class MainManager : MonoBehaviour
         {
             case GameState.MainMenu:
 
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
                 {
                     _selectedLineIndex++;
 
@@ -93,7 +93,7 @@ public class MainManager : MonoBehaviour
                     UpdateSelectedLine();
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
                 {
                     _selectedLineIndex--;
 
@@ -105,12 +105,12 @@ public class MainManager : MonoBehaviour
                     UpdateSelectedLine();
                 }
 
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     TransitionToBuildYourSnake();
                 }
 
-                if (Input.GetKeyDown(KeyCode.DownArrow))
+                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
                 {
                     TransitionToLeaderBoard();
                 }
@@ -119,22 +119,22 @@ public class MainManager : MonoBehaviour
 
             case GameState.BuildYourSnake:
 
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
                 {
                     PlayerNamePanel.Input(KeyCode.RightArrow);
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
                 {
                     PlayerNamePanel.Input(KeyCode.LeftArrow);
                 }
 
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     PlayerNamePanel.Input(KeyCode.UpArrow);
                 }
 
-                if (Input.GetKeyDown(KeyCode.DownArrow))
+                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
                 {
                     PlayerNamePanel.Input(KeyCode.DownArrow);
                 }
@@ -154,7 +154,7 @@ public class MainManager : MonoBehaviour
                 
             case GameState.LeaderBoard:
 
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     TransitionToMainMenu();
                 }
