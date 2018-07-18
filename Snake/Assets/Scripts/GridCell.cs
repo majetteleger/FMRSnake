@@ -23,12 +23,7 @@ public class GridCell : MonoBehaviour
         ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
         Modify();
     }
-
-    private void Update()
-    {
-        
-    }
-
+    
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject == Content)

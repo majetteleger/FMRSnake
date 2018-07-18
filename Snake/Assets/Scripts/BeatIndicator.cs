@@ -100,6 +100,11 @@ public class BeatIndicator : MonoBehaviour {
         _metronomeStartPos = new Vector2(xPos + _halfDistance, yPos);
     }
 
+    public void StopBeat()
+    {
+        Metronome.transform.DOKill();
+    }
+
     public void UpdateBar(Bar newBar)
     {
         Bar = newBar;

@@ -72,6 +72,7 @@ public class MainPanel : MonoBehaviour
 
     [Header("PlayerNameEnter")]
     public ControlsText PlayerNameEnterControls;
+    public ControlsText PlayerNameEnterLeftControls;
     public ControlsText PlayerNameEnterConfirmControls;
 
     [Header("LeaderBoard")]
@@ -104,7 +105,7 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
         Header.text = BuildYourSnakeHeader;
-        BuildYourSnakeControls.ApplyControls();
+        PlayerNameEnterLeftControls.ApplyControls();
     }
 
     public void TransitionToPlay()
@@ -118,12 +119,7 @@ public class MainPanel : MonoBehaviour
 
         PlayControls.ApplyControls();
     }
-
-    public void TransitionToPlayerNameEnter()
-    {
-        PlayerNameEnterControls.ApplyControls();
-    }
-
+    
     public void TransitionToLeaderBoard()
     {
         GridPlayground.Instance.ResetZones();
