@@ -27,10 +27,11 @@ public class Player : MonoBehaviour
     public int MaxMovementMultipler;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
-    public string PlayerName;
-    public bool HasMoved;
+
+    public bool HasMoved { get; set; }
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
+    public Segment HeadSegment { get; set; }
 
     public int Score
     {
@@ -68,7 +69,7 @@ public class Player : MonoBehaviour
         get
         {
             var length = 0;
-            var nextSegment = _headSegment;
+            var nextSegment = HeadSegment;
 
             while (nextSegment != null)
             {
@@ -84,7 +85,6 @@ public class Player : MonoBehaviour
     private Vector3 _prevHeadPosition;
     private GridPlayground _gridPlayground;
     private GridCell _currentCell;
-    private Segment _headSegment;
     private Segment _lastSegment;
     private Queue<Vector3> _moveQueue;
     private Queue<bool> _growQueue;
@@ -107,11 +107,11 @@ public class Player : MonoBehaviour
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
 
-        _headSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
-        _headSegment.Center.enabled = true;
-        Destroy(_headSegment.GetComponent<BoxCollider2D>());
+        HeadSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        HeadSegment.Center.enabled = true;
+        Destroy(HeadSegment.GetComponent<BoxCollider2D>());
 
-        _lastSegment = _headSegment;
+        _lastSegment = HeadSegment;
 
         _moveQueue = new Queue<Vector3>();
         _growQueue = new Queue<bool>();
@@ -178,7 +178,7 @@ public class Player : MonoBehaviour
         }
         else if (segment != null)
         {
-            Debug.Log("Colliding with Tail!");
+            Debug.Log("Colliding with Tail! (" + other.gameObject.GetInstanceID() + ")");
             Die();
         }
 
@@ -337,7 +337,7 @@ public class Player : MonoBehaviour
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
         var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
 
-        _headSegment.Move(playerMoveDestination);
+        HeadSegment.Move(playerMoveDestination);
 
         var cameraMoveDestination = playerMoveDestination;
         cameraMoveDestination.z = -10f;

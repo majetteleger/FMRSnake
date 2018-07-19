@@ -26,7 +26,7 @@ public class DummySegment : MonoBehaviour
         _frontSegment = frontSegment;
         _backSegment = backSegment;
         
-        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play || MainManager.Instance.CurrentState != MainManager.GameState.BuildYourSnake)
         {
             var frontSegmentPosition = _frontSegment.transform.position + Vector3.right * MainManager.Instance.GridPlayground.MoveDistance;
             var backSegmentPosition = _backSegment.transform.position;

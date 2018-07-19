@@ -64,7 +64,10 @@ public class Segment : MonoBehaviour
             }
         }
         
-        var movement = transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        var movement = MainManager.Instance.Player.HeadSegment == this 
+            ? transform.parent.DOMove(destination, MainManager.Instance.Player.MoveTime) 
+            : transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+
         movement.onComplete += MoveCallback;
 
         if (NextSegment != null)
