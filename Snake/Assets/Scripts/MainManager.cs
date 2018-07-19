@@ -31,8 +31,9 @@ public class MainManager : MonoBehaviour
     
     public GameObject PlayerPrefab;
 
-    [Header("State Machine")]
+    [Header("General")]
     public float TransitionTime;
+    public int StartSegments;
 
     [Header("Camera Anchors")]
     public Transform MainMenuAnchor;
@@ -52,6 +53,7 @@ public class MainManager : MonoBehaviour
     public LeaderBoardEntry CurrentPlayerEntry { get; set; }
     public List<LeaderBoardEntry> LeaderBoard { get; set; }
     public string CurrentPlayerName { get; set; }
+    public int PrepMovesExecuted { get; set; }
 
     public int CurrentPlayerLeaderboardIndex
     {
@@ -177,14 +179,14 @@ public class MainManager : MonoBehaviour
     public void TransitionToBuildYourSnake()
     {
         CurrentState = GameState.BuildYourSnake;
-        //Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
 
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
+        PrepMovesExecuted = 0;
 
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < StartSegments; i++)
         {
             Player.QueueGrow();
             Player.QueueMove(Vector3.right);

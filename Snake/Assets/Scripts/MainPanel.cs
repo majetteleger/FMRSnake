@@ -57,6 +57,7 @@ public class MainPanel : MonoBehaviour
 
     public string BuildYourSnakeHeader;
     public ControlsText BuildYourSnakeControls;
+    public Vector2 BuildYourSnakeCameraOffset;
 
     [Header("Play")]
 

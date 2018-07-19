@@ -162,6 +162,7 @@ public class Player : MonoBehaviour
         var obstacle = other.GetComponent<Obstacle>();
         var gridCell = other.GetComponent<GridCell>();
         var segment = other.GetComponent<Segment>();
+        var wall = other.GetComponent<Wall>();
 
         if (food != null)
         {
@@ -178,7 +179,12 @@ public class Player : MonoBehaviour
         }
         else if (segment != null)
         {
-            Debug.Log("Colliding with Tail! (" + other.gameObject.GetInstanceID() + ")");
+            Debug.Log("Colliding with Tail!");
+            Die();
+        }
+        else if (wall != null)
+        {
+            Debug.Log("Colliding with Wall!");
             Die();
         }
 
@@ -339,7 +345,11 @@ public class Player : MonoBehaviour
 
         HeadSegment.Move(playerMoveDestination);
 
-        var cameraMoveDestination = playerMoveDestination;
+        var cameraMoveDestination = playerMoveDestination + 
+            (MainManager.Instance.CurrentState == MainManager.GameState.BuildYourSnake 
+            ? new Vector3(MainPanel.Instance.BuildYourSnakeCameraOffset.x, MainPanel.Instance.BuildYourSnakeCameraOffset.y) 
+            : Vector3.zero);
+
         cameraMoveDestination.z = -10f;
 
         Camera.main.transform.DOMove(cameraMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
@@ -401,10 +411,15 @@ public class Player : MonoBehaviour
             _growQueue.Dequeue();
             Grow();
         }
-    }
+        
+        if (MainManager.Instance.CurrentState == MainManager.GameState.BuildYourSnake)
+        {
+            MainManager.Instance.PrepMovesExecuted++;
 
-    public void TryAddInput()
-    {
-
+            if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.StartSegments)
+            {
+                MainManager.Instance.PlayerNamePanel.ToggleConfirm(true);
+            }
+        }
     }
 }

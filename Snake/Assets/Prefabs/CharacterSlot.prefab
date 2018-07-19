@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsConfirm: 0
+  IsOn: 1
   UpArrow: {fileID: 114034576475877008}
   DownArrow: {fileID: 114747430699502422}
   Character: {fileID: 114962416492823252}

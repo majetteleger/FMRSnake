@@ -17,6 +17,8 @@ public class PlayerNamePanel : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        ToggleConfirm(false);
     }
     
     private void OnEnable()
@@ -59,10 +61,15 @@ public class PlayerNamePanel : MonoBehaviour
                 break;
 
             case KeyCode.RightArrow:
-
+                
                 if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
                 {
                     ConfirmName();
+                    break;
+                }
+
+                if (!CharacterSlots[_currentlySelectedSlotIndex + 1].IsOn)
+                {
                     break;
                 }
 
@@ -92,7 +99,7 @@ public class PlayerNamePanel : MonoBehaviour
 
             case KeyCode.LeftArrow:
 
-                if (_currentlySelectedSlotIndex == 0)
+                if (_currentlySelectedSlotIndex == 0 || !CharacterSlots[_currentlySelectedSlotIndex - 1].IsOn)
                 {
                     break;
                 }
@@ -103,6 +110,16 @@ public class PlayerNamePanel : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void ToggleConfirm(bool toggle)
+    {
+        CharacterSlots[CharacterSlots.Length - 1].IsOn = toggle;
+
+        var color = CharacterSlots[CharacterSlots.Length - 1].GetComponent<Image>().color;
+        color.a = toggle ? 1f : 0.5f;
+
+        CharacterSlots[CharacterSlots.Length - 1].GetComponent<Image>().color = color;
     }
 
     private void UpdateCharacterSlot()

@@ -32,7 +32,7 @@ public class Segment : MonoBehaviour
             transform.hasChanged = false;
         }
     }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         var gridCell = other.GetComponent<GridCell>();

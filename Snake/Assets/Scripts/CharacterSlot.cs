@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CharacterSlot : MonoBehaviour
 {
     public bool IsConfirm;
+    public bool IsOn;
     public Image UpArrow;
     public Image DownArrow;
     public Text Character;
