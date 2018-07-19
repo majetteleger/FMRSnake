@@ -310,6 +310,7 @@ public class Player : MonoBehaviour
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
             _beatIndicator.CurrentActiveBeat.Light.color = Color.green;
+            _beatIndicator.CurrentActiveBeat.Activated = true;
         }
 
         if (_moving)

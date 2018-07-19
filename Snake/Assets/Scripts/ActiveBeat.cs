@@ -36,7 +36,14 @@ public class ActiveBeat : UIBeat {
 
         if (metronome != null)
         {
-            metronome.BeatIndicator.CurrentActiveBeat = this;
+            if (metronome.BeatIndicator.CurrentActiveBeat == null)
+            {
+                metronome.BeatIndicator.CurrentActiveBeat = this;
+            }
+            else
+            {
+                Debug.Log("Beats overlapping");
+            }
             metronome.BeatIndicator.IsHot = true;
             Debug.Log("ON");
         }
@@ -52,7 +59,16 @@ public class ActiveBeat : UIBeat {
             {
                 Light.color = Color.red;
             }
-            metronome.BeatIndicator.CurrentActiveBeat = null;
+
+            if (metronome.BeatIndicator.CurrentActiveBeat == this)
+            {
+                metronome.BeatIndicator.CurrentActiveBeat = null;
+            }
+            else
+            {
+                Debug.Log("Beats overlapping");
+            }
+
             metronome.BeatIndicator.IsHot = false;
             MainManager.Instance.Player.HasMoved = false;
             Debug.Log("OFF");

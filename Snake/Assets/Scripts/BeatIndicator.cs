@@ -130,55 +130,43 @@ public class BeatIndicator : MonoBehaviour {
         {
             if (Bar.Beats[i])
             {
-                if (i % 2 == 0) // this is a BEAT
+                if (i % 2 == 0) // this is a BEAT in the first half
                 {
-                    var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+                    var yPos = 0;
+                    var xPos = _passiveBeats[i / 2].GetComponent<RectTransform>().anchoredPosition.x;
+                    var anchoredPos = new Vector2(xPos, yPos);
+                    InstantiateBeat(anchoredPos, false);
+                }
+                else // this is an OFFBEAT in the first half
+                {
+                    var yPos = 0;
+                    var xPos = _passiveBeats[Mathf.FloorToInt(i / 2)].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
+                    var anchoredPos = new Vector2(xPos, yPos);
+                    InstantiateBeat(anchoredPos, true);
+                }
+
+                if (i % 2 == 0) // this is a BEAT in the second half
+                {
                     var yPos = 0;
                     var xPos = _passiveBeats[i/2 + 4].GetComponent<RectTransform>().anchoredPosition.x;
-                    activeBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
-                    _activeBeats.Add(activeBeat);
+                    var anchoredPos = new Vector2(xPos, yPos);
+                    InstantiateBeat(anchoredPos, false);
                 }
-                else // this is an OFFBEAT
-                { 
-                    var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+                else // this is an OFFBEAT in the second half
+                {
                     var yPos = 0;
                     var xPos = _passiveBeats[Mathf.FloorToInt(i / 2) + 4].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
-                    activeBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
-                    _activeBeats.Add(activeBeat);
+                    var anchoredPos = new Vector2(xPos, yPos);
+                    InstantiateBeat(anchoredPos, true);
                 }
             }
         }
+    }
 
-        //var halfScreen = MainPanel.Instance.GetComponent<RectTransform>().rect.width;
-        //var numberOfBeats = Bar.Beats.Count;
-        //float totalTimeOfBar = 0;
-        //for (int i = 0; i < Bar.Beats.Count; i++)
-        //{
-        //    totalTimeOfBar += Bar.Beats[i].Delay;
-        //}
-
-        //_beatLights = new List<ActiveBeat>();
-
-        //for (int i = 0; i < Bar.Beats.Count; i++)
-        //{
-        //    var beatLight = Instantiate(BeatLightPrefab, BeatsParent).GetComponent<ActiveBeat>();
-            
-        //    var xPos = (Bar.Beats[i].Delay * i / totalTimeOfBar * (Screen.width/2f));
-
-        //    if(firstTime)
-        //    {
-        //        var yPos = beatLight.GetComponent<RectTransform>().anchoredPosition.y;
-        //        beatLight.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
-        //    }
-        //    else
-        //    {
-        //        beatLight.GetComponent<RectTransform>().DOAnchorPosX(xPos, .3f);
-        //    }
-            
-
-        //    //beatLight.Light.color = STMYellow;
-
-        //    _beatLights.Add(beatLight);
-        //}
+    private void InstantiateBeat(Vector2 anchoredPosition, bool isOffBeat)
+    {
+        var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+        activeBeat.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
+        _activeBeats.Add(activeBeat);
     }
 }

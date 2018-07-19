@@ -11,10 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17c05632b17078e45b46737cc968b600, type: 3}
   m_Name: RedBar
   m_EditorClassIdentifier: 
-  Beats:
-  - IsHigh: 0
-    Delay: 0.5
-  - IsHigh: 0
-    Delay: 0.5
-  - IsHigh: 1
-    Delay: 0.5
+  Beats: 0100000101000000
