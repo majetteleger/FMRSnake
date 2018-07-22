@@ -55,13 +55,23 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 1465107564994596, guid: 44840f4d2931fda44af7f96f5b921e1d,
     type: 2}
   FoodPrefab: {fileID: 1759906511235116, guid: 1f9e7abec7c43904e8656e1f3f3f2e49, type: 2}
+  ObstaclePrefab: {fileID: 0}
+  ZoneCenterPrefab: {fileID: 0}
+  BackgroundRenderer: {fileID: 0}
   CellSize: 0.5
   CellSpacing: 0.05
-  GridRadius: 5
   FoodSpawnTime: 2
   ZoneModifiers:
   - {fileID: 11400000, guid: bc09e5bcf4bf9ca43a1a4d65ca935974, type: 2}
   - {fileID: 11400000, guid: 88e4d82e1c0bf984baa340f19b82f981, type: 2}
   - {fileID: 11400000, guid: a949fb77090c00b49ba1133ff0902360, type: 2}
   - {fileID: 11400000, guid: 7e358b2ee6c1a3341a12afecd7d0666a, type: 2}
+  NoneZoneModifier: {fileID: 0}
   ZoneSpawnTime: 2
+  MaxZoneSpawned: 0
+  ObstacleSpawnTime: 0
+  MaxObstaclesSpawned: 0
+  AroundPlayerThreshold: 0
+  ClosePlayerThreshold: 0
+  ObstacleShapes: []
+  _zones: []

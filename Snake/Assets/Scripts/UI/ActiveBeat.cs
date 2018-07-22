@@ -8,9 +8,10 @@ public class ActiveBeat : UIBeat {
     public Image Light;
     public bool Activated { get; set; }
 
-    public void ResetColor()
+    public void ResetBeat()
     {
         Light.color = Color.black;
+        Activated = false;
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -45,7 +46,7 @@ public class ActiveBeat : UIBeat {
                 Debug.Log("Beats overlapping");
             }
             metronome.BeatIndicator.IsHot = true;
-            Debug.Log("ON");
+            //Debug.Log("ON");
         }
     }
 
@@ -58,6 +59,7 @@ public class ActiveBeat : UIBeat {
             if (!Activated)
             {
                 Light.color = Color.red;
+                MainManager.Instance.Player.FailBeat();
             }
 
             if (metronome.BeatIndicator.CurrentActiveBeat == this)
@@ -71,7 +73,7 @@ public class ActiveBeat : UIBeat {
 
             metronome.BeatIndicator.IsHot = false;
             MainManager.Instance.Player.HasMoved = false;
-            Debug.Log("OFF");
+            //Debug.Log("OFF");
         }
     }
 }

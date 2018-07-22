@@ -24,14 +24,37 @@ public class Player : MonoBehaviour
     public GameObject SegmentPrefab;
     public GameObject DummySegmentPrefab;
     public float MoveTime;
-    public int MaxMovementMultipler;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
+    public int MaxHealth;
+    public int HealthDecreaseOnMiss;
+    public int HealthIncreaseOnHit;
+    public int MaxMovementMultipler;
+    public int MultiplerDecreaseOnMiss;
+    public int MultiplerIncreaseOnHit;
 
     public bool HasMoved { get; set; }
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
     public Segment HeadSegment { get; set; }
+
+    public int Health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            _health = Mathf.Clamp(value, 0, MaxHealth);
+            MainPanel.Instance.UpdateHealth(_health, MaxHealth);
+
+            if (_health <= 0)
+            {
+                Die();
+            }
+        }
+    }
 
     public int Score
     {
@@ -54,12 +77,12 @@ public class Player : MonoBehaviour
         }
         set
         {
-            if (value > MaxMovementMultipler)
+            if (value > MaxMovementMultipler || value <= 0)
             {
                 return;
             }
 
-            _movementMultiplier = value;
+            _movementMultiplier = Mathf.Clamp(value, 1, MaxMovementMultipler);
             MainPanel.Instance.UpdateMovementMultiplier(_movementMultiplier, false);
         }
     }
@@ -93,13 +116,14 @@ public class Player : MonoBehaviour
     private int _score;
     private int _movementMultiplier;
     private BeatIndicator _beatIndicator;
+    private int _health;
 
-    private Button[] _buttons = {
+    /*private Button[] _buttons = {
         new Button(Vector2.left, KeyCode.LeftArrow),
         new Button(Vector2.up, KeyCode.UpArrow),
         new Button(Vector2.right, KeyCode.RightArrow),
         new Button(Vector2.down, KeyCode.DownArrow),
-    };
+    };*/
 
     private void Start()
     {
@@ -267,46 +291,17 @@ public class Player : MonoBehaviour
         _playerCollider.enabled = true;
         Score = 0;
         MovementMultiplier = 1;
+        Health = MaxHealth;
 
         _beatIndicator.CreatePassiveBeats();
         _beatIndicator.CreateActiveBeats();
         _beatIndicator.StartMetronome();
     }
-
-    public void FailMove()
-    {
-        if (MovementMultiplier != 1)
-        {
-            MovementMultiplier = 1;
-        }
-    }
-
-    public bool AttemptMove()
-    {
-        var offButtons = new List<Button>();
-
-        for (var i = 0; i < _buttons.Length; i++)
-        {
-            if (!_buttons[i].IsOn)
-            {
-                offButtons.Add(_buttons[i]);
-            }
-        }
-
-        if (offButtons.Count == 1)
-        {
-            QueueMove(offButtons[0].Direction);
-
-            return true;
-        }
-
-        return false;
-    }
-
+    
     public void QueueMove(Vector3 direction)
     {
         HasMoved = true;
-
+        
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
             _beatIndicator.CurrentActiveBeat.Light.color = Color.green;
@@ -333,9 +328,20 @@ public class Player : MonoBehaviour
         Grow();
     }
 
+    public void FailBeat()
+    {
+        Health -= HealthDecreaseOnMiss;
+        MovementMultiplier -= MultiplerDecreaseOnMiss;
+
+        //Debug.Log("--");
+    }
+
     private void Move(Vector3 direction)
     {
-        MovementMultiplier++;
+        MovementMultiplier += MultiplerIncreaseOnHit;
+        Health += HealthIncreaseOnHit;
+
+        //Debug.Log("++");
 
         _moving = true;
 

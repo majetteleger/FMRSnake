@@ -60,7 +60,7 @@ public class BeatIndicator : MonoBehaviour {
 
         for (int i = 0; i < _activeBeats.Count; i++)
         {
-            _activeBeats[i].ResetColor();
+            _activeBeats[i].ResetBeat();
             _activeBeats[i].HasPlayed = false;
         }
 

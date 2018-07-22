@@ -93,6 +93,11 @@ MonoBehaviour:
   DummySegmentPrefab: {fileID: 1619358785635866, guid: e6e33590af92aa947bdce501acbd7336,
     type: 2}
   MoveTime: 0.1
-  MaxMovementMultipler: 10
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
+  MaxHealth: 100
+  HealthDecreaseOnMiss: 5
+  HealthIncreaseOnHit: 5
+  MaxMovementMultipler: 10
+  MultiplerDecreaseOnMiss: 1
+  MultiplerIncreaseOnHit: 1

@@ -63,6 +63,7 @@ public class MainPanel : MonoBehaviour
 
     public GameObject PlaySubPanel;
     public BeatIndicator BeatIndicator;
+    public Image HealthGauge;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
@@ -130,7 +131,12 @@ public class MainPanel : MonoBehaviour
         LeaderBoardControls.ApplyControls();
         DisplayLeaderBoard();
     }
-    
+
+    public void UpdateHealth(int current, int max)
+    {
+        HealthGauge.fillAmount = (float)current / (float)max;
+    }
+
     public void UpdateScore(int score, bool instant)
     {
         StopAllCoroutines();
