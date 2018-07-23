@@ -14,6 +14,11 @@ public class PassiveBeat : UIBeat {
             {
                 if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
                 {
+                    if (metronome.BeatIndicator.UpdateBarAtNextBeat)
+                    {
+                        MainPanel.Instance.BeatIndicator.UpdateBar(MainManager.Instance.Player.CurrentCell.ZoneModifier.Bar);
+                    }
+
                     PlayBeat();
                     HasPlayed = true;
                 }

@@ -46,11 +46,6 @@ public class ActiveBeat : UIBeat {
                 Debug.Log("Beats overlapping");
             }
 
-            if (metronome.BeatIndicator.UpdateBarAtNextBeat)
-            {
-                MainPanel.Instance.BeatIndicator.UpdateBar(MainManager.Instance.Player.CurrentCell.ZoneModifier.Bar);
-            }
-
             metronome.BeatIndicator.IsHot = true;
             //Debug.Log("ON");
         }
