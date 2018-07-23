@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class ActiveBeat : UIBeat {
 
-    public Image Light;
+    public Image Image;
     public bool Activated { get; set; }
 
     public void ResetBeat()
     {
-        Light.color = Color.black;
+        Image.color = Color.black;
         Activated = false;
     }
 
@@ -45,6 +45,12 @@ public class ActiveBeat : UIBeat {
             {
                 Debug.Log("Beats overlapping");
             }
+
+            if (metronome.BeatIndicator.UpdateBarAtNextBeat)
+            {
+                MainPanel.Instance.BeatIndicator.UpdateBar(MainManager.Instance.Player.CurrentCell.ZoneModifier.Bar);
+            }
+
             metronome.BeatIndicator.IsHot = true;
             //Debug.Log("ON");
         }
@@ -58,7 +64,7 @@ public class ActiveBeat : UIBeat {
         {
             if (!Activated)
             {
-                Light.color = Color.red;
+                Image.color = Color.red;
                 MainManager.Instance.Player.FailBeat();
             }
 
