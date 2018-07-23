@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public int MaxMovementMultipler;
     public int MultiplerDecreaseOnMiss;
     public int MultiplerIncreaseOnHit;
+    public GridCell CurrentCell;
 
     public bool HasMoved { get; set; }
     public Vector3 LastDirection { get; set; }
@@ -107,7 +108,7 @@ public class Player : MonoBehaviour
     private CircleCollider2D _playerCollider;
     private Vector3 _prevHeadPosition;
     private GridPlayground _gridPlayground;
-    private GridCell _currentCell;
+
     private Segment _lastSegment;
     private Queue<Vector3> _moveQueue;
     private Queue<bool> _growQueue;
@@ -215,10 +216,11 @@ public class Player : MonoBehaviour
         if (gridCell != null)
         {
             gridCell.Content = gameObject;
-            _currentCell = gridCell;
-            if (MainPanel.Instance.BeatIndicator.Bar != _currentCell.ZoneModifier.Bar)
+            CurrentCell = gridCell;
+
+            if (MainPanel.Instance.BeatIndicator.Bar != CurrentCell.ZoneModifier.Bar)
             {
-                MainPanel.Instance.BeatIndicator.UpdateBar(_currentCell.ZoneModifier.Bar);
+                MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
             }
         }
 
@@ -304,7 +306,7 @@ public class Player : MonoBehaviour
         
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
-            _beatIndicator.CurrentActiveBeat.Light.color = Color.green;
+            _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
             _beatIndicator.CurrentActiveBeat.Activated = true;
         }
 

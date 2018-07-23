@@ -12,10 +12,10 @@ public class BeatIndicator : MonoBehaviour {
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
-    public GameObject BeatLightPrefab;
 
     public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
+    public bool UpdateBarAtNextBeat { get; set; }
 
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
@@ -69,6 +69,14 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreatePassiveBeats()
     {
+        if (_passiveBeats != null && _passiveBeats.Count != 0)
+        {
+            for (int i = 0; i < _passiveBeats.Count; i++)
+            {
+                Destroy(_passiveBeats[i].gameObject);
+            }
+        }
+
         _passiveBeats = new List<PassiveBeat>();
 
         for (int i = 0; i < 9; i++)
@@ -103,10 +111,13 @@ public class BeatIndicator : MonoBehaviour {
     public void StopBeat()
     {
         Metronome.transform.DOKill();
+
     }
 
     public void UpdateBar(Bar newBar)
     {
+        UpdateBarAtNextBeat = false;
+
         Bar = newBar;
 
         if (_activeBeats.Count > 0)
@@ -124,6 +135,14 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateActiveBeats()
     {
+        if (_activeBeats != null && _activeBeats.Count != 0)
+        {
+            for (int i = 0; i < _activeBeats.Count; i++)
+            {
+                Destroy(_activeBeats[i].gameObject);
+            }
+        }
+
         _activeBeats = new List<ActiveBeat>();
 
         for (int i = 0; i < Bar.Beats.Length; i++)
