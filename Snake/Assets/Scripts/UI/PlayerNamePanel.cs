@@ -18,13 +18,14 @@ public class PlayerNamePanel : MonoBehaviour
     {
         Instance = this;
 
-        ToggleConfirm(false);
+        
     }
     
     private void OnEnable()
     {
         _characterSlotContentIndices = new int[CharacterSlots.Length];
         _currentlySelectedSlotIndex = 0;
+        ToggleConfirm(false);
         UpdateSelection();
 
         foreach (var characterSlot in CharacterSlots)

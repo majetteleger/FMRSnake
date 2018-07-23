@@ -4243,8 +4243,8 @@ MonoBehaviour:
   ZoneCenterPrefab: {fileID: 1236019600459416, guid: f9232322672fd684b8a2778bd4df27c7,
     type: 2}
   BackgroundRenderer: {fileID: 5532908}
-  CellSize: 0.5
-  CellSpacing: 0.05
+  CellSize: 0.64
+  CellSpacing: 0
   FoodSpawnTime: 2
   ZoneModifiers:
   - {fileID: 11400000, guid: bc09e5bcf4bf9ca43a1a4d65ca935974, type: 2}

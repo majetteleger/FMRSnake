@@ -16,10 +16,21 @@ public class Obstacle : MonoBehaviour
 
             if (LifeTime <= 0)
             {
-                GridPlayground.Instance.ObstaclesSpawned--;
-                Cell.Content = null;
-                Destroy(gameObject);
+                Clear();
             }
         }
 	}
+
+    public void Clear()
+    {
+        GridPlayground.Instance.ObstaclesSpawned--;
+        Cell.Content = null;
+
+        foreach (var cellTileSection in Cell.TileSections)
+        {
+            cellTileSection.Renderer.enabled = false;
+        }
+
+        Destroy(gameObject);
+    }
 }
