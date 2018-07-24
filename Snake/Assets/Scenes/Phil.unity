@@ -1517,7 +1517,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.5529412, g: 0.8431373, b: 1, a: 1}
+  m_BackGroundColor: {r: 0.1745283, g: 0.6221202, b: 1, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -2285,6 +2285,8 @@ MonoBehaviour:
   - {fileID: 576035968}
   MetroLinesContainer: {fileID: 1226262697}
   PlayerNamePanel: {fileID: 512158957}
+  FadeTime: 0.5
+  AmbianceMenu: {fileID: 8300000, guid: 14d4a0f0184f1d742bd2cb70d71d0862, type: 3}
 --- !u!4 &926133047
 Transform:
   m_ObjectHideFlags: 0
@@ -2490,13 +2492,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43bf06fc4098f64eb2b31a2e9f8cc40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bar: {fileID: 11400000, guid: fca0d95d25fb6244e8f3bd16fccdc564, type: 2}
+  BaseBar: {fileID: 0}
   Metronome: {fileID: 1844733144}
   PassiveBeatPrefab: {fileID: 1448306732038774, guid: b41832d86c832e549ba2006e0be8f40f,
     type: 2}
   ActiveBeatPrefab: {fileID: 1541330792976544, guid: 35156a2da395378408ff98d8a9323ae3,
     type: 2}
-  Tempo: 150
+  Tempo: 180
 --- !u!114 &1086401354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4384,7 +4386,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 24, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2004496220

@@ -9,11 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42853218c6b72ea4d92eccbcfea46784, type: 3}
-  m_Name: Red
+  m_Name: Orange
   m_EditorClassIdentifier: 
-  Color: {r: 1, g: 0.3820755, b: 0.3820755, a: 1}
+  Color: {r: 1, g: 0.66230935, b: 0.3803922, a: 1}
   Radius: 3.5
   FoodSpawnCount: 3
   ClearBaseScore: 100
   FoodScore: 50
   Bar: {fileID: 11400000, guid: 2e211d5b324301847aac068aabfdcd87, type: 2}
+  Ambiance: {fileID: 8300000, guid: 31f417c167854e74a88fb2af9de296f1, type: 3}

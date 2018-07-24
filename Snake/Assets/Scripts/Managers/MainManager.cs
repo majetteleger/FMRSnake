@@ -47,6 +47,10 @@ public class MainManager : MonoBehaviour
     [Header("UI")]
     public PlayerNamePanel PlayerNamePanel;
 
+    [Header("Audio")]
+    public float FadeTime;
+    public AudioClip AmbianceMenu;
+
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
@@ -60,6 +64,8 @@ public class MainManager : MonoBehaviour
         get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
     }
 
+    private AudioSource _fadeTo;
+    private AudioSource _fadeFrom;
     private int _selectedLineIndex;
     private int _newLeaderBoardId;
 
@@ -72,7 +78,13 @@ public class MainManager : MonoBehaviour
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
         LeaderBoard = new List<LeaderBoardEntry>();
-            
+        _fadeFrom = Camera.main.gameObject.AddComponent<AudioSource>();
+        _fadeFrom.loop = true;
+        _fadeTo = Camera.main.gameObject.AddComponent<AudioSource>();
+        _fadeTo.loop = true;
+
+        //FadeAmbianceTo(AmbianceMenu);
+        
         _selectedLineIndex = 1;
         TransitionToMainMenu();
     }
@@ -210,10 +222,24 @@ public class MainManager : MonoBehaviour
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
-        
+        FadeAmbianceTo(AmbianceMenu);
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
+    }
+
+    public void FadeAmbianceTo(AudioClip clip)
+    {
+        if (_fadeFrom.clip != clip)
+        {
+            _fadeFrom.DOFade(0, FadeTime);
+            _fadeTo.clip = clip;
+            _fadeTo.DOFade(1, FadeTime);
+
+            AudioSource temp = _fadeFrom;
+            _fadeFrom = _fadeTo;
+            _fadeTo = temp;
+        }
     }
     
     public void ResetSnake()

@@ -17,3 +17,4 @@ MonoBehaviour:
   ClearBaseScore: 100
   FoodScore: 50
   Bar: {fileID: 11400000, guid: 73cd8a9e238a6174a8dc29c4d2a619c6, type: 2}
+  Ambiance: {fileID: 8300000, guid: 20c2cddcba8f4b445bdd66c65e59840f, type: 3}

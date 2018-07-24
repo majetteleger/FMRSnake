@@ -7,12 +7,13 @@ using System;
 
 public class BeatIndicator : MonoBehaviour {
 
-    public Bar Bar;
+    public Bar BaseBar;
     public Metronome Metronome;
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
 
+    public Bar Bar { get; set; }
     public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
     public bool UpdateBarAtNextBeat { get; set; }
