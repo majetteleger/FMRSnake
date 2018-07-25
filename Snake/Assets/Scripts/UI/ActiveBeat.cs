@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActiveBeat : UIBeat {
+public class ActiveBeat : MonoBehaviour {
 
     public Image Image;
     public bool Activated { get; set; }
+    public bool HasPlayed { get; set; }
 
     public void ResetBeat()
     {

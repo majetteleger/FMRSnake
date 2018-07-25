@@ -233,6 +233,8 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
+        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameEnd);
+
         _gridPlayground.ClearAllCells();
 
         var foodObjects = FindObjectsOfType<Food>();
@@ -295,8 +297,9 @@ public class Player : MonoBehaviour
         MovementMultiplier = 1;
         Health = MaxHealth;
 
-        _beatIndicator.Bar = _beatIndicator.BaseBar;
+        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameStart);
 
+        _beatIndicator.Bar = _beatIndicator.BaseBar;
         _beatIndicator.CreatePassiveBeats();
         _beatIndicator.CreateActiveBeats();
         _beatIndicator.StartMetronome();
@@ -308,7 +311,7 @@ public class Player : MonoBehaviour
         
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
-            _beatIndicator.CurrentActiveBeat.PlayBeat();
+            AudioManager.Instance.PlayActiveBeat();
             _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
             _beatIndicator.CurrentActiveBeat.Activated = true;
         }
@@ -324,6 +327,8 @@ public class Player : MonoBehaviour
 
     public void QueueGrow()
     {
+        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GetFood);
+
         if (_moving)
         {
             _growQueue.Enqueue(true);

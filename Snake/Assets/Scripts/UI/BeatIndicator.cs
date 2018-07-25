@@ -50,9 +50,9 @@ public class BeatIndicator : MonoBehaviour {
 
     private void ResetMetronome()
     {
-        //var metronomePos = Metronome.GetComponent<RectTransform>().anchoredPosition;
-        //metronomePos.x = 0f;
         Metronome.GetComponent<RectTransform>().anchoredPosition = _metronomeStartPos;
+
+        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MetronomeReset);
 
         for (int i = 0; i < _passiveBeats.Count; i++)
         {

@@ -47,10 +47,6 @@ public class MainManager : MonoBehaviour
     [Header("UI")]
     public PlayerNamePanel PlayerNamePanel;
 
-    [Header("Audio")]
-    public float FadeTime;
-    public AudioClip AmbianceMenu;
-
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
@@ -64,8 +60,6 @@ public class MainManager : MonoBehaviour
         get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
     }
 
-    private AudioSource _fadeTo;
-    private AudioSource _fadeFrom;
     private int _selectedLineIndex;
     private int _newLeaderBoardId;
 
@@ -78,12 +72,6 @@ public class MainManager : MonoBehaviour
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
         LeaderBoard = new List<LeaderBoardEntry>();
-        _fadeFrom = Camera.main.gameObject.AddComponent<AudioSource>();
-        _fadeFrom.loop = true;
-        _fadeTo = Camera.main.gameObject.AddComponent<AudioSource>();
-        _fadeTo.loop = true;
-
-        //FadeAmbianceTo(AmbianceMenu);
         
         _selectedLineIndex = 1;
         TransitionToMainMenu();
@@ -104,6 +92,8 @@ public class MainManager : MonoBehaviour
                         _selectedLineIndex = 0;
                     }
 
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
                     UpdateSelectedLine();
                 }
 
@@ -116,17 +106,21 @@ public class MainManager : MonoBehaviour
                         _selectedLineIndex = MetroLines.Length - 1;
                     }
 
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
                     UpdateSelectedLine();
                 }
 
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     TransitionToBuildYourSnake();
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
                 {
                     TransitionToLeaderBoard();
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 break;
@@ -136,21 +130,25 @@ public class MainManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
                 {
                     PlayerNamePanel.Input(KeyCode.RightArrow);
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
                 {
                     PlayerNamePanel.Input(KeyCode.LeftArrow);
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     PlayerNamePanel.Input(KeyCode.UpArrow);
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
                 {
                     PlayerNamePanel.Input(KeyCode.DownArrow);
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 break;
@@ -171,6 +169,7 @@ public class MainManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
                 {
                     TransitionToMainMenu();
+                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
                 }
 
                 break;
@@ -222,24 +221,10 @@ public class MainManager : MonoBehaviour
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
-        FadeAmbianceTo(AmbianceMenu);
+        AudioManager.Instance.FadeAmbianceTo(AudioManager.Instance.AmbianceMenu);
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
-    }
-
-    public void FadeAmbianceTo(AudioClip clip)
-    {
-        if (_fadeFrom.clip != clip)
-        {
-            _fadeFrom.DOFade(0, FadeTime);
-            _fadeTo.clip = clip;
-            _fadeTo.DOFade(1, FadeTime);
-
-            AudioSource temp = _fadeFrom;
-            _fadeFrom = _fadeTo;
-            _fadeTo = temp;
-        }
     }
     
     public void ResetSnake()

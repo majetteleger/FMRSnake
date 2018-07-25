@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PassiveBeat : UIBeat {
-    
+public class PassiveBeat : MonoBehaviour {
+
+    public bool HasPlayed { get; set; }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         var metronome = other.GetComponent<Metronome>();
@@ -17,9 +19,10 @@ public class PassiveBeat : UIBeat {
                     if (metronome.BeatIndicator.UpdateBarAtNextBeat)
                     {
                         MainPanel.Instance.BeatIndicator.UpdateBar(MainManager.Instance.Player.CurrentCell.ZoneModifier.Bar);
+                        return;
                     }
 
-                    PlayBeat();
+                    AudioManager.Instance.PlayPassiveBeat();
                     HasPlayed = true;
                 }
             }
