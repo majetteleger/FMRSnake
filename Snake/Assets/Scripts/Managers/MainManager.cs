@@ -34,6 +34,7 @@ public class MainManager : MonoBehaviour
     [Header("General")]
     public float TransitionTime;
     public int StartSegments;
+    public int StartMoves;
 
     [Header("Camera Anchors")]
     public Transform MainMenuAnchor;
@@ -43,6 +44,7 @@ public class MainManager : MonoBehaviour
     [Header("Metro")]
     public MetroLine[] MetroLines;
     public GameObject MetroLinesContainer;
+    public float MainMenuFadeTime;
 
     [Header("UI")]
     public PlayerNamePanel PlayerNamePanel;
@@ -62,6 +64,7 @@ public class MainManager : MonoBehaviour
 
     private int _selectedLineIndex;
     private int _newLeaderBoardId;
+    private SpriteRenderer[] _mainMenuRenderers;
 
     private void Awake()
     {
@@ -72,7 +75,8 @@ public class MainManager : MonoBehaviour
     {
         GridPlayground = FindObjectOfType<GridPlayground>();
         LeaderBoard = new List<LeaderBoardEntry>();
-        
+        _mainMenuRenderers = MetroLinesContainer.GetComponentsInChildren<SpriteRenderer>();
+
         _selectedLineIndex = 1;
         TransitionToMainMenu();
     }
@@ -193,14 +197,23 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine(true);
         PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
-
+        Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
         PrepMovesExecuted = 0;
 
-        for (var i = 0; i < StartSegments; i++)
+        for (var i = 0; i < StartMoves; i++)
         {
-            Player.QueueGrow();
             Player.QueueMove(Vector3.right);
+
+            if (StartSegments > i)
+            {
+                Player.QueueGrow();
+            }
+        }
+
+        foreach (var mainMenuRenderer in _mainMenuRenderers)
+        {
+            mainMenuRenderer.DOFade(0f, MainMenuFadeTime);
         }
     }
 
@@ -225,6 +238,11 @@ public class MainManager : MonoBehaviour
         MainPanel.Instance.TransitionToLeaderBoard();
         GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
+
+        foreach (var mainMenuRenderer in _mainMenuRenderers)
+        {
+            mainMenuRenderer.DOFade(1f, MainMenuFadeTime);
+        }
     }
     
     public void ResetSnake()
@@ -234,7 +252,7 @@ public class MainManager : MonoBehaviour
             Player.Destroy();
         }
 
-        var approximatePosition = BuildYourSnakeAnchor.transform.position;
+        var approximatePosition = BuildYourSnakeAnchor.transform.position + new Vector3(MainPanel.Instance.BuildYourSnakeCameraOffset.x, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
         approximatePosition.z = 0f;
 
         var spawnPosition = FindNearestCellPosition(approximatePosition);

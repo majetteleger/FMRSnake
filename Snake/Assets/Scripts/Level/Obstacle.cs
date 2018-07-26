@@ -6,10 +6,16 @@ public class Obstacle : MonoBehaviour
 {
     public float LifeTime;
 
+    public bool Permanent { get; set; }
     public GridCell Cell { get; set; }
     
     void Update ()
     {
+        if (Permanent)
+        {
+            return;
+        }
+
 		if (LifeTime > 0)
         {
             LifeTime -= Time.deltaTime;
@@ -23,6 +29,11 @@ public class Obstacle : MonoBehaviour
 
     public void Clear()
     {
+        if (Permanent)
+        {
+            return;
+        }
+
         GridPlayground.Instance.ObstaclesSpawned--;
         Cell.Content = null;
 

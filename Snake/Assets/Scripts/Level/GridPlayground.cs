@@ -47,17 +47,36 @@ public class GridPlayground : MonoBehaviour
         _zonesParent = new GameObject("Zones").transform;
         Instance = this;
 
-        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 100f;
-        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 100f;
+        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 95f;
+        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 95f;
 
         for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
         {
+            var firstColumn = Math.Abs(x - (transform.position.x - _gridWidth / 2)) < 0.1f;
+            var lastColumn = x + (CellSize + CellSpacing) >= _gridWidth / 2;
+
             for (var y = transform.position.y - _gridHeight / 2; y < _gridHeight / 2; y += (CellSize + CellSpacing))
             {
+                var firstRow = Math.Abs(y - (transform.position.y - _gridHeight / 2)) < 0.1f;
+                var lastRow = y + (CellSize + CellSpacing) >= _gridHeight / 2;
+
                 var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
                 newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
                 newGridCell.GetComponent<BoxCollider2D>().size = Vector2.one * CellSize;
                 newGridCell.transform.SetParent(transform);
+                newGridCell.IsBorder = firstRow || lastRow || firstColumn || lastColumn;
+                
+                if (newGridCell.IsBorder)
+                {
+                    SpawnObstacle(newGridCell, true);
+
+                    foreach (var section in newGridCell.TileSections)
+                    {
+                        section.Renderer.sprite = newGridCell.BlankTileSectionSprite;
+                        section.Renderer.color = new Color(newGridCell.ObstacleColor.r, newGridCell.ObstacleColor.g, newGridCell.ObstacleColor.b, newGridCell.ColorAlpha);
+                        section.Renderer.enabled = true;
+                    }
+                }
             }
         }
 
@@ -115,18 +134,22 @@ public class GridPlayground : MonoBehaviour
         }
     }
 	
-    private Obstacle SpawnObstacle(GridCell cell)
+    private Obstacle SpawnObstacle(GridCell cell, bool permanent = false)
     {
         var newObstacle = Instantiate(ObstaclePrefab, cell.transform);
         cell.Content = newObstacle;
         newObstacle.GetComponent<Obstacle>().Cell = cell;
+        newObstacle.GetComponent<Obstacle>().Permanent = permanent;
 
-        ObstaclesSpawned++;
-
+        if (!permanent)
+        {
+            ObstaclesSpawned++;
+        }
+        
         return newObstacle.GetComponent<Obstacle>();
     }
-
-	private Food SpawnFood(GridCell cell)
+    
+    private Food SpawnFood(GridCell cell)
 	{
         var newFood = Instantiate(FoodPrefab, cell.transform);
         cell.Content = newFood;
@@ -216,6 +239,11 @@ public class GridPlayground : MonoBehaviour
         {
             if (overlappedCell.Content != null && overlappedCell.Content.GetComponent<Obstacle>() != null)
             {
+                if (overlappedCell.Content.GetComponent<Obstacle>().Permanent)
+                {
+                    continue;
+                }
+
                 overlappedCell.Content.GetComponent<Obstacle>().Clear();
             }
             

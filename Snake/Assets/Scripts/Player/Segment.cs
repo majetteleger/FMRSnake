@@ -21,7 +21,7 @@ public class Segment : MonoBehaviour
 
     private void Update()
     {
-        if (transform.hasChanged && FrontDummySegments != null)
+        /*if (transform.hasChanged && FrontDummySegments != null)
         {
             for (var i = 0; i < FrontDummySegments.Length; i++)
             {
@@ -30,7 +30,7 @@ public class Segment : MonoBehaviour
             }
 
             transform.hasChanged = false;
-        }
+        }*/
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -54,29 +54,31 @@ public class Segment : MonoBehaviour
         return Center.enabled;
     }
 
-    public void Move(Vector3 destination, bool mainMenu = true)
+    public void Move(Vector3 destination, float time, bool mainMenu = true)
     {
-        if (FrontDummySegments != null)
+        /*if (FrontDummySegments != null)
         {
             foreach (var frontDummySegment in FrontDummySegments)
             {
                 frontDummySegment.InitializeMove();
             }
-        }
-        
-        var movement = MainManager.Instance.Player.HeadSegment == this 
-            ? transform.parent.DOMove(destination, MainManager.Instance.Player.MoveTime) 
-            : transform.DOMove(destination, MainManager.Instance.Player.MoveTime);
+        }*/
 
-        movement.onComplete += MoveCallback;
+        /*var movement = MainManager.Instance.Player.HeadSegment == this 
+            ? transform.parent.DOMove(destination, MainManager.Instance.Player.MoveTime) 
+            : transform.DOMove(destination, MainManager.Instance.Player.MoveTime);*/
+
+        transform.DOMove(destination, time);
+
+       // movement.onComplete += MoveCallback;
 
         if (NextSegment != null)
         {
-            NextSegment.Move(transform.position);
+            NextSegment.Move(transform.position, time);
         }
     }
 
-    private void MoveCallback()
+    /*private void MoveCallback()
     {
         if (FrontDummySegments != null)
         {
@@ -86,5 +88,5 @@ public class Segment : MonoBehaviour
                 frontDummySegment.SetForNextMove(i, MainManager.Instance.Player.IntermediateSegments);
             }
         }
-    }
+    }*/
 }

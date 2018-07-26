@@ -986,7 +986,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -8
   m_Sprite: {fileID: 21300000, guid: 4069d0cd8a4f17d4da4acd88ae7c5659, type: 3}
-  m_Color: {r: 0.13207549, g: 0.1277145, b: 0.1277145, a: 1}
+  m_Color: {r: 0.13333334, g: 0.12941177, b: 0.12941177, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1668,7 +1668,7 @@ Transform:
   - {fileID: 1423733471}
   - {fileID: 787414671}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &422253234
 GameObject:
@@ -1697,7 +1697,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &422253236
 MonoBehaviour:
@@ -2068,7 +2068,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1745283, g: 0.6221202, b: 1, a: 1}
+  m_BackGroundColor: {r: 0.13333334, g: 0.12941177, b: 0.12941177, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -2113,7 +2113,7 @@ Transform:
   - {fileID: 1099659626}
   - {fileID: 1986883995}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &575250494
 GameObject:
@@ -2526,7 +2526,7 @@ MonoBehaviour:
     Right: Select Slot
     Down: Select Character
     Left: Select Slot
-  BuildYourSnakeCameraOffset: {x: 0, y: -1.25}
+  BuildYourSnakeCameraOffset: {x: -7, y: 0.85}
   PlaySubPanel: {fileID: 180480001}
   BeatIndicator: {fileID: 1086401352}
   HealthGauge: {fileID: 918094283}
@@ -2728,7 +2728,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 787414670}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8, y: -6, z: -10}
+  m_LocalPosition: {x: -0.8, y: -4.25, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 402074040}
@@ -2833,6 +2833,7 @@ MonoBehaviour:
     type: 2}
   TransitionTime: 1
   StartSegments: 3
+  StartMoves: 11
   MainMenuAnchor: {fileID: 666853905}
   BuildYourSnakeAnchor: {fileID: 1423733471}
   LeaderBoardAnchor: {fileID: 787414671}
@@ -2842,6 +2843,7 @@ MonoBehaviour:
   - {fileID: 1631214257}
   - {fileID: 576035968}
   MetroLinesContainer: {fileID: 1226262697}
+  MainMenuFadeTime: 1
   PlayerNamePanel: {fileID: 512158957}
 --- !u!4 &926133047
 Transform:
@@ -3443,7 +3445,7 @@ RectTransform:
   - {fileID: 675001787}
   - {fileID: 512158953}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3955,7 +3957,7 @@ Transform:
   - {fileID: 1631214256}
   - {fileID: 655666999}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1253655742
 GameObject:
@@ -4227,7 +4229,7 @@ Transform:
   - {fileID: 1893201}
   - {fileID: 1916250847}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1331504070
 GameObject:
@@ -4380,7 +4382,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1423733470}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8, y: 4, z: -10}
+  m_LocalPosition: {x: -0.94, y: 2.12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 402074040}

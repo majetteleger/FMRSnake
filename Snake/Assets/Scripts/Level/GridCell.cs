@@ -30,6 +30,7 @@ public class GridCell : MonoBehaviour
 
     public ZoneModifier ZoneModifier { get; set; }
     public GameObject Content { get; set; }
+    public bool IsBorder { get; set; }
 
     private void Start()
     {
@@ -98,7 +99,7 @@ public class GridCell : MonoBehaviour
                 tileSection.Renderer.sprite = sharpTile ? BlankTileSectionSprite : tileSection.RoundedSprite;
             }
         }
-        else
+        else if(Content == null || Content.GetComponent<Obstacle>() == null)
         {
             foreach (var tileSection in TileSections)
             {

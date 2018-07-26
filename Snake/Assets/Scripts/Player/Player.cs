@@ -141,7 +141,9 @@ public class Player : MonoBehaviour
         _moveQueue = new Queue<Vector3>();
         _growQueue = new Queue<bool>();
 
-        _segmentsContainer = new GameObject("Segments").transform;
+        var segments = GameObject.Find("Segments");
+
+        _segmentsContainer = segments == null ? new GameObject("Segments").transform : segments.transform;
     }
 
     private void Update()
@@ -255,7 +257,7 @@ public class Player : MonoBehaviour
 
         foreach (var obstacle in obstacles)
         {
-            Destroy(obstacle.gameObject);
+            obstacle.Clear();
         }
 
         _playerCollider.enabled = false;
@@ -358,19 +360,18 @@ public class Player : MonoBehaviour
         LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
-        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
+        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MoveTime * 4);
 
-        HeadSegment.Move(playerMoveDestination);
+        HeadSegment.Move(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MoveTime * 4);
 
-        var cameraMoveDestination = playerMoveDestination + 
-            (MainManager.Instance.CurrentState == MainManager.GameState.BuildYourSnake 
-            ? new Vector3(MainPanel.Instance.BuildYourSnakeCameraOffset.x, MainPanel.Instance.BuildYourSnakeCameraOffset.y) 
-            : Vector3.zero);
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
+        {
+            var cameraMoveDestination = playerMoveDestination;
+            cameraMoveDestination.z = -10f;
 
-        cameraMoveDestination.z = -10f;
-
-        Camera.main.transform.DOMove(cameraMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
-
+            Camera.main.transform.DOMove(cameraMoveDestination, MoveTime);
+        }
+        
         movement.onComplete += MovementCallback;
     }
     
@@ -381,7 +382,7 @@ public class Player : MonoBehaviour
             :*/ _lastSegment.transform.position;
 
         var newSegment = Instantiate(SegmentPrefab, spawnPosition, Quaternion.identity).GetComponent<Segment>();
-        newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
+        //newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
         newSegment.transform.SetParent(_segmentsContainer, true);
 
         var pastLastSegment = _lastSegment;
@@ -402,7 +403,7 @@ public class Player : MonoBehaviour
             CenterAppearProbability += CenterAppearProbabilityIncrement;
         }
 
-        for (var i = 0; i < IntermediateSegments; i++)
+        /*for (var i = 0; i < IntermediateSegments; i++)
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
@@ -410,7 +411,7 @@ public class Player : MonoBehaviour
             newDummySegment.transform.SetParent(_segmentsContainer, true);
 
             newSegment.FrontDummySegments[i] = newDummySegment;
-        }
+        }*/
     }
 
     private void MovementCallback()
@@ -433,7 +434,7 @@ public class Player : MonoBehaviour
         {
             MainManager.Instance.PrepMovesExecuted++;
 
-            if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.StartSegments)
+            if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.StartMoves)
             {
                 MainManager.Instance.PlayerNamePanel.ToggleConfirm(true);
             }
