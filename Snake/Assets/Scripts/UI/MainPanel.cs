@@ -74,7 +74,7 @@ public class MainPanel : MonoBehaviour
 
     [Header("PlayerNameEnter")]
     public ControlsText PlayerNameEnterControls;
-    public ControlsText PlayerNameEnterLeftControls;
+    public ControlsText PlayerNameEnterBackControls;
     public ControlsText PlayerNameEnterConfirmControls;
 
     [Header("LeaderBoard")]
@@ -107,7 +107,7 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
         Header.text = BuildYourSnakeHeader;
-        PlayerNameEnterLeftControls.ApplyControls();
+        PlayerNameEnterControls.ApplyControls();
     }
 
     public void TransitionToPlay()

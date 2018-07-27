@@ -187,8 +187,14 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine();
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToMainMenu();
+        PlayerNamePanel.gameObject.SetActive(false);
         ResetSnake();
         LoadLeaderBoard();
+
+        foreach (var mainMenuRenderer in _mainMenuRenderers)
+        {
+            mainMenuRenderer.DOFade(1f, MainMenuFadeTime);
+        }
     }
 
     public void TransitionToBuildYourSnake()

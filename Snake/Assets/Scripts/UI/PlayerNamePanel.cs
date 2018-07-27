@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,13 +25,13 @@ public class PlayerNamePanel : MonoBehaviour
     private void OnEnable()
     {
         _characterSlotContentIndices = new int[CharacterSlots.Length];
-        _currentlySelectedSlotIndex = 0;
+        _currentlySelectedSlotIndex = 1;
         ToggleConfirm(false);
         UpdateSelection();
 
         foreach (var characterSlot in CharacterSlots)
         {
-            if (characterSlot.IsConfirm)
+            if (characterSlot.IsConfirm || characterSlot.IsBack)
             {
                 continue;
             }
@@ -45,7 +46,7 @@ public class PlayerNamePanel : MonoBehaviour
         {
             case KeyCode.UpArrow:
 
-                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
+                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1 || _currentlySelectedSlotIndex == 0)
                 {
                     break;
                 }
@@ -82,7 +83,7 @@ public class PlayerNamePanel : MonoBehaviour
 
             case KeyCode.DownArrow:
 
-                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
+                if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1 || _currentlySelectedSlotIndex == 0)
                 {
                     break;
                 }
@@ -100,8 +101,9 @@ public class PlayerNamePanel : MonoBehaviour
 
             case KeyCode.LeftArrow:
 
-                if (_currentlySelectedSlotIndex == 0 || !CharacterSlots[_currentlySelectedSlotIndex - 1].IsOn)
+                if (_currentlySelectedSlotIndex == 0)
                 {
+                    MainManager.Instance.TransitionToMainMenu();
                     break;
                 }
 
@@ -116,11 +118,7 @@ public class PlayerNamePanel : MonoBehaviour
     public void ToggleConfirm(bool toggle)
     {
         CharacterSlots[CharacterSlots.Length - 1].IsOn = toggle;
-
-        var color = CharacterSlots[CharacterSlots.Length - 1].GetComponent<Image>().color;
-        color.a = toggle ? 1f : 0.5f;
-
-        CharacterSlots[CharacterSlots.Length - 1].GetComponent<Image>().color = color;
+        CharacterSlots[CharacterSlots.Length - 1].GetComponent<CanvasGroup>().DOFade(toggle ? 1f : 0.5f, 0.5f);
     }
 
     private void UpdateCharacterSlot()
@@ -136,7 +134,7 @@ public class PlayerNamePanel : MonoBehaviour
         }
         else if(_currentlySelectedSlotIndex == 0)
         {
-            MainPanel.Instance.PlayerNameEnterLeftControls.ApplyControls();
+            MainPanel.Instance.PlayerNameEnterBackControls.ApplyControls();
         }
         else
         {
@@ -155,7 +153,7 @@ public class PlayerNamePanel : MonoBehaviour
 
         foreach (var characterSlot in CharacterSlots)
         {
-            if (characterSlot.IsConfirm)
+            if (characterSlot.IsConfirm || characterSlot.IsBack)
             {
                 continue;
             }
