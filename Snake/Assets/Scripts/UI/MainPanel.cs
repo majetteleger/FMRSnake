@@ -63,7 +63,7 @@ public class MainPanel : MonoBehaviour
 
     public GameObject PlaySubPanel;
     public BeatIndicator BeatIndicator;
-    public Image HealthGauge;
+    public RectTransform HealthGauge;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
@@ -134,7 +134,8 @@ public class MainPanel : MonoBehaviour
 
     public void UpdateHealth(int current, int max)
     {
-        HealthGauge.fillAmount = (float)current / (float)max;
+        var anchoredPosition = new Vector2(HealthGauge.anchoredPosition.x, -HealthGauge.sizeDelta.y + ((float)current / (float)max) * HealthGauge.sizeDelta.y);
+        HealthGauge.anchoredPosition = anchoredPosition;
     }
 
     public void UpdateScore(int score, bool instant)

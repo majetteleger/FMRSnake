@@ -8,12 +8,14 @@ using UnityEngine.UI;
 public class ZoneIndicator : MonoBehaviour
 {
     public float ScreenBorderOffset;
+    public Image FillImage;
     public float FadeTime;
+    public float AlphaValue;
     //public float DoMoveDistanceThreshold;
     //public float DoMoveTime;
 
     private Zone _targetZone;
-    private Image _image;
+    private CanvasGroup _canvasGroup;
     private bool _isOn;
     //private ZoneIndicatorShield _shield;
     //private Rect[] _otherZoneIndicatorShieldRects;
@@ -22,13 +24,12 @@ public class ZoneIndicator : MonoBehaviour
     public void Initialize(Zone targetZone)
     {
         _targetZone = targetZone;
-        _image = GetComponent<Image>();
         //_shield = GetComponent<ZoneIndicatorShield>();
             
-        _image.color = targetZone.ZoneModifier.Color;
-
+        FillImage.color = targetZone.ZoneModifier.Color;
+        _canvasGroup = GetComponent<CanvasGroup>();
+        _canvasGroup.alpha = AlphaValue;
         UpdateTransform();
-        _image.enabled = true;
     }
 
     private void Update()
@@ -40,7 +41,7 @@ public class ZoneIndicator : MonoBehaviour
 
         if (_targetZone.IsVisibleOnScreen())
         {
-            _image.DOFade(0f, FadeTime);
+            _canvasGroup.DOFade(0f, FadeTime);
             _isOn = false;
             return;
         }
@@ -52,7 +53,7 @@ public class ZoneIndicator : MonoBehaviour
 
         if (!_isOn)
         {
-            _image.DOFade(_targetZone.ZoneModifier.Color.a, FadeTime);
+            _canvasGroup.DOFade(AlphaValue, FadeTime);
             _isOn = true;
         }
     }
