@@ -268,6 +268,11 @@ public class MainManager : MonoBehaviour
     
     public void SaveScore(string displayName)
     {
+        if (string.IsNullOrEmpty(displayName))
+        {
+            return;
+        }
+
         var newValue = string.Format("{0}:{1}", displayName, Player.Score);
         PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
 

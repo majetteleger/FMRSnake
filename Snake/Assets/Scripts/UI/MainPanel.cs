@@ -84,9 +84,13 @@ public class MainPanel : MonoBehaviour
     public int TopDisplayedEntries;
     public int DisplayedEntriesBeforePlayer;
     public int DisplayedEntriesAfterPlayer;
-    public Text LeaderboardText;
     public ControlsText LeaderBoardControls;
-    
+    public LeaderboardEntry[] LeaderboardEntries;
+    public Transform MiddleDotDotDot;
+    public GameObject EndDotDotDot;
+    public Color NormalEntryColor;
+    public Color HighlightedEntryColor;
+
     private float _displayedScore;
 
     private void Awake()
@@ -98,6 +102,12 @@ public class MainPanel : MonoBehaviour
     {
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
+
+        foreach (var leaderboardEntry in LeaderboardEntries)
+        {
+            leaderboardEntry.gameObject.SetActive(false);
+        }
+
         Header.text = MainMenuHeader;
         MainMenuControls.ApplyControls();
     }
@@ -217,20 +227,23 @@ public class MainPanel : MonoBehaviour
 
     private void DisplayLeaderBoard()
     {
-        var leaderboardString = string.Empty;
         var currentPlayerLeaderboardIndex = MainManager.Instance.CurrentPlayerLeaderboardIndex;
+        var uiEntryIndex = 0;
 
         for (var i = 0; i < TopDisplayedEntries && i < MainManager.Instance.LeaderBoard.Count; i++)
         {
             Mathf.Clamp(i, 0, MainManager.Instance.LeaderBoard.Count - 1);
 
             var leaderBoardEntry = MainManager.Instance.LeaderBoard[i];
-            leaderboardString += string.Format("\n{3}{0}\t\t{1}\t\t{2}{3}", 
-                i + 1, 
-                leaderBoardEntry.DisplayName, 
-                leaderBoardEntry.Score,
-                i == currentPlayerLeaderboardIndex ? "***" : string.Empty
-            );
+
+            LeaderboardEntries[uiEntryIndex].Rank.text = (i + 1).ToString();
+            LeaderboardEntries[uiEntryIndex].Name.text = leaderBoardEntry.DisplayName;
+            LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
+
+            LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
+            LeaderboardEntries[uiEntryIndex].gameObject.SetActive(true);
+
+            uiEntryIndex++;
         }
         
         var bot = currentPlayerLeaderboardIndex - DisplayedEntriesBeforePlayer;
@@ -241,7 +254,7 @@ public class MainPanel : MonoBehaviour
         }
         else
         {
-            leaderboardString += "\n...";
+            MiddleDotDotDot.SetSiblingIndex(uiEntryIndex);
         }
 
         var top = bot + DisplayedEntriesBeforePlayer + DisplayedEntriesAfterPlayer;
@@ -251,20 +264,18 @@ public class MainPanel : MonoBehaviour
             Mathf.Clamp(i, 0, MainManager.Instance.LeaderBoard.Count - 1);
 
             var leaderBoardEntry = MainManager.Instance.LeaderBoard[i];
-            leaderboardString += string.Format("\n{3}{0}\t\t{1}\t\t{2}{3}", 
-                i + 1, 
-                leaderBoardEntry.DisplayName, 
-                leaderBoardEntry.Score,
-                i == currentPlayerLeaderboardIndex ? "***" : string.Empty
-            );
+
+            LeaderboardEntries[uiEntryIndex].Rank.text = (i + 1).ToString();
+            LeaderboardEntries[uiEntryIndex].Name.text = leaderBoardEntry.DisplayName;
+            LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
+
+            LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
+            LeaderboardEntries[uiEntryIndex].gameObject.SetActive(true);
+
+            uiEntryIndex++;
         }
 
-        if (top < MainManager.Instance.LeaderBoard.Count)
-        {
-            leaderboardString += "\n...";
-        }
-        
-        LeaderboardText.text = leaderboardString;
+        EndDotDotDot.SetActive(top < MainManager.Instance.LeaderBoard.Count);
     }
 
     private IEnumerator DoUpdateScore(int score)
