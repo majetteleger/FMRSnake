@@ -26,6 +26,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip MenuInteraction;
     public AudioSource PassiveBeat;
     public AudioSource ActiveBeat;
+    public AudioSource ActivatedBeat;
     public AudioSource BarReturnBeat;
     public AudioSource[] OtherSFXs;
 
@@ -78,6 +79,11 @@ public class AudioManager : MonoBehaviour {
     public void PlayActiveBeat()
     {
         ActiveBeat.Play();
+    }
+
+    public void PlayActivatedBeat()
+    {
+        ActivatedBeat.Play();
     }
 
     public void PlayOtherSFX(AudioClip clip)

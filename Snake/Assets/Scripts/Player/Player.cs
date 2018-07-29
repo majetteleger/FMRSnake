@@ -313,7 +313,7 @@ public class Player : MonoBehaviour
         
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
         {
-            AudioManager.Instance.PlayActiveBeat();
+            AudioManager.Instance.PlayActivatedBeat();
             _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
             _beatIndicator.CurrentActiveBeat.Activated = true;
         }

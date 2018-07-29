@@ -596,7 +596,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3216298706d2fe2499b790cc71ccbd06, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b33dae356b73ab841882205052581b17, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2193,7 +2193,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &388720922
 AudioSource:
@@ -2583,7 +2583,8 @@ MonoBehaviour:
   GetFood: {fileID: 8300000, guid: b8cbb5b644b79fe4ab227444284e1455, type: 3}
   MenuInteraction: {fileID: 8300000, guid: 8b05bc9e6897e80419e698ce411626ef, type: 3}
   PassiveBeat: {fileID: 66155414}
-  ActiveBeat: {fileID: 512569472}
+  ActiveBeat: {fileID: 1403518297}
+  ActivatedBeat: {fileID: 512569472}
   BarReturnBeat: {fileID: 661346520}
   OtherSFXs:
   - {fileID: 388720922}
@@ -2932,7 +2933,7 @@ GameObject:
   - component: {fileID: 512569471}
   - component: {fileID: 512569472}
   m_Layer: 0
-  m_Name: ActiveBeatSFX
+  m_Name: ActivatedBeatSFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3120,6 +3121,7 @@ Transform:
   - {fileID: 282898087}
   - {fileID: 66155413}
   - {fileID: 512569471}
+  - {fileID: 1403518296}
   - {fileID: 661346519}
   - {fileID: 388720921}
   - {fileID: 1099659626}
@@ -3668,7 +3670,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &661346520
 AudioSource:
@@ -4186,16 +4188,16 @@ MonoBehaviour:
   ControlsFadeValue: 0.25
   MainMenuHeader: "la ligne pointill\xE9e"
   MainMenuControls:
-    Up: Setup
-    Right: Select
-    Down: Leaderboard
-    Left: Select
+    Up: jouer
+    Right: choisir une ligne
+    Down: classements
+    Left: choisir une ligne
   BuildYourSnakeHeader: inscrivez votre nom
   BuildYourSnakeControls:
-    Up: Select Character
-    Right: Select Slot
-    Down: Select Character
-    Left: Select Slot
+    Up: changer lettre
+    Right: "changer caract\xE8re"
+    Down: changer lettre
+    Left: "changer caract\xE8re"
   BuildYourSnakeCameraOffset: {x: -7, y: 0.85}
   PlaySubPanel: {fileID: 180480001}
   BeatIndicator: {fileID: 1086401352}
@@ -4208,32 +4210,32 @@ MonoBehaviour:
   EntryPrefab: {fileID: 1069191814485678, guid: fcb422bd27abf074a9cc05fc01570540,
     type: 2}
   PlayControls:
-    Up: Up
-    Right: Right
-    Down: Down
-    Left: Left
+    Up: haut
+    Right: droite
+    Down: bas
+    Left: gauche
   PlayerNameEnterControls:
-    Up: Select Character
-    Right: Select Slot
-    Down: Select Character
-    Left: Select Slot
+    Up: lettre
+    Right: "caract\xE8re"
+    Down: lettre
+    Left: "caract\xE8re"
   PlayerNameEnterBackControls:
     Up: 
-    Right: Select Slot
+    Right: "caract\xE8re"
     Down: 
-    Left: Back
+    Left: menu principal
   PlayerNameEnterConfirmControls:
     Up: 
-    Right: Confirm
+    Right: confirmer
     Down: 
-    Left: Select Slot
+    Left: "caract\xE8re"
   LeaderBoardSubPanel: {fileID: 1101577780}
   LeaderBoardHeader: 
   TopDisplayedEntries: 3
   DisplayedEntriesBeforePlayer: 1
   DisplayedEntriesAfterPlayer: 1
   LeaderBoardControls:
-    Up: Main Menu
+    Up: menu principal
     Right: 
     Down: 
     Left: 
@@ -4624,7 +4626,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &742937859
 AudioSource:
@@ -5566,7 +5568,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1086096900
 AudioSource:
@@ -5790,7 +5792,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1099659627
 AudioSource:
@@ -7833,6 +7835,130 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1343840391}
+--- !u!1 &1403518295
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1403518296}
+  - component: {fileID: 1403518297}
+  m_Layer: 0
+  m_Name: ActiveBeatSFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1403518296
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1403518295}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 519420032}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1403518297
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1403518295}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 3216298706d2fe2499b790cc71ccbd06, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1407219473
 GameObject:
   m_ObjectHideFlags: 0
@@ -8667,7 +8793,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1661957348
 AudioSource:
@@ -10311,7 +10437,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1986883996
 AudioSource:
