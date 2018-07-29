@@ -329,7 +329,10 @@ public class Player : MonoBehaviour
 
     public void QueueGrow()
     {
-        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GetFood);
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
+        {
+            AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GetFood);
+        }
 
         if (_moving)
         {

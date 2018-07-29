@@ -22,11 +22,11 @@ public class AudioManager : MonoBehaviour {
     [Header("SFX")]
     public AudioClip GameStart;
     public AudioClip GameEnd;
-    public AudioClip MetronomeReset;
     public AudioClip GetFood;
     public AudioClip MenuInteraction;
     public AudioSource PassiveBeat;
     public AudioSource ActiveBeat;
+    public AudioSource BarReturnBeat;
     public AudioSource[] OtherSFXs;
 
     // Use this for initialization
@@ -70,6 +70,11 @@ public class AudioManager : MonoBehaviour {
         PassiveBeat.Play();
     }
 
+    public void PlayBarReturn()
+    {
+        BarReturnBeat.Play();
+    }
+
     public void PlayActiveBeat()
     {
         ActiveBeat.Play();
@@ -83,6 +88,7 @@ public class AudioManager : MonoBehaviour {
             {
                 OtherSFXs[i].clip = clip;
                 OtherSFXs[i].Play();
+                return;
             }
         }
     }

@@ -22,7 +22,15 @@ public class PassiveBeat : MonoBehaviour {
                         return;
                     }
 
-                    AudioManager.Instance.PlayPassiveBeat();
+                    if (this == MainPanel.Instance.BeatIndicator.PassiveBeats[MainPanel.Instance.BeatIndicator.PassiveBeats.Count - 1])
+                    {
+                        AudioManager.Instance.PlayBarReturn();
+                    }
+                    else
+                    {
+                        AudioManager.Instance.PlayPassiveBeat();
+                    }
+
                     HasPlayed = true;
                 }
             }
