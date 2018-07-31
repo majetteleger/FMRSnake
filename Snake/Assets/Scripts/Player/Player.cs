@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -181,6 +182,25 @@ public class Player : MonoBehaviour
                 QueueMove(Vector3.left);
             }
         }
+        else if ((MainManager.Instance.CurrentState == MainManager.GameState.Play) && !MainPanel.Instance.BeatIndicator.IsHot || HasMoved)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
+            {
+                _beatIndicator.CreateDummyMetronome(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                _beatIndicator.CreateDummyMetronome(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
+            {
+                _beatIndicator.CreateDummyMetronome(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
+            {
+                _beatIndicator.CreateDummyMetronome(false);
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -311,11 +331,15 @@ public class Player : MonoBehaviour
     {
         HasMoved = true;
         
-        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && _beatIndicator.CurrentActiveBeat != null)
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
         {
-            AudioManager.Instance.PlayActivatedBeat();
-            _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
-            _beatIndicator.CurrentActiveBeat.Activated = true;
+            if (_beatIndicator.CurrentActiveBeat != null)
+            {
+                AudioManager.Instance.PlayActivatedBeat();
+                _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
+                _beatIndicator.CurrentActiveBeat.Activated = true;
+                _beatIndicator.CreateDummyMetronome(true);
+            }
         }
 
         if (_moving)

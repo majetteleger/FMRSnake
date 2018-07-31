@@ -9,6 +9,7 @@ public class BeatIndicator : MonoBehaviour {
 
     public Bar BaseBar;
     public Metronome Metronome;
+    public GameObject DummyMetronomePrefab;
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
@@ -180,6 +181,23 @@ public class BeatIndicator : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void CreateDummyMetronome(bool onBeat)
+    {
+        var metronomeDummy = Instantiate(DummyMetronomePrefab, Metronome.transform.position, Quaternion.identity, transform);
+
+        if (onBeat)
+        {
+            metronomeDummy.GetComponent<Image>().color = Color.green;
+        }
+        else
+        {
+            metronomeDummy.GetComponent<Image>().color = Color.red;
+        }
+
+        metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));
+        metronomeDummy.transform.DOScale(Vector3.one * 1.3f, 0.5f);
     }
 
     private void InstantiateBeat(Vector2 anchoredPosition, bool isOffBeat)
