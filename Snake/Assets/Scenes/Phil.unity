@@ -5749,11 +5749,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseBar: {fileID: 11400000, guid: fca0d95d25fb6244e8f3bd16fccdc564, type: 2}
   Metronome: {fileID: 1844733144}
+  DummyMetronomePrefab: {fileID: 1212003615937242, guid: e75bbea16e06178408c93ae2fdb33b4b,
+    type: 2}
   PassiveBeatPrefab: {fileID: 1448306732038774, guid: b41832d86c832e549ba2006e0be8f40f,
     type: 2}
   ActiveBeatPrefab: {fileID: 1541330792976544, guid: 35156a2da395378408ff98d8a9323ae3,
     type: 2}
-  Tempo: 180
+  Tempo: 160
 --- !u!114 &1086401354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7202,21 +7204,6 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114578512851639040, guid: 02bb250a24bd93e44a1076899f427155,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114578512851639040, guid: 02bb250a24bd93e44a1076899f427155,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 114578512851639040, guid: 02bb250a24bd93e44a1076899f427155,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 02bb250a24bd93e44a1076899f427155, type: 2}
