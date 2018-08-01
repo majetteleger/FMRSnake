@@ -336,7 +336,7 @@ public class Player : MonoBehaviour
             if (_beatIndicator.CurrentActiveBeat != null)
             {
                 AudioManager.Instance.PlayActivatedBeat();
-                _beatIndicator.CurrentActiveBeat.Image.color = Color.green;
+                _beatIndicator.CurrentActiveBeat.Image.color = _beatIndicator.CurrentActiveBeat.SuccessColor;
                 _beatIndicator.CurrentActiveBeat.Activated = true;
                 _beatIndicator.CreateDummyMetronome(true);
             }

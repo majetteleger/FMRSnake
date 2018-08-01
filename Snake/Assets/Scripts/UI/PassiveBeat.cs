@@ -26,10 +26,8 @@ public class PassiveBeat : MonoBehaviour {
                     {
                         AudioManager.Instance.PlayBarReturn();
                     }
-                    else
-                    {
-                        AudioManager.Instance.PlayPassiveBeat();
-                    }
+
+                    AudioManager.Instance.PlayPassiveBeat();
 
                     HasPlayed = true;
                 }

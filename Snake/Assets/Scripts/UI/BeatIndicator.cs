@@ -13,6 +13,8 @@ public class BeatIndicator : MonoBehaviour {
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
+    public Color SuccessColor;
+    public Color FailureColor;
 
     public Bar Bar { get; set; }
     public ActiveBeat CurrentActiveBeat { get; set; }
@@ -185,15 +187,20 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateDummyMetronome(bool onBeat)
     {
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        {
+            return;
+        }
+
         var metronomeDummy = Instantiate(DummyMetronomePrefab, Metronome.transform.position, Quaternion.identity, transform);
 
         if (onBeat)
         {
-            metronomeDummy.GetComponent<Image>().color = Color.green;
+            metronomeDummy.GetComponent<Image>().color = SuccessColor;
         }
         else
         {
-            metronomeDummy.GetComponent<Image>().color = Color.red;
+            metronomeDummy.GetComponent<Image>().color = FailureColor;
         }
 
         metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));

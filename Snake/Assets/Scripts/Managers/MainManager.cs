@@ -11,11 +11,13 @@ public class MainManager : MonoBehaviour
     {
         public string DisplayName;
         public int Score;
+        public Color Color;
 
-        public LeaderBoardEntry(string displayName, int score)
+        public LeaderBoardEntry(string displayName, int score, int color)
         {
             DisplayName = displayName;
             Score = score;
+            Color = MainManager.Instance.MetroColors[color];
         }
     }
     
@@ -42,6 +44,7 @@ public class MainManager : MonoBehaviour
     public Transform LeaderBoardAnchor;
 
     [Header("Metro")]
+    public Color[] MetroColors;
     public MetroLine[] MetroLines;
     public GameObject MetroLinesContainer;
     public float MainMenuFadeTime;
@@ -56,7 +59,7 @@ public class MainManager : MonoBehaviour
     public List<LeaderBoardEntry> LeaderBoard { get; set; }
     public string CurrentPlayerName { get; set; }
     public int PrepMovesExecuted { get; set; }
-
+    
     public int CurrentPlayerLeaderboardIndex
     {
         get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
@@ -76,8 +79,7 @@ public class MainManager : MonoBehaviour
         GridPlayground = FindObjectOfType<GridPlayground>();
         LeaderBoard = new List<LeaderBoardEntry>();
         _mainMenuRenderers = MetroLinesContainer.GetComponentsInChildren<SpriteRenderer>();
-
-        _selectedLineIndex = 1;
+        
         TransitionToMainMenu();
     }
 
@@ -184,7 +186,10 @@ public class MainManager : MonoBehaviour
     {
         CurrentState = GameState.MainMenu;
         Camera.main.transform.DOMove(MainMenuAnchor.position, TransitionTime);
+
+        _selectedLineIndex = UnityEngine.Random.Range(0, MetroLines.Length);
         UpdateSelectedLine();
+
         MetroLinesContainer.SetActive(true);
         MainPanel.Instance.TransitionToMainMenu();
         PlayerNamePanel.gameObject.SetActive(false);
@@ -236,7 +241,7 @@ public class MainManager : MonoBehaviour
     public void TransitionToLeaderBoard()
     {
         CurrentState = GameState.LeaderBoard;
-        SaveScore(CurrentPlayerName);
+        SaveScore(CurrentPlayerName, _selectedLineIndex);
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
@@ -266,17 +271,17 @@ public class MainManager : MonoBehaviour
         Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
     }
     
-    public void SaveScore(string displayName)
+    public void SaveScore(string displayName, int lineColor)
     {
         if (string.IsNullOrEmpty(displayName))
         {
             return;
         }
 
-        var newValue = string.Format("{0}:{1}", displayName, Player.Score);
+        var newValue = string.Format("{0}:{1}:{2}", displayName, Player.Score, lineColor);
         PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
 
-        CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score);
+        CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score, lineColor);
         LeaderBoard.Add(CurrentPlayerEntry);
         LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
         
@@ -293,8 +298,15 @@ public class MainManager : MonoBehaviour
 
         while (!string.IsNullOrEmpty(currentValue))
         {
+            // this part is updating the existing playerprefs entry to fit the new format, we should get rid of this eventually
+            if (currentValue.Split(':').Length != 3)
+            {
+                currentValue += ":1";
+            }
+            //
+
             var values = currentValue.Split(':');
-            LeaderBoard.Add(new LeaderBoardEntry(values[0], int.Parse(values[1])));
+            LeaderBoard.Add(new LeaderBoardEntry(values[0], int.Parse(values[1]), int.Parse(values[2])));
 
             currentId++;
             currentIdString = currentId.ToString();

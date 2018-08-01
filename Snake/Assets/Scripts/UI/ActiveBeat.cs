@@ -6,12 +6,17 @@ using UnityEngine.UI;
 public class ActiveBeat : MonoBehaviour {
 
     public Image Image;
+    public Color NormalColor;
+    public Color HighlightedColor;
+    public Color SuccessColor;
+    public Color FailureColor;
+
     public bool Activated { get; set; }
     public bool HasPlayed { get; set; }
 
     public void ResetBeat()
     {
-        Image.color = Color.black;
+        Image.color = NormalColor;
         Activated = false;
     }
 
@@ -41,6 +46,7 @@ public class ActiveBeat : MonoBehaviour {
             if (metronome.BeatIndicator.CurrentActiveBeat == null)
             {
                 metronome.BeatIndicator.CurrentActiveBeat = this;
+                Image.color = HighlightedColor;
             }
             else
             {
@@ -60,7 +66,7 @@ public class ActiveBeat : MonoBehaviour {
         {
             if (!Activated)
             {
-                Image.color = Color.red;
+                Image.color = FailureColor;
                 MainManager.Instance.Player.FailBeat();
             }
 
