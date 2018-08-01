@@ -422,7 +422,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1006.5, y: -160}
+  m_AnchoredPosition: {x: 824.5, y: -160}
   m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &47699498
@@ -6009,7 +6009,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1034, y: 0}
+  m_AnchoredPosition: {x: 852, y: 0}
   m_SizeDelta: {x: 55, y: 150}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1010233254
@@ -6331,8 +6331,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 517, y: 0}
-  m_SizeDelta: {x: 1034, y: 20}
+  m_AnchoredPosition: {x: 426, y: 0}
+  m_SizeDelta: {x: 852, y: 20}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1086401350
 MonoBehaviour:
@@ -6346,7 +6346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 1}
+  m_Color: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 0.19607843}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -6387,8 +6387,8 @@ MonoBehaviour:
   ActiveBeatPrefab: {fileID: 1541330792976544, guid: 35156a2da395378408ff98d8a9323ae3,
     type: 2}
   Tempo: 160
-  SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 1}
-  FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 1}
+  SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.19607843}
+  FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.19607843}
 --- !u!114 &1086401354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8435,7 +8435,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 517, y: -40}
+  m_AnchoredPosition: {x: 426, y: -40}
   m_SizeDelta: {x: 124, y: 65}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1331504072
@@ -11443,7 +11443,7 @@ GameObject:
   - component: {fileID: 1992476943}
   - component: {fileID: 1992476942}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11479,7 +11479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

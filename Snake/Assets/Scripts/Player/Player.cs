@@ -119,6 +119,7 @@ public class Player : MonoBehaviour
     private int _movementMultiplier;
     private BeatIndicator _beatIndicator;
     private int _health;
+    public List<Segment> _segments;
 
     /*private Button[] _buttons = {
         new Button(Vector2.left, KeyCode.LeftArrow),
@@ -129,11 +130,13 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        _segments = new List<Segment>();
         _beatIndicator = MainPanel.Instance.BeatIndicator;
         _gridPlayground = FindObjectOfType<GridPlayground>();
         _playerCollider = GetComponent<CircleCollider2D>();
 
         HeadSegment = Instantiate(SegmentPrefab, transform).GetComponent<Segment>();
+        _segments.Add(HeadSegment);
         HeadSegment.Center.enabled = true;
         Destroy(HeadSegment.GetComponent<BoxCollider2D>());
 
@@ -411,7 +414,7 @@ public class Player : MonoBehaviour
         var newSegment = Instantiate(SegmentPrefab, spawnPosition, Quaternion.identity).GetComponent<Segment>();
         //newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
         newSegment.transform.SetParent(_segmentsContainer, true);
-
+        _segments.Add(newSegment);
         var pastLastSegment = _lastSegment;
         _lastSegment.NextSegment = newSegment;
         newSegment.PreviouSegment = pastLastSegment;
@@ -464,6 +467,17 @@ public class Player : MonoBehaviour
             if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.StartMoves)
             {
                 MainManager.Instance.PlayerNamePanel.ToggleConfirm(true);
+            }
+        }
+    }
+
+    public void PulseHeadSegment()
+    {
+        for (int i = 0; i < _segments.Count; i++)
+        {
+            if (_segments[i].Center.GetComponent<SpriteRenderer>().enabled)
+            {
+                _segments[i].Center.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f);
             }
         }
     }
