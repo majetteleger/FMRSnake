@@ -4550,7 +4550,7 @@ MonoBehaviour:
     Right: "changer caract\xE8re"
     Down: changer lettre
     Left: "changer caract\xE8re"
-  BuildYourSnakeCameraOffset: {x: -7, y: 0.85}
+  BuildYourSnakeCameraOffset: {x: -7, y: 1.19}
   PlaySubPanel: {fileID: 180480001}
   BeatIndicator: {fileID: 1086401352}
   HealthGauge: {fileID: 1787526790}

@@ -208,7 +208,9 @@ public class MainManager : MonoBehaviour
         UpdateSelectedLine(true);
         PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
+
         Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
+
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
         PrepMovesExecuted = 0;
 
@@ -263,11 +265,11 @@ public class MainManager : MonoBehaviour
             Player.Destroy();
         }
 
-        var approximatePosition = BuildYourSnakeAnchor.transform.position + new Vector3(MainPanel.Instance.BuildYourSnakeCameraOffset.x, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
+        var approximatePosition = BuildYourSnakeAnchor.transform.position + new Vector3(0f, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
         approximatePosition.z = 0f;
 
-        var spawnPosition = FindNearestCellPosition(approximatePosition);
-
+        var spawnPosition = FindNearestCellPosition(approximatePosition, StartMoves);
+        
         Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
     }
     
@@ -331,12 +333,12 @@ public class MainManager : MonoBehaviour
         }
     }
 
-    private Vector3 FindNearestCellPosition(Vector3 approximatePosition)
+    private Vector3 FindNearestCellPosition(Vector3 approximatePosition, int leftGridOffset = 0)
     {
         var gridCells = Physics2D.OverlapCircleAll(approximatePosition, GridPlayground.CellSize).Select(x => x.transform).ToArray();
 
         var distance = float.MaxValue;
-        var resultCell = (Transform) null;
+        var resultCell = (GridCell) null;
 
         foreach (var gridCell in gridCells)
         {
@@ -345,10 +347,25 @@ public class MainManager : MonoBehaviour
             if (tempDistance < distance)
             {
                 distance = tempDistance;
-                resultCell = gridCell;
+                resultCell = gridCell.GetComponent<GridCell>();
             }
         }
 
-        return resultCell.position;
+        var newAnchorPosition = resultCell.transform.position - new Vector3(0f, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
+        newAnchorPosition.z = -10f;
+
+        BuildYourSnakeAnchor.position = newAnchorPosition;
+
+        for (var i = 0; i < leftGridOffset; i++)
+        {
+            if (resultCell == null)
+            {
+                return Vector3.zero;
+            }
+
+            resultCell = resultCell.GetAdjacentCell(ObstacleShape.Direction.Left);
+        }
+
+        return resultCell == null ? Vector3.zero : resultCell.transform.position;
     }
 }
