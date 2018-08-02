@@ -217,6 +217,7 @@ public class Player : MonoBehaviour
         if (food != null)
         {
             GiveScore(food.Zone.ZoneModifier.FoodScore, false, true);
+            _gridPlayground.Foods.Remove(food);
             food.Zone.FoodObjects.Remove(food);
             food.Zone.TryClear();
             Destroy(other.gameObject);

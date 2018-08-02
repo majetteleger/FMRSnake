@@ -35,6 +35,8 @@ public class Obstacle : MonoBehaviour
         }
 
         GridPlayground.Instance.ObstaclesSpawned--;
+        GridPlayground.Instance.Obstacles.Remove(this);
+
         Cell.Content = null;
 
         foreach (var cellTileSection in Cell.TileSections)

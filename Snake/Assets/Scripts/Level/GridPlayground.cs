@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using DG.Tweening;
 
 public class GridPlayground : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class GridPlayground : MonoBehaviour
     public float AroundPlayerThreshold;
     public float ClosePlayerThreshold;
     public ObstacleShape[] ObstacleShapes;
+    public List<Food> Foods { get; set; }
+    public List<Obstacle> Obstacles { get; set; }
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
     [SerializeField]
@@ -49,6 +52,9 @@ public class GridPlayground : MonoBehaviour
 
         _gridWidth = BackgroundRenderer.sprite.rect.size.x / 95f;
         _gridHeight = BackgroundRenderer.sprite.rect.size.y / 95f;
+
+        Obstacles = new List<Obstacle>();
+        Foods = new List<Food>();
 
         for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
         {
@@ -95,6 +101,7 @@ public class GridPlayground : MonoBehaviour
     private void Start()
 	{
 	    _zoneSpawnTimer = ZoneSpawnTime;
+
         _obstacleSpawnTimer = ObstacleSpawnTime;
     }
 	
@@ -136,25 +143,27 @@ public class GridPlayground : MonoBehaviour
 	
     private Obstacle SpawnObstacle(GridCell cell, bool permanent = false)
     {
-        var newObstacle = Instantiate(ObstaclePrefab, cell.transform);
-        cell.Content = newObstacle;
-        newObstacle.GetComponent<Obstacle>().Cell = cell;
-        newObstacle.GetComponent<Obstacle>().Permanent = permanent;
+        var newObstacle = Instantiate(ObstaclePrefab, cell.transform).GetComponent<Obstacle>();
+        cell.Content = newObstacle.gameObject;
+        newObstacle.Cell = cell;
+        newObstacle.Permanent = permanent;
+        Obstacles.Add(newObstacle);
 
         if (!permanent)
         {
             ObstaclesSpawned++;
         }
         
-        return newObstacle.GetComponent<Obstacle>();
+        return newObstacle;
     }
     
     private Food SpawnFood(GridCell cell)
 	{
-        var newFood = Instantiate(FoodPrefab, cell.transform);
-        cell.Content = newFood;
+        var newFood = Instantiate(FoodPrefab, cell.transform).GetComponent<Food>();
+        Foods.Add(newFood);
+        cell.Content = newFood.gameObject;
 
-        return newFood.GetComponent<Food>();
+        return newFood;
     }
 
     private GridCell GetRandomEmptyCell(GridCell[] sourceCells)
@@ -280,7 +289,31 @@ public class GridPlayground : MonoBehaviour
         for (int i = 0; i < _cells.Length; i++)
         {
             _cells[i].ZoneModifier = NoneZoneModifier;
+
+            var food = _cells[i].Content.GetComponent<Food>();
+
+            if (food != null)
+            {
+                Foods.Remove(food);
+            }
+
             _cells[i].Modify();
+        }
+    }
+
+    public void PulseObstacles()
+    {
+        for (int i = 0; i < Obstacles.Count; i++)
+        {
+            Obstacles[i].transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f);
+        }
+    }
+
+    public void PulseFoods()
+    {
+        for (int i = 0; i < Foods.Count; i++)
+        {
+            Foods[i].transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f);
         }
     }
 }

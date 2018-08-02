@@ -31,6 +31,8 @@ public class ActiveBeat : MonoBehaviour {
                 if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
                 {
                     MainManager.Instance.Player.PulseHeadSegment();
+                    GridPlayground.Instance.PulseObstacles();
+                    GridPlayground.Instance.PulseFoods();
                     AudioManager.Instance.PlayActiveBeat();
                     HasPlayed = true;
                 }
