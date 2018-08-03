@@ -37,6 +37,7 @@ public class MainManager : MonoBehaviour
     public float TransitionTime;
     public int StartSegments;
     public int StartMoves;
+    public float PulseFactor;
 
     [Header("Camera Anchors")]
     public Transform MainMenuAnchor;

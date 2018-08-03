@@ -29,7 +29,7 @@ public class GridCell : MonoBehaviour
     public Sprite BlankTileSectionSprite;
 
     public ZoneModifier ZoneModifier { get; set; }
-    public GameObject Content { get; set; }
+    public GameObject Content;/* { get; set; }*/
     public bool IsBorder { get; set; }
 
     private void Start()

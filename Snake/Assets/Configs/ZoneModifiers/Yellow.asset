@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color: {r: 1, g: 1, b: 0, a: 1}
   Radius: 3
-  FoodSpawnCount: 4
+  FoodSpawnCount: 5
   ClearBaseScore: 100
   FoodScore: 50
   Bar: {fileID: 11400000, guid: 73cd8a9e238a6174a8dc29c4d2a619c6, type: 2}

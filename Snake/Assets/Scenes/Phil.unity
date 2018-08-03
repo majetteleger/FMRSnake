@@ -10786,8 +10786,8 @@ MonoBehaviour:
   MaxZoneSpawned: 20
   ObstacleSpawnTime: 3
   MaxObstaclesSpawned: 40
-  AroundPlayerThreshold: 5
-  ClosePlayerThreshold: 2
+  AroundPlayerThreshold: 6
+  ClosePlayerThreshold: 3
   ObstacleShapes:
   - {fileID: 11400000, guid: 3061ac252930e5543b63ebfd8b23c26b, type: 2}
   - {fileID: 11400000, guid: ca999cbe07417084986128e7555888f4, type: 2}

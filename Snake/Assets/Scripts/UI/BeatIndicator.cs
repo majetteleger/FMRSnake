@@ -201,6 +201,7 @@ public class BeatIndicator : MonoBehaviour {
         else
         {
             metronomeDummy.GetComponent<Image>().color = FailureColor;
+            MainManager.Instance.Player.MovementMultiplier -= MainManager.Instance.Player.MultiplerDecreaseOnMiss;
         }
 
         metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));

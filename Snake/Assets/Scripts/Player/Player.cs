@@ -488,7 +488,7 @@ public class Player : MonoBehaviour
         {
             if (_segments[i].Center.GetComponent<SpriteRenderer>().enabled)
             {
-                _segments[i].Center.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f);
+                _segments[i].Center.transform.DOPunchScale(Vector3.one * MainManager.Instance.PulseFactor, 0.2f);
             }
         }
     }
