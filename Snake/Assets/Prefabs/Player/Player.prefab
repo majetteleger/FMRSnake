@@ -120,7 +120,7 @@ MonoBehaviour:
   SetupMoveTime: 0.4
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
-  MaxHealth: 10000
+  MaxHealth: 100
   HealthDecreaseOnMiss: 5
   HealthIncreaseOnHit: 5
   MaxMovementMultipler: 10

@@ -34,11 +34,6 @@ public class Zone : MonoBehaviour
     {
         foreach (var cell in GridCells)
         {
-            //if (cell.Content == MainManager.Instance.Player)
-            //{
-            //    MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
-            //}
-
             cell.ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
             cell.Modify();
         }

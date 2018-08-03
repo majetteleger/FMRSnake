@@ -5554,6 +5554,7 @@ MonoBehaviour:
   TransitionTime: 1
   StartSegments: 3
   StartMoves: 11
+  PulseFactor: 0.2
   MainMenuAnchor: {fileID: 666853905}
   BuildYourSnakeAnchor: {fileID: 1423733471}
   LeaderBoardAnchor: {fileID: 787414671}
