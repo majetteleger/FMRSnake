@@ -241,6 +241,7 @@ public class MainPanel : MonoBehaviour
             LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
 
             LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
+            LeaderboardEntries[uiEntryIndex].Stripe.color = leaderBoardEntry.Color;
             LeaderboardEntries[uiEntryIndex].gameObject.SetActive(true);
 
             uiEntryIndex++;
@@ -270,6 +271,7 @@ public class MainPanel : MonoBehaviour
             LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
 
             LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
+            LeaderboardEntries[uiEntryIndex].Stripe.color = leaderBoardEntry.Color;
             LeaderboardEntries[uiEntryIndex].gameObject.SetActive(true);
 
             uiEntryIndex++;

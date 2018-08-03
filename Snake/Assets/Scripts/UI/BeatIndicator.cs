@@ -9,20 +9,22 @@ public class BeatIndicator : MonoBehaviour {
 
     public Bar BaseBar;
     public Metronome Metronome;
+    public GameObject DummyMetronomePrefab;
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
+    public Color SuccessColor;
+    public Color FailureColor;
 
     public Bar Bar { get; set; }
     public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
     public bool UpdateBarAtNextBeat { get; set; }
+    public List<PassiveBeat> PassiveBeats { get; set; }
 
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
-    private List<PassiveBeat> _passiveBeats;
     private List<ActiveBeat> _activeBeats;
-    private List<AudioSource> _beatSources;
 
     // Use this for initialization
     void Start () {
@@ -45,18 +47,18 @@ public class BeatIndicator : MonoBehaviour {
 
     private void MoveMetronome()
     {
-        Metronome.GetComponent<RectTransform>().DOAnchorPosX(_passiveBeats[_passiveBeats.Count - 1].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance, Tempo / 60 * 2).SetEase(Ease.Linear).OnComplete(ResetMetronome);
+        Metronome.GetComponent<RectTransform>().DOAnchorPosX(PassiveBeats[PassiveBeats.Count - 1].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance, Tempo / 60 * 2).SetEase(Ease.Linear).OnComplete(ResetMetronome);
     }
 
     private void ResetMetronome()
     {
         Metronome.GetComponent<RectTransform>().anchoredPosition = _metronomeStartPos;
 
-        AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MetronomeReset);
+        //AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MetronomeReset);
 
-        for (int i = 0; i < _passiveBeats.Count; i++)
+        for (int i = 0; i < PassiveBeats.Count; i++)
         {
-            _passiveBeats[i].HasPlayed = false;
+            PassiveBeats[i].HasPlayed = false;
         }
 
         for (int i = 0; i < _activeBeats.Count; i++)
@@ -70,15 +72,15 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreatePassiveBeats()
     {
-        if (_passiveBeats != null && _passiveBeats.Count != 0)
+        if (PassiveBeats != null && PassiveBeats.Count != 0)
         {
-            for (int i = 0; i < _passiveBeats.Count; i++)
+            for (int i = 0; i < PassiveBeats.Count; i++)
             {
-                Destroy(_passiveBeats[i].gameObject);
+                Destroy(PassiveBeats[i].gameObject);
             }
         }
 
-        _passiveBeats = new List<PassiveBeat>();
+        PassiveBeats = new List<PassiveBeat>();
 
         for (int i = 0; i < 9; i++)
         {
@@ -92,7 +94,7 @@ public class BeatIndicator : MonoBehaviour {
             }
 
             var passiveBeat = Instantiate(PassiveBeatPrefab, transform).GetComponent<PassiveBeat>();
-            _passiveBeats.Add(passiveBeat);
+            PassiveBeats.Add(passiveBeat);
             passiveBeat.name = "PassiveBeat " + (i - 1).ToString();
 
             passiveBeat.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, yPos);
@@ -105,7 +107,7 @@ public class BeatIndicator : MonoBehaviour {
     {
         var yPos = 0;
         var xPos = - Screen.width / 2;
-        _halfDistance = (Vector2.Distance(_passiveBeats[4].GetComponent<RectTransform>().anchoredPosition, _passiveBeats[5].GetComponent<RectTransform>().anchoredPosition)) / 2;
+        _halfDistance = (Vector2.Distance(PassiveBeats[4].GetComponent<RectTransform>().anchoredPosition, PassiveBeats[5].GetComponent<RectTransform>().anchoredPosition)) / 2;
         _metronomeStartPos = new Vector2(xPos + _halfDistance, yPos);
     }
 
@@ -153,14 +155,14 @@ public class BeatIndicator : MonoBehaviour {
                 if (i % 2 == 0) // this is a BEAT in the first half
                 {
                     var yPos = 0;
-                    var xPos = _passiveBeats[i / 2].GetComponent<RectTransform>().anchoredPosition.x;
+                    var xPos = PassiveBeats[i / 2].GetComponent<RectTransform>().anchoredPosition.x;
                     var anchoredPos = new Vector2(xPos, yPos);
                     InstantiateBeat(anchoredPos, false);
                 }
                 else // this is an OFFBEAT in the first half
                 {
                     var yPos = 0;
-                    var xPos = _passiveBeats[Mathf.FloorToInt(i / 2)].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
+                    var xPos = PassiveBeats[Mathf.FloorToInt(i / 2)].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
                     var anchoredPos = new Vector2(xPos, yPos);
                     InstantiateBeat(anchoredPos, true);
                 }
@@ -168,19 +170,41 @@ public class BeatIndicator : MonoBehaviour {
                 if (i % 2 == 0) // this is a BEAT in the second half
                 {
                     var yPos = 0;
-                    var xPos = _passiveBeats[i/2 + 4].GetComponent<RectTransform>().anchoredPosition.x;
+                    var xPos = PassiveBeats[i/2 + 4].GetComponent<RectTransform>().anchoredPosition.x;
                     var anchoredPos = new Vector2(xPos, yPos);
                     InstantiateBeat(anchoredPos, false);
                 }
                 else // this is an OFFBEAT in the second half
                 {
                     var yPos = 0;
-                    var xPos = _passiveBeats[Mathf.FloorToInt(i / 2) + 4].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
+                    var xPos = PassiveBeats[Mathf.FloorToInt(i / 2) + 4].GetComponent<RectTransform>().anchoredPosition.x + _halfDistance;
                     var anchoredPos = new Vector2(xPos, yPos);
                     InstantiateBeat(anchoredPos, true);
                 }
             }
         }
+    }
+
+    public void CreateDummyMetronome(bool onBeat)
+    {
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        {
+            return;
+        }
+
+        var metronomeDummy = Instantiate(DummyMetronomePrefab, Metronome.transform.position, Quaternion.identity, transform);
+
+        if (onBeat)
+        {
+            metronomeDummy.GetComponent<Image>().color = SuccessColor;
+        }
+        else
+        {
+            metronomeDummy.GetComponent<Image>().color = FailureColor;
+        }
+
+        metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));
+        metronomeDummy.transform.DOScale(Vector3.one * 1.3f, 0.5f);
     }
 
     private void InstantiateBeat(Vector2 anchoredPosition, bool isOffBeat)
