@@ -290,13 +290,16 @@ public class GridPlayground : MonoBehaviour
         {
             _cells[i].ZoneModifier = NoneZoneModifier;
 
-            var food = _cells[i].Content.GetComponent<Food>();
-
-            if (food != null)
+            if (_cells[i].Content != null)
             {
-                Foods.Remove(food);
-            }
+                var food = _cells[i].Content.GetComponent<Food>();
 
+                if (food != null)
+                {
+                    Foods.Remove(food);
+                }
+            }
+            
             _cells[i].Modify();
         }
     }

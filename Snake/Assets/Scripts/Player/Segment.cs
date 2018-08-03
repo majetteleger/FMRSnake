@@ -8,12 +8,13 @@ public class Segment : MonoBehaviour
 {
     public Transform Shape;
     public SpriteRenderer Center;
+    public MeshFilter Quad;
 
     public Segment PreviouSegment { get; set; }
     public Segment NextSegment { get; set; }
     public GridCell CurrentCell { get; set; }
     public DummySegment[] FrontDummySegments { get; set; }
-
+    
     private void Start()
     {
         Shape.GetComponent<SpriteRenderer>().size = new Vector2(GridPlayground.Instance.CellSize, GridPlayground.Instance.CellSize);
@@ -21,16 +22,22 @@ public class Segment : MonoBehaviour
 
     private void Update()
     {
-        /*if (transform.hasChanged && FrontDummySegments != null)
+        if (transform.hasChanged && FrontDummySegments != null)
         {
             for (var i = 0; i < FrontDummySegments.Length; i++)
             {
                 var frontDummySegment = FrontDummySegments[i];
-                frontDummySegment.UpdatePosition(PreviouSegment.transform.position, transform.position, i, MainManager.Instance.Player.IntermediateSegments, DummySegment.UpdateType.HorizontalToVertical);
+
+                frontDummySegment.UpdatePosition(
+                    PreviouSegment.transform.position, 
+                    transform.position, 
+                    i, 
+                    MainManager.Instance.Player.IntermediateSegments
+                );
             }
 
             transform.hasChanged = false;
-        }*/
+        }
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -56,37 +63,11 @@ public class Segment : MonoBehaviour
 
     public void Move(Vector3 destination, float time, bool mainMenu = true)
     {
-        /*if (FrontDummySegments != null)
-        {
-            foreach (var frontDummySegment in FrontDummySegments)
-            {
-                frontDummySegment.InitializeMove();
-            }
-        }*/
-
-        /*var movement = MainManager.Instance.Player.HeadSegment == this 
-            ? transform.parent.DOMove(destination, MainManager.Instance.Player.MoveTime) 
-            : transform.DOMove(destination, MainManager.Instance.Player.MoveTime);*/
-
-        transform.DOMove(destination, time);
-
-       // movement.onComplete += MoveCallback;
-
+        transform.DOMove(destination, time).SetEase(MainManager.Instance.Player.MoveCurve);
+        
         if (NextSegment != null)
         {
             NextSegment.Move(transform.position, time);
         }
     }
-
-    /*private void MoveCallback()
-    {
-        if (FrontDummySegments != null)
-        {
-            for (var i = 0; i < FrontDummySegments.Length; i++)
-            {
-                var frontDummySegment = FrontDummySegments[i];
-                frontDummySegment.SetForNextMove(i, MainManager.Instance.Player.IntermediateSegments);
-            }
-        }
-    }*/
 }

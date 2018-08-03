@@ -24,7 +24,9 @@ public class Player : MonoBehaviour
 
     public GameObject SegmentPrefab;
     public GameObject DummySegmentPrefab;
-    public float MoveTime;
+    public AnimationCurve MoveCurve;
+    public float PlayMoveTime;
+    public float SetupMoveTime;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
     public int MaxHealth;
@@ -139,7 +141,7 @@ public class Player : MonoBehaviour
         _segments.Add(HeadSegment);
         HeadSegment.Center.enabled = true;
         Destroy(HeadSegment.GetComponent<BoxCollider2D>());
-
+        
         _lastSegment = HeadSegment;
 
         _moveQueue = new Queue<Vector3>();
@@ -391,16 +393,16 @@ public class Player : MonoBehaviour
         LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
-        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MoveTime * 4);
+        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime).SetEase(MoveCurve);
 
-        HeadSegment.Move(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MoveTime * 4);
+        HeadSegment.Move(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime);
 
         if (MainManager.Instance.CurrentState == MainManager.GameState.Play)
         {
             var cameraMoveDestination = playerMoveDestination;
             cameraMoveDestination.z = -10f;
 
-            Camera.main.transform.DOMove(cameraMoveDestination, MoveTime);
+            Camera.main.transform.DOMove(cameraMoveDestination, PlayMoveTime).SetEase(MoveCurve);
         }
         
         movement.onComplete += MovementCallback;
@@ -408,14 +410,13 @@ public class Player : MonoBehaviour
     
     public void Grow()
     {
-        var spawnPosition = /*MainManager.Instance.CurrentState == MainManager.GameState.Play
-            ? _lastSegment.PreviouSegment.transform.position
-            :*/ _lastSegment.transform.position;
+        var spawnPosition = _lastSegment.transform.position;
 
         var newSegment = Instantiate(SegmentPrefab, spawnPosition, Quaternion.identity).GetComponent<Segment>();
-        //newSegment.FrontDummySegments = new DummySegment[IntermediateSegments];
+        newSegment.FrontDummySegments = new DummySegment[IntermediateSegments + 1];
         newSegment.transform.SetParent(_segmentsContainer, true);
         _segments.Add(newSegment);
+
         var pastLastSegment = _lastSegment;
         _lastSegment.NextSegment = newSegment;
         newSegment.PreviouSegment = pastLastSegment;
@@ -434,15 +435,24 @@ public class Player : MonoBehaviour
             CenterAppearProbability += CenterAppearProbabilityIncrement;
         }
 
-        /*for (var i = 0; i < IntermediateSegments; i++)
+        for (var i = 0; i < IntermediateSegments + 1; i++)
         {
             var newDummySegment = Instantiate(DummySegmentPrefab, _lastSegment.transform.position, Quaternion.identity).GetComponent<DummySegment>();
             newDummySegment.GetComponentInChildren<SpriteRenderer>().color = GetComponentInChildren<SpriteRenderer>().color;
-            newDummySegment.Initialize(newSegment.PreviouSegment, newSegment, i, IntermediateSegments, MainManager.Instance.CurrentState == MainManager.GameState.Play ? MoveTime : MainManager.Instance.TransitionTime);
+
+            newDummySegment.Initialize(
+                newSegment.PreviouSegment, 
+                newSegment, 
+                i, 
+                IntermediateSegments, 
+                MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime,
+                MoveCurve
+            );
+
             newDummySegment.transform.SetParent(_segmentsContainer, true);
 
             newSegment.FrontDummySegments[i] = newDummySegment;
-        }*/
+        }
     }
 
     private void MovementCallback()

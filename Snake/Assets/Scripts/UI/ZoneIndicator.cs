@@ -7,24 +7,21 @@ using UnityEngine.UI;
 
 public class ZoneIndicator : MonoBehaviour
 {
-    public float ScreenBorderOffset;
+    public float ScreenBorderOffsetTop;
+    public float ScreenBorderOffsetRight;
+    public float ScreenBorderOffsetDown;
+    public float ScreenBorderOffsetLeft;
     public Image FillImage;
     public float FadeTime;
     public float AlphaValue;
-    //public float DoMoveDistanceThreshold;
-    //public float DoMoveTime;
 
     private Zone _targetZone;
     private CanvasGroup _canvasGroup;
     private bool _isOn;
-    //private ZoneIndicatorShield _shield;
-    //private Rect[] _otherZoneIndicatorShieldRects;
-    //private Rect _thisZoneIndicatorRect;
     
     public void Initialize(Zone targetZone)
     {
         _targetZone = targetZone;
-        //_shield = GetComponent<ZoneIndicatorShield>();
             
         FillImage.color = targetZone.ZoneModifier.Color;
         _canvasGroup = GetComponent<CanvasGroup>();
@@ -45,10 +42,7 @@ public class ZoneIndicator : MonoBehaviour
             _isOn = false;
             return;
         }
-
-        /*_otherZoneIndicatorShieldRects = FindObjectsOfType<ZoneIndicatorShield>().Where(x => x.GetComponentInParent<ZoneIndicator>() == null || x.GetComponentInParent<ZoneIndicator>() != this)
-            .Select(x => x.GetRect()).ToArray();*/
-
+        
         UpdateTransform();
 
         if (!_isOn)
@@ -60,47 +54,17 @@ public class ZoneIndicator : MonoBehaviour
 
     private void UpdateTransform()
     {
-        // can we clamp by pixel value and not by percentage of screen?
-        // can we avoid overlap with other ui elements?
-
-        var zonePosition = Camera.main.WorldToViewportPoint(_targetZone.transform.position);
+        var zonePosition = Camera.main.WorldToScreenPoint(_targetZone.transform.position);
         var newPosition = new Vector3
         {
-            x = Mathf.Clamp(zonePosition.x, 0f + ScreenBorderOffset, 1f - ScreenBorderOffset),
-            y = Mathf.Clamp(zonePosition.y, 0f + ScreenBorderOffset, 1f - ScreenBorderOffset)
+            x = Mathf.Clamp(zonePosition.x, 0f + ScreenBorderOffsetLeft, Screen.width - ScreenBorderOffsetRight),
+            y = Mathf.Clamp(zonePosition.y, 0f + ScreenBorderOffsetDown, Screen.height - ScreenBorderOffsetTop)
         };
 
-        var newScreenPosition = Camera.main.ViewportToScreenPoint(newPosition);
-
-        /*var isOverlappingAnother = false;
-
-        if (_otherZoneIndicatorShieldRects != null)
-        {
-            _thisZoneIndicatorRect = _shield.GetRect();
-
-            foreach (var otherZoneIndicatorShieldRect in _otherZoneIndicatorShieldRects)
-            {
-                isOverlappingAnother = _thisZoneIndicatorRect.Overlaps(otherZoneIndicatorShieldRect);
-
-                if (isOverlappingAnother)
-                {
-                    break;
-                }
-            }
-        }*/
-
-        /*if (!isOverlappingAnother)
-        {
-            if (Vector3.Distance(transform.position, newScreenPosition) > DoMoveDistanceThreshold)
-            {
-                transform.DOMove(newScreenPosition, DoMoveTime);
-            }
-            else
-            {*/
-        transform.position = newScreenPosition;
-            /*}
-        }*/
+        var newScreenPosition = newPosition;
         
+        transform.position = newScreenPosition;
+
         var targetPosLocal = Camera.main.transform.InverseTransformPoint(_targetZone.transform.position);
         var targetAngle = -Mathf.Atan2(targetPosLocal.x, targetPosLocal.y) * Mathf.Rad2Deg - 90;
 
