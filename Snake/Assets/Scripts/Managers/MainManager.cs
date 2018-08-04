@@ -69,6 +69,7 @@ public class MainManager : MonoBehaviour
     private int _selectedLineIndex;
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
+    private Vector3 BuildYourSnakeActualAnchor;
 
     private void Awake()
     {
@@ -210,7 +211,7 @@ public class MainManager : MonoBehaviour
         PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
 
-        Camera.main.transform.DOMove(BuildYourSnakeAnchor.position, TransitionTime);
+        Camera.main.transform.DOMove(BuildYourSnakeActualAnchor, TransitionTime);
 
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
         PrepMovesExecuted = 0;
@@ -336,6 +337,8 @@ public class MainManager : MonoBehaviour
 
     private Vector3 FindNearestCellPosition(Vector3 approximatePosition, int leftGridOffset = 0)
     {
+        BuildYourSnakeActualAnchor = BuildYourSnakeAnchor.position;
+
         var gridCells = Physics2D.OverlapCircleAll(approximatePosition, GridPlayground.CellSize).Select(x => x.transform).ToArray();
 
         var distance = float.MaxValue;
@@ -355,7 +358,7 @@ public class MainManager : MonoBehaviour
         var newAnchorPosition = resultCell.transform.position - new Vector3(0f, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
         newAnchorPosition.z = -10f;
 
-        BuildYourSnakeAnchor.position = newAnchorPosition;
+        BuildYourSnakeActualAnchor = newAnchorPosition;
 
         for (var i = 0; i < leftGridOffset; i++)
         {

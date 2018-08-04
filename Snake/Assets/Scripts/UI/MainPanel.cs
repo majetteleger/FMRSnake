@@ -36,6 +36,7 @@ public class MainPanel : MonoBehaviour
 
     [Header("General")]
 
+    public Image Title;
     public Text Header;
     public Text UpControlText;
     public Image UpControlImage;
@@ -108,12 +109,14 @@ public class MainPanel : MonoBehaviour
             leaderboardEntry.gameObject.SetActive(false);
         }
 
+        Title.gameObject.SetActive(true);
         Header.text = MainMenuHeader;
         MainMenuControls.ApplyControls();
     }
 
     public void TransitionToBuildYourSnake()
     {
+        Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
         Header.text = BuildYourSnakeHeader;
@@ -122,6 +125,7 @@ public class MainPanel : MonoBehaviour
 
     public void TransitionToPlay()
     {
+        Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(true);
         LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
@@ -134,6 +138,7 @@ public class MainPanel : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
+        Title.gameObject.SetActive(false);
         GridPlayground.Instance.ResetZones();
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
