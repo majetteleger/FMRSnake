@@ -8,9 +8,11 @@ public class Food : MonoBehaviour
     public SpriteRenderer SpriteRenderer;
 
     public Zone Zone { get; set; }
+    public bool DontPulse { get; set; }
 
     private void Start()
     {
         SpriteRenderer.sprite = Sprites[Random.Range(0, Sprites.Length)];
+        DontPulse = true;
     }
 }

@@ -81,6 +81,7 @@ public class GridPlayground : MonoBehaviour
                         section.Renderer.sprite = newGridCell.BlankTileSectionSprite;
                         section.Renderer.color = new Color(newGridCell.ObstacleColor.r, newGridCell.ObstacleColor.g, newGridCell.ObstacleColor.b, newGridCell.ColorAlpha);
                         section.Renderer.enabled = true;
+                        section.Renderer.DOFade(newGridCell.ColorAlpha, MainManager.Instance.PulseTime);
                     }
                 }
             }
@@ -149,6 +150,8 @@ public class GridPlayground : MonoBehaviour
         newObstacle.Permanent = permanent;
         Obstacles.Add(newObstacle);
 
+        newObstacle.transform.DOScale(1f, MainManager.Instance.PulseTime).OnComplete(() => newObstacle.DontPulse = false);
+
         if (!permanent)
         {
             ObstaclesSpawned++;
@@ -162,6 +165,8 @@ public class GridPlayground : MonoBehaviour
         var newFood = Instantiate(FoodPrefab, cell.transform).GetComponent<Food>();
         Foods.Add(newFood);
         cell.Content = newFood.gameObject;
+
+	    newFood.transform.DOScale(0.9f, MainManager.Instance.PulseTime).OnComplete(() => newFood.DontPulse = false);
 
         return newFood;
     }
@@ -308,7 +313,15 @@ public class GridPlayground : MonoBehaviour
     {
         for (int i = 0; i < Obstacles.Count; i++)
         {
-            Obstacles[i].transform.DOPunchScale(Vector3.one * MainManager.Instance.PulseFactor, 0.2f);
+            var Obstacle = Obstacles[i];
+
+            if (Obstacle.DontPulse)
+            {
+                continue;
+            }
+
+            Obstacle.transform.DOPunchScale(Vector3.one * MainManager.Instance.PulseFactor, MainManager.Instance.PulseTime)
+                .OnComplete(() => Obstacle.transform.localScale = Vector3.one);
         }
     }
 
@@ -316,7 +329,15 @@ public class GridPlayground : MonoBehaviour
     {
         for (int i = 0; i < Foods.Count; i++)
         {
-            Foods[i].transform.DOPunchScale(Vector3.one * MainManager.Instance.PulseFactor, 0.2f);
+            var food = Foods[i];
+
+            if (food.DontPulse)
+            {
+                continue;
+            }
+
+            food.transform.DOPunchScale(Vector3.one * 0.9f * MainManager.Instance.PulseFactor, MainManager.Instance.PulseTime)
+                .OnComplete(() => food.transform.localScale = Vector3.one * 0.9f);
         }
     }
 }

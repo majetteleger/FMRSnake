@@ -39,7 +39,20 @@ public class PlayerNamePanel : MonoBehaviour
             characterSlot.Character.text = "A";
         }
     }
-    
+
+    private void OnDisable()
+    {
+        foreach (var characterSlot in CharacterSlots)
+        {
+            if (characterSlot.IsConfirm || characterSlot.IsBack)
+            {
+                continue;
+            }
+
+            characterSlot.ResetSlot();
+        }
+    }
+
     public void Input(KeyCode keyCode)
     {
         switch (keyCode)
@@ -58,6 +71,7 @@ public class PlayerNamePanel : MonoBehaviour
                     _characterSlotContentIndices[_currentlySelectedSlotIndex] = _alphabet.Length - 1;
                 }
 
+                CharacterSlots[_currentlySelectedSlotIndex].PressUp();
                 UpdateCharacterSlot();
 
                 break;
@@ -95,6 +109,7 @@ public class PlayerNamePanel : MonoBehaviour
                     _characterSlotContentIndices[_currentlySelectedSlotIndex] = 0;
                 }
 
+                CharacterSlots[_currentlySelectedSlotIndex].PressDown();
                 UpdateCharacterSlot();
 
                 break;

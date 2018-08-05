@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class GridCell : MonoBehaviour
@@ -69,8 +70,7 @@ public class GridCell : MonoBehaviour
 
             foreach (var tileSection in TileSections)
             {
-                tileSection.Renderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, ColorAlpha);
-                tileSection.Renderer.enabled = true;
+                tileSection.Renderer.color = new Color(ZoneModifier.Color.r, ZoneModifier.Color.g, ZoneModifier.Color.b, 0f);
                 var sharpTile = false;
 
                 switch (tileSection.Corner)
@@ -97,17 +97,20 @@ public class GridCell : MonoBehaviour
                 }
 
                 tileSection.Renderer.sprite = sharpTile ? BlankTileSectionSprite : tileSection.RoundedSprite;
+
+                tileSection.Renderer.enabled = true;
+                tileSection.Renderer.DOFade(ColorAlpha, MainManager.Instance.PulseTime);
             }
         }
         else if(Content == null || Content.GetComponent<Obstacle>() == null)
         {
             foreach (var tileSection in TileSections)
             {
-                tileSection.Renderer.enabled = false;
+                tileSection.Renderer.DOFade(0f, 0.1f).OnComplete(() => tileSection.Renderer.enabled = false);
             }
         }
     }
-
+    
     public void OutlineObstacle()
     {
         var obstacleUp = CheckAdjacentContent<Obstacle>(ObstacleShape.Direction.Up);
@@ -117,8 +120,8 @@ public class GridCell : MonoBehaviour
 
         foreach (var tileSection in TileSections)
         {
-            tileSection.Renderer.color = new Color(ObstacleColor.r, ObstacleColor.g, ObstacleColor.b, ColorAlpha);
-            tileSection.Renderer.enabled = true;
+            tileSection.Renderer.color = new Color(ObstacleColor.r, ObstacleColor.g, ObstacleColor.b, 0f);
+            
             var sharpTile = false;
 
             switch (tileSection.Corner)
@@ -145,6 +148,9 @@ public class GridCell : MonoBehaviour
             }
 
             tileSection.Renderer.sprite = sharpTile ? BlankTileSectionSprite : tileSection.RoundedSprite;
+
+            tileSection.Renderer.enabled = true;
+            tileSection.Renderer.DOFade(ColorAlpha, MainManager.Instance.PulseTime);
         }
     }
     
@@ -152,7 +158,7 @@ public class GridCell : MonoBehaviour
     {
         foreach (var tileSection in TileSections)
         {
-            tileSection.Renderer.enabled = false;
+            tileSection.Renderer.DOFade(0f, MainManager.Instance.PulseTime).OnComplete(() => tileSection.Renderer.enabled = false);
         }
     }
 

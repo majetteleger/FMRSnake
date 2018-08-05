@@ -222,7 +222,7 @@ public class Player : MonoBehaviour
             _gridPlayground.Foods.Remove(food);
             food.Zone.FoodObjects.Remove(food);
             food.Zone.TryClear();
-            Destroy(other.gameObject);
+            other.gameObject.transform.DOScale(0f, MainManager.Instance.PulseTime).OnComplete(() => Destroy(other.gameObject));
             QueueGrow();
         }
         else if (obstacle != null)

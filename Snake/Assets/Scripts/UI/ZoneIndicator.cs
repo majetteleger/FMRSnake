@@ -38,7 +38,7 @@ public class ZoneIndicator : MonoBehaviour
 
         if (_targetZone.IsVisibleOnScreen())
         {
-            _canvasGroup.DOFade(0f, FadeTime);
+            _canvasGroup.DOFade(0f, MainManager.Instance.PulseTime);
             _isOn = false;
             return;
         }
@@ -47,7 +47,7 @@ public class ZoneIndicator : MonoBehaviour
 
         if (!_isOn)
         {
-            _canvasGroup.DOFade(AlphaValue, FadeTime);
+            _canvasGroup.DOFade(AlphaValue, MainManager.Instance.PulseTime);
             _isOn = true;
         }
     }
