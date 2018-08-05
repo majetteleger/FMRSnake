@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42853218c6b72ea4d92eccbcfea46784, type: 3}
   m_Name: Yellow
   m_EditorClassIdentifier: 
-  Color: {r: 1, g: 1, b: 0, a: 1}
+  Color: {r: 0.9960785, g: 0.8352942, b: 0.29803923, a: 1}
   Radius: 3
   FoodSpawnCount: 5
   ClearBaseScore: 100
