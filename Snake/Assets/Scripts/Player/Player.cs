@@ -33,8 +33,9 @@ public class Player : MonoBehaviour
     public int HealthDecreaseOnMiss;
     public int HealthIncreaseOnHit;
     public int MaxMovementMultipler;
-    public int MultiplerDecreaseOnMiss;
-    public int MultiplerIncreaseOnHit;
+    public int MultiplierDecreaseOnMiss;
+    public int MultiplierIncreaseOnHit;
+    public int MultiplierDecreaseOnSpam;
     public GridCell CurrentCell;
 
     public bool HasMoved { get; set; }
@@ -376,14 +377,14 @@ public class Player : MonoBehaviour
     public void FailBeat()
     {
         Health -= HealthDecreaseOnMiss;
-        MovementMultiplier -= MultiplerDecreaseOnMiss;
+        MovementMultiplier -= MultiplierDecreaseOnMiss;
 
         //Debug.Log("--");
     }
 
     private void Move(Vector3 direction)
     {
-        MovementMultiplier += MultiplerIncreaseOnHit;
+        MovementMultiplier += MultiplierIncreaseOnHit;
         Health += HealthIncreaseOnHit;
 
         //Debug.Log("++");

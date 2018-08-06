@@ -97,8 +97,8 @@ MonoBehaviour:
   Image: {fileID: 114680917415605018}
   NormalColor: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 1}
   HighlightedColor: {r: 0.59607846, g: 0.5686275, b: 0.56078434, a: 1}
-  SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.19607843}
-  FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.19607843}
+  SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.39215687}
+  FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.39215687}
 --- !u!114 &114495255467897128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 0.19607843}
+  m_Color: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 0.39215687}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

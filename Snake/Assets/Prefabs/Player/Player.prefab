@@ -121,10 +121,11 @@ MonoBehaviour:
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
   MaxHealth: 100
-  HealthDecreaseOnMiss: 15
+  HealthDecreaseOnMiss: 10
   HealthIncreaseOnHit: 5
   MaxMovementMultipler: 10
-  MultiplerDecreaseOnMiss: 3
-  MultiplerIncreaseOnHit: 1
+  MultiplierDecreaseOnMiss: 1
+  MultiplierIncreaseOnHit: 1
+  MultiplierDecreaseOnSpam: 1
   CurrentCell: {fileID: 0}
   _segments: []
