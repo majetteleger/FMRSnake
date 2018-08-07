@@ -30,11 +30,11 @@ public class ActiveBeat : MonoBehaviour {
             {
                 if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
                 {
-                    MainManager.Instance.Player.PulseHeadSegment();
-                    GridPlayground.Instance.PulseObstacles();
-                    GridPlayground.Instance.PulseFoods();
-                    AudioManager.Instance.PlayActiveBeat();
-                    HasPlayed = true;
+                    //MainManager.Instance.Player.PulseHeadSegment();
+                    //GridPlayground.Instance.PulseObstacles();
+                    //GridPlayground.Instance.PulseFoods();
+                    //AudioManager.Instance.PlayActiveBeat();
+                    //HasPlayed = true;
                 }
             }
         }
@@ -54,6 +54,15 @@ public class ActiveBeat : MonoBehaviour {
             else
             {
                 Debug.Log("Beats overlapping");
+            }
+
+            if (!HasPlayed)
+            {
+            MainManager.Instance.Player.PulseHeadSegment();
+            GridPlayground.Instance.PulseObstacles();
+            GridPlayground.Instance.PulseFoods();
+            AudioManager.Instance.PlayActiveBeat();
+            HasPlayed = true;
             }
 
             metronome.BeatIndicator.IsHot = true;

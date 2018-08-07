@@ -257,7 +257,7 @@ public class Player : MonoBehaviour
 
     public void GiveScore(int baseScore, bool lengthMultiplication, bool movementMultiplication)
     {
-        Score += baseScore * (lengthMultiplication ? Length : 1) * (movementMultiplication ? _movementMultiplier : 1);
+        Score += (baseScore * (lengthMultiplication ? Length : 1) * (movementMultiplication ? _movementMultiplier : 1)) + UnityEngine.Random.Range(0, 6);
     }
 
     public void Die()
