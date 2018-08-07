@@ -170,6 +170,7 @@ public class MainPanel : MonoBehaviour
 
     public void UpdateMovementMultiplier(int mutliplier, bool instant)
     {
+        MovementMultiplierText.transform.localScale = Vector3.one;
         StopAllCoroutines();
 
         MovementMultiplierText.text = "x" + mutliplier;

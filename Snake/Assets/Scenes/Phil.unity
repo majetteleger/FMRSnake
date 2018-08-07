@@ -4508,7 +4508,7 @@ MonoBehaviour:
   ScoreText: {fileID: 1192918961}
   MovementMultiplierText: {fileID: 1522462813}
   ScoreUpdateTime: 0.5
-  MovementMultiplierUpdateTime: 0.5
+  MovementMultiplierUpdateTime: 0.2
   LeaderboardPanel: {fileID: 1101577780}
   EntryPrefab: {fileID: 1069191814485678, guid: fcb422bd27abf074a9cc05fc01570540,
     type: 2}
