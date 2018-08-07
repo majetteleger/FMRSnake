@@ -22,22 +22,22 @@ public class ActiveBeat : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        var metronome = other.GetComponent<Metronome>();
+        //var metronome = other.GetComponent<Metronome>();
 
-        if (metronome != null)
-        {
-            if (!HasPlayed)
-            {
-                if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
-                {
-                    //MainManager.Instance.Player.PulseHeadSegment();
-                    //GridPlayground.Instance.PulseObstacles();
-                    //GridPlayground.Instance.PulseFoods();
-                    //AudioManager.Instance.PlayActiveBeat();
-                    //HasPlayed = true;
-                }
-            }
-        }
+        //if (metronome != null)
+        //{
+        //    if (!HasPlayed)
+        //    {
+        //        if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
+        //        {
+        //            MainManager.Instance.Player.PulseHeadSegment();
+        //            GridPlayground.Instance.PulseObstacles();
+        //            GridPlayground.Instance.PulseFoods();
+        //            AudioManager.Instance.PlayActiveBeat();
+        //            HasPlayed = true;
+        //        }
+        //    }
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -66,7 +66,6 @@ public class ActiveBeat : MonoBehaviour {
             }
 
             metronome.BeatIndicator.IsHot = true;
-            //Debug.Log("ON");
         }
     }
 
