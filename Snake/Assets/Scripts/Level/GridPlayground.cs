@@ -32,12 +32,10 @@ public class GridPlayground : MonoBehaviour
     public List<Obstacle> Obstacles { get; set; }
 
     public float MoveDistance { get { return CellSize + CellSpacing; } }
-    [SerializeField]
     public int ZonesSpawned { get; set; }
     public int ObstaclesSpawned { get; set; }
 
     private Transform _zonesParent;
-    public List<Zone> _zones = new List<Zone>();
     private Player _player;
     private float _obstacleSpawnTimer;
     private float _gridHeight;
@@ -47,7 +45,9 @@ public class GridPlayground : MonoBehaviour
     
     private void Awake()
     {
-        _zonesParent = new GameObject("Zones").transform;
+        var zones = GameObject.Find("Zones");
+        _zonesParent = zones == null ? new GameObject("Segments").transform : zones.transform;
+
         Instance = this;
 
         _gridWidth = BackgroundRenderer.sprite.rect.size.x / 95f;
@@ -89,16 +89,7 @@ public class GridPlayground : MonoBehaviour
 
         _cells = GetComponentsInChildren<GridCell>();
     }
-
-    public void ResetZones()
-    {
-        for (int i = 0; i < _zones.Count; i++)
-        {
-            Destroy(_zones[i].gameObject);
-        }
-        _zones.Clear();
-    }
-
+    
     private void Start()
 	{
 	    _zoneSpawnTimer = ZoneSpawnTime;
@@ -247,21 +238,30 @@ public class GridPlayground : MonoBehaviour
             return;
         }
 
-        var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius).Where(x => x.GetComponent<GridCell>() != null).Select(x => x.GetComponent<GridCell>());
+        var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius)
+            .Where(x => x.GetComponent<GridCell>() != null)
+            .Select(x => x.GetComponent<GridCell>()
+        );
 
         foreach (var overlappedCell in overlappedCells)
         {
-            if (overlappedCell.Content != null && overlappedCell.Content.GetComponent<Obstacle>() != null)
-            {
-                if (overlappedCell.Content.GetComponent<Obstacle>().Permanent)
-                {
-                    continue;
-                }
+            var hasObstacle = overlappedCell.Content != null && overlappedCell.Content.GetComponent<Obstacle>() != null;
+            var hasPermanentObstacle = hasObstacle && overlappedCell.Content.GetComponent<Obstacle>().Permanent;
 
+            if (hasPermanentObstacle)
+            {
+                continue;
+            }
+
+            if (hasObstacle)
+            {
+                overlappedCell.ZoneModifier = randomModifier;
                 overlappedCell.Content.GetComponent<Obstacle>().Clear();
             }
-            
-            overlappedCell.ZoneModifier = randomModifier;
+            else
+            {
+                overlappedCell.ZoneModifier = randomModifier;
+            }
         }
 
         foreach (var overlappedCell in overlappedCells)
@@ -271,7 +271,6 @@ public class GridPlayground : MonoBehaviour
 
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
         newZone.Initialize(overlappedCells.ToArray(), randomModifier);
-        _zones.Add(newZone);
         newZone.transform.parent = _zonesParent;
 
         ZonesSpawned++;

@@ -9,6 +9,8 @@ public class BeatIndicator : MonoBehaviour {
 
     public Bar BaseBar;
     public Metronome Metronome;
+    public Image MetronomeImage;
+    public Image BarImage;
     public GameObject DummyMetronomePrefab;
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
@@ -25,16 +27,7 @@ public class BeatIndicator : MonoBehaviour {
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
     private List<ActiveBeat> _activeBeats;
-
-    // Use this for initialization
-    void Start () {
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-	}
-
+    
     public void StartMetronome()
     {
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
@@ -187,7 +180,7 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateDummyMetronome(bool onBeat)
     {
-        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play || !MainManager.Instance.Player.MovedOnce)
         {
             return;
         }
@@ -202,6 +195,8 @@ public class BeatIndicator : MonoBehaviour {
         {
             metronomeDummy.GetComponent<Image>().color = FailureColor;
             MainManager.Instance.Player.MovementMultiplier -= MainManager.Instance.Player.MultiplierDecreaseOnSpam;
+
+            MainManager.Instance.CameraShake.Shake(MainManager.Instance.Player.MissShakeAmount, MainManager.Instance.PulseTime);
         }
 
         metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));

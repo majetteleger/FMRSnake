@@ -14,7 +14,8 @@ public class Segment : MonoBehaviour
     public Segment NextSegment { get; set; }
     public GridCell CurrentCell { get; set; }
     public DummySegment[] FrontDummySegments { get; set; }
-    
+    public Tweener CurrentMove { get; set; }
+
     private void Start()
     {
         Shape.GetComponent<SpriteRenderer>().size = new Vector2(GridPlayground.Instance.CellSize, GridPlayground.Instance.CellSize);
@@ -63,8 +64,9 @@ public class Segment : MonoBehaviour
 
     public void Move(Vector3 destination, float time, bool mainMenu = true)
     {
-        transform.DOMove(destination, time).SetEase(MainManager.Instance.Player.MoveCurve);
-        
+        CurrentMove = transform.DOMove(destination, time).SetEase(MainManager.Instance.Player.MoveCurve);
+        CurrentMove.OnComplete(() => CurrentMove = null);
+
         if (NextSegment != null)
         {
             NextSegment.Move(transform.position, time);

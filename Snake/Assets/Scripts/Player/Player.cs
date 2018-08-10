@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using System.Linq;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
     public AnimationCurve MoveCurve;
     public float PlayMoveTime;
     public float SetupMoveTime;
+    public float DeathShrinkTime;
+    public float DeathShrinkDelay;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
     public int MaxHealth;
@@ -36,12 +39,16 @@ public class Player : MonoBehaviour
     public int MultiplierDecreaseOnMiss;
     public int MultiplierIncreaseOnHit;
     public int MultiplierDecreaseOnSpam;
-    public GridCell CurrentCell;
+    public float MissShakeAmount;
 
+    public GridCell CurrentCell { get; set; }
     public bool HasMoved { get; set; }
     public Vector3 LastDirection { get; set; }
     public float CenterAppearProbability { get; set; }
     public Segment HeadSegment { get; set; }
+    public bool MovedOnce { get; set; }
+
+    private Tweener _currentMove;
 
     public int Health
     {
@@ -122,7 +129,7 @@ public class Player : MonoBehaviour
     private int _movementMultiplier;
     private BeatIndicator _beatIndicator;
     private int _health;
-    public List<Segment> _segments;
+    private List<Segment> _segments;
 
     /*private Button[] _buttons = {
         new Button(Vector2.left, KeyCode.LeftArrow),
@@ -244,15 +251,21 @@ public class Player : MonoBehaviour
 
         if (gridCell != null)
         {
-            gridCell.Content = gameObject;
-            CurrentCell = gridCell;
-
-            if (MainPanel.Instance.BeatIndicator.Bar != CurrentCell.ZoneModifier.Bar)
+            if (gridCell.Content != null && gridCell.Content.GetComponent<Obstacle>() != null)
             {
-                MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                
+            }
+            else
+            {
+                gridCell.Content = gameObject;
+                CurrentCell = gridCell;
+
+                if (MainPanel.Instance.BeatIndicator.Bar != CurrentCell.ZoneModifier.Bar)
+                {
+                    MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                }
             }
         }
-
     }
 
     public void GiveScore(int baseScore, bool lengthMultiplication, bool movementMultiplication)
@@ -263,7 +276,7 @@ public class Player : MonoBehaviour
     public void Die()
     {
         AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameEnd);
-
+        
         _gridPlayground.ClearAllCells();
 
         var foodObjects = FindObjectsOfType<Food>();
@@ -287,11 +300,79 @@ public class Player : MonoBehaviour
             obstacle.Clear();
         }
 
+        var zones = FindObjectsOfType<Zone>();
+
+        foreach (var zone in zones)
+        {
+            zone.Delete();
+        }
+
         _playerCollider.enabled = false;
         MainPanel.Instance.BeatIndicator.StopBeat();
+
+        StartCoroutine(DoDie());
+    }
+
+    private IEnumerator DoDie()
+    {
+        MainManager.Instance.CurrentState = MainManager.GameState.NONE;
+
+        if (_currentMove != null)
+        {
+            _currentMove.Kill();
+        }
+
+        foreach (var segment in _segments)
+        {
+            if (segment.CurrentMove != null)
+            {
+                segment.CurrentMove.Kill();
+            }
+        }
+
+        var reversedSegments = new List<Segment>(_segments);
+        reversedSegments.Reverse();
+        
+        yield return new WaitForSeconds(DeathShrinkDelay);
+
+        for (var i = 0; i < reversedSegments.Count; i++)
+        {
+            var segment = reversedSegments[i];
+
+            var canGo = false;
+
+            if (segment.PreviouSegment == null)
+            {
+                segment.transform.DOScale(0f, DeathShrinkTime).OnComplete(() =>
+                {
+                    canGo = true;
+                });
+            }
+            else
+            {
+                segment.Center.transform.DOScale(0f, DeathShrinkTime);
+                segment.transform.DOMove(segment.PreviouSegment.transform.position, DeathShrinkTime).SetEase(MoveCurve).OnComplete(() =>
+                {
+                    foreach (var frontDummySegment in segment.FrontDummySegments)
+                    {
+                        Destroy(frontDummySegment.gameObject);
+                    }
+
+                    Destroy(segment.gameObject);
+                    canGo = true;
+                });
+            }
+
+            yield return new WaitForSeconds(DeathShrinkDelay);
+
+            yield return new WaitUntil(() => canGo);
+        }
+
+        yield return new WaitForSeconds(DeathShrinkDelay);
+
         MainManager.Instance.TransitionToLeaderBoard();
     }
-    
+
     public void Destroy()
     {
         if (_lastSegment == null)
@@ -376,25 +457,27 @@ public class Player : MonoBehaviour
 
     public void FailBeat()
     {
+        if (!MovedOnce)
+        {
+            return;
+        }
+
         Health -= HealthDecreaseOnMiss;
         MovementMultiplier -= MultiplierDecreaseOnMiss;
-
-        //Debug.Log("--");
+        MainManager.Instance.CameraShake.Shake(MissShakeAmount, MainManager.Instance.PulseTime);
     }
 
     private void Move(Vector3 direction)
     {
         MovementMultiplier += MultiplierIncreaseOnHit;
         Health += HealthIncreaseOnHit;
-
-        //Debug.Log("++");
-
+        
         _moving = true;
 
         LastDirection = direction;
 
         var playerMoveDestination = transform.position + direction * _gridPlayground.MoveDistance;
-        var movement = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime).SetEase(MoveCurve);
+        _currentMove = transform.DOMove(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime).SetEase(MoveCurve);
 
         HeadSegment.Move(playerMoveDestination, MainManager.Instance.CurrentState == MainManager.GameState.Play ? PlayMoveTime : SetupMoveTime);
 
@@ -404,9 +487,14 @@ public class Player : MonoBehaviour
             cameraMoveDestination.z = -10f;
 
             Camera.main.transform.DOMove(cameraMoveDestination, PlayMoveTime).SetEase(MoveCurve);
+
+            if (!MovedOnce)
+            {
+                MovedOnce = true;
+            }
         }
-        
-        movement.onComplete += MovementCallback;
+
+        _currentMove.onComplete += MovementCallback;
     }
     
     public void Grow()
@@ -481,6 +569,8 @@ public class Player : MonoBehaviour
                 MainManager.Instance.PlayerNamePanel.ToggleConfirm(true);
             }
         }
+
+        _currentMove = null;
     }
 
     public void PulseHeadSegment()
