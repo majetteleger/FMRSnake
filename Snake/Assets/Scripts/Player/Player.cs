@@ -58,8 +58,10 @@ public class Player : MonoBehaviour
         }
         set
         {
+            var previousHealth = _health;
+
             _health = Mathf.Clamp(value, 0, MaxHealth);
-            MainPanel.Instance.UpdateHealth(_health, MaxHealth);
+            MainPanel.Instance.UpdateHealth(_health, MaxHealth, previousHealth > _health);
 
             if (_health <= 0)
             {
@@ -94,8 +96,10 @@ public class Player : MonoBehaviour
                 return;
             }
 
+            var previousMultiplier = _movementMultiplier;
+
             _movementMultiplier = Mathf.Clamp(value, 1, MaxMovementMultipler);
-            MainPanel.Instance.UpdateMovementMultiplier(_movementMultiplier, false);
+            MainPanel.Instance.UpdateMovementMultiplier(_movementMultiplier, false, previousMultiplier > _movementMultiplier);
         }
     }
 

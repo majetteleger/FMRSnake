@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Orange
   m_EditorClassIdentifier: 
   Color: {r: 0.93725497, g: 0.422, b: 0.29803923, a: 1}
-  Radius: 3.5
+  Radius: 2
   FoodSpawnCount: 5
   ClearBaseScore: 100
   FoodScore: 50

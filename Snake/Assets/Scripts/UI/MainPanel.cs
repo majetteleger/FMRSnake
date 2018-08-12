@@ -68,6 +68,9 @@ public class MainPanel : MonoBehaviour
     public GameObject PlaySubPanel;
     public BeatIndicator BeatIndicator;
     public RectTransform HealthGauge;
+    public Image HealthOverlay;
+    public Image ScoreOverlay;
+    public Image MultiplierOverlay;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
@@ -158,18 +161,32 @@ public class MainPanel : MonoBehaviour
         DisplayLeaderBoard();
     }
 
-    public void UpdateHealth(int current, int max)
+    public void UpdateHealth(int current, int max, bool negative)
     {
         var anchoredPosition = new Vector2(HealthGauge.anchoredPosition.x, -HealthGauge.sizeDelta.y + ((float)current / (float)max) * HealthGauge.sizeDelta.y);
         HealthGauge.anchoredPosition = anchoredPosition;
 
         var healthImage = HealthGauge.GetComponent<Image>();
         healthImage.DOColor(Color.Lerp(FailureColor, SuccessColor, (float)current / (float)max), MainManager.Instance.PulseTime);
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            HealthOverlay.color = negative 
+                ? new Color(FailureColor.r, FailureColor.g, FailureColor.b, 0.5f) 
+                : new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            HealthOverlay.DOFade(0f, 0.5f);
+        }
     }
 
     public void UpdateScore(int score, bool instant)
     {
         StopAllCoroutines();
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            ScoreOverlay.color = new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            ScoreOverlay.DOFade(0f, 0.5f);
+        }
 
         if (instant)
         {
@@ -182,10 +199,17 @@ public class MainPanel : MonoBehaviour
         StartCoroutine(DoUpdateScore(score));
     }
 
-    public void UpdateMovementMultiplier(int mutliplier, bool instant)
+    public void UpdateMovementMultiplier(int mutliplier, bool instant, bool negative)
     {
         MovementMultiplierText.transform.localScale = Vector3.one;
-        StopAllCoroutines();
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            MultiplierOverlay.color = negative
+                ? new Color(FailureColor.r, FailureColor.g, FailureColor.b, 0.5f)
+                : new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            MultiplierOverlay.DOFade(0f, 0.5f);
+        }
 
         MovementMultiplierText.text = "x" + mutliplier;
 

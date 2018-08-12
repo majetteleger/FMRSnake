@@ -28,9 +28,11 @@ public class GridPlayground : MonoBehaviour
     public float AroundPlayerThreshold;
     public float ClosePlayerThreshold;
     public ObstacleShape[] ObstacleShapes;
+    public float GridHeight;
+    public float GridWidth;
+
     public List<Food> Foods { get; set; }
     public List<Obstacle> Obstacles { get; set; }
-
     public float MoveDistance { get { return CellSize + CellSpacing; } }
     public int ZonesSpawned { get; set; }
     public int ObstaclesSpawned { get; set; }
@@ -38,8 +40,7 @@ public class GridPlayground : MonoBehaviour
     private Transform _zonesParent;
     private Player _player;
     private float _obstacleSpawnTimer;
-    private float _gridHeight;
-    private float _gridWidth;
+    
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
     
@@ -49,22 +50,19 @@ public class GridPlayground : MonoBehaviour
         _zonesParent = zones == null ? new GameObject("Segments").transform : zones.transform;
 
         Instance = this;
-
-        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 95f;
-        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 95f;
-
+        
         Obstacles = new List<Obstacle>();
         Foods = new List<Food>();
 
-        for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
+        for (var x = transform.position.x - GridWidth / 2; x < GridWidth / 2; x += (CellSize + CellSpacing))
         {
-            var firstColumn = Math.Abs(x - (transform.position.x - _gridWidth / 2)) < 0.1f;
-            var lastColumn = x + (CellSize + CellSpacing) >= _gridWidth / 2;
+            var firstColumn = Math.Abs(x - (transform.position.x - GridWidth / 2)) < 0.1f;
+            var lastColumn = x + (CellSize + CellSpacing) >= GridWidth / 2;
 
-            for (var y = transform.position.y - _gridHeight / 2; y < _gridHeight / 2; y += (CellSize + CellSpacing))
+            for (var y = transform.position.y - GridHeight / 2; y < GridHeight / 2; y += (CellSize + CellSpacing))
             {
-                var firstRow = Math.Abs(y - (transform.position.y - _gridHeight / 2)) < 0.1f;
-                var lastRow = y + (CellSize + CellSpacing) >= _gridHeight / 2;
+                var firstRow = Math.Abs(y - (transform.position.y - GridHeight / 2)) < 0.1f;
+                var lastRow = y + (CellSize + CellSpacing) >= GridHeight / 2;
 
                 var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
                 newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
@@ -227,7 +225,7 @@ public class GridPlayground : MonoBehaviour
 
         do
         {
-            randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth / 2f, _gridWidth / 2f), UnityEngine.Random.Range(-_gridHeight / 2f, _gridHeight / 2f));
+            randomPosition = new Vector2(UnityEngine.Random.Range(-GridWidth / 2f, GridWidth / 2f), UnityEngine.Random.Range(-GridHeight / 2f, GridHeight / 2f));
             overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
             tries++;
         }
