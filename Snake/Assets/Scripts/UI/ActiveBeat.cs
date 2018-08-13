@@ -46,9 +46,9 @@ public class ActiveBeat : MonoBehaviour {
 
         if (metronome != null)
         {
-            if (metronome.BeatIndicator.CurrentActiveBeat == null)
+            if (MainPanel.Instance.BeatIndicator.CurrentActiveBeat == null)
             {
-                metronome.BeatIndicator.CurrentActiveBeat = this;
+                MainPanel.Instance.BeatIndicator.CurrentActiveBeat = this;
                 Image.color = HighlightedColor;
             }
             else
@@ -65,7 +65,7 @@ public class ActiveBeat : MonoBehaviour {
             HasPlayed = true;
             }
 
-            metronome.BeatIndicator.IsHot = true;
+            MainPanel.Instance.BeatIndicator.IsHot = true;
         }
     }
 
@@ -81,16 +81,16 @@ public class ActiveBeat : MonoBehaviour {
                 MainManager.Instance.Player.FailBeat();
             }
 
-            if (metronome.BeatIndicator.CurrentActiveBeat == this)
+            if (MainPanel.Instance.BeatIndicator.CurrentActiveBeat == this)
             {
-                metronome.BeatIndicator.CurrentActiveBeat = null;
+                MainPanel.Instance.BeatIndicator.CurrentActiveBeat = null;
             }
             else
             {
                 Debug.Log("Beats overlapping");
             }
 
-            metronome.BeatIndicator.IsHot = false;
+            MainPanel.Instance.BeatIndicator.IsHot = false;
             MainManager.Instance.Player.HasMoved = false;
             //Debug.Log("OFF");
         }

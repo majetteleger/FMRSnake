@@ -16,7 +16,7 @@ public class PassiveBeat : MonoBehaviour {
             {
                 if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
                 {
-                    if (metronome.BeatIndicator.UpdateBarAtNextBeat)
+                    if (MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat)
                     {
                         MainPanel.Instance.BeatIndicator.UpdateBar(MainManager.Instance.Player.CurrentCell.ZoneModifier.Bar);
                         return;

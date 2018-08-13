@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Metronome : MonoBehaviour {
 
-    public BeatIndicator BeatIndicator;
-
 	// Use this for initialization
 	void Start () {
 		

@@ -249,7 +249,8 @@ public class Player : MonoBehaviour
 
             if (MainPanel.Instance.BeatIndicator.Bar != CurrentCell.ZoneModifier.Bar)
             {
-                MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                //MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                MainPanel.Instance.BeatIndicator.IncomingBar = CurrentCell.ZoneModifier.Bar;
             }
         }
 
@@ -329,9 +330,9 @@ public class Player : MonoBehaviour
         AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameStart);
 
         _beatIndicator.Bar = _beatIndicator.BaseBar;
-        _beatIndicator.CreatePassiveBeats();
-        _beatIndicator.CreateActiveBeats();
-        _beatIndicator.StartMetronome();
+        //_beatIndicator.CreatePassiveBeats();
+        //_beatIndicator.CreateActiveBeats();
+        //_beatIndicator.StartMetronome();
     }
     
     public void QueueMove(Vector3 direction)
