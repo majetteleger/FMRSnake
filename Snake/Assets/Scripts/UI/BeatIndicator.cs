@@ -33,8 +33,6 @@ public class BeatIndicator : MonoBehaviour {
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
         Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
 
-        Metronome.GetComponent<Metronome>().BeatIndicator = this;
-
         ResetMetronome();
     }
 

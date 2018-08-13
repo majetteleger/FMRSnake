@@ -4416,8 +4416,8 @@ MonoBehaviour:
   LeftControlImage: {fileID: 361767114}
   ControlsFadeTime: 0.1
   ControlsFadeValue: 0.25
-  SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 1}
-  FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 1}
+  SuccessColor: {r: 0, g: 0, b: 0, a: 0}
+  FailureColor: {r: 0, g: 0, b: 0, a: 0}
   MainMenuHeader: 
   MainMenuControls:
     Up: jouer
@@ -5379,6 +5379,12 @@ Transform:
   m_Father: {fileID: 402074040}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &827800331 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114578512851639040, guid: 02bb250a24bd93e44a1076899f427155,
+    type: 2}
+  m_PrefabInternal: {fileID: 1225837832}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &835970407
 GameObject:
   m_ObjectHideFlags: 0
@@ -6422,7 +6428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseBar: {fileID: 11400000, guid: fca0d95d25fb6244e8f3bd16fccdc564, type: 2}
   Metronome: {fileID: 1844733144}
-  MetronomeImage: {fileID: 1921693528}
+  MetronomeImage: {fileID: 827800331}
   BarImage: {fileID: 1992476942}
   DummyMetronomePrefab: {fileID: 1212003615937242, guid: e75bbea16e06178408c93ae2fdb33b4b,
     type: 2}
@@ -6433,7 +6439,6 @@ MonoBehaviour:
   Tempo: 240
   SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.39215687}
   FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.39215687}
-  BeatTime: 1
 --- !u!1 &1099659625
 GameObject:
   m_ObjectHideFlags: 0
@@ -6737,7 +6742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 544, y: 0}
+  m_AnchoredPosition: {x: 913, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1109598786
@@ -10925,12 +10930,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1869292181}
---- !u!114 &1921693528 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114151096064577398, guid: 02bb250a24bd93e44a1076899f427155,
-    type: 2}
-  m_PrefabInternal: {fileID: 1225837832}
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1925874709
 GameObject:
   m_ObjectHideFlags: 0
