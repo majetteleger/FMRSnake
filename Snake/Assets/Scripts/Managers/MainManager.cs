@@ -26,7 +26,8 @@ public class MainManager : MonoBehaviour
         MainMenu,
         BuildYourSnake,
         Play,
-        LeaderBoard
+        LeaderBoard,
+        NONE
     }
 
     public static MainManager Instance;
@@ -39,6 +40,7 @@ public class MainManager : MonoBehaviour
     public int StartMoves;
     public float PulseFactor;
     public float PulseTime;
+    public CameraShake CameraShake;
 
     [Header("Camera Anchors")]
     public Transform MainMenuAnchor;
@@ -61,13 +63,13 @@ public class MainManager : MonoBehaviour
     public List<LeaderBoardEntry> LeaderBoard { get; set; }
     public string CurrentPlayerName { get; set; }
     public int PrepMovesExecuted { get; set; }
-    
+    public int SelectedLineIndex { get; set; }
+
     public int CurrentPlayerLeaderboardIndex
     {
         get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
     }
-
-    private int _selectedLineIndex;
+    
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
     private Vector3 BuildYourSnakeActualAnchor;
@@ -94,11 +96,11 @@ public class MainManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
                 {
-                    _selectedLineIndex++;
+                    SelectedLineIndex++;
 
-                    if (_selectedLineIndex > MetroLines.Length - 1)
+                    if (SelectedLineIndex > MetroLines.Length - 1)
                     {
-                        _selectedLineIndex = 0;
+                        SelectedLineIndex = 0;
                     }
 
                     AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
@@ -108,11 +110,11 @@ public class MainManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
                 {
-                    _selectedLineIndex--;
+                    SelectedLineIndex--;
 
-                    if (_selectedLineIndex < 0)
+                    if (SelectedLineIndex < 0)
                     {
-                        _selectedLineIndex = MetroLines.Length - 1;
+                        SelectedLineIndex = MetroLines.Length - 1;
                     }
 
                     AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
@@ -190,7 +192,7 @@ public class MainManager : MonoBehaviour
         CurrentState = GameState.MainMenu;
         Camera.main.transform.DOMove(MainMenuAnchor.position, TransitionTime);
 
-        _selectedLineIndex = UnityEngine.Random.Range(0, MetroLines.Length);
+        SelectedLineIndex = UnityEngine.Random.Range(0, MetroLines.Length);
         UpdateSelectedLine();
 
         MetroLinesContainer.SetActive(true);
@@ -214,7 +216,7 @@ public class MainManager : MonoBehaviour
 
         Camera.main.transform.DOMove(BuildYourSnakeActualAnchor, TransitionTime);
 
-        Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[_selectedLineIndex].Color;
+        Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[SelectedLineIndex].Color;
         PrepMovesExecuted = 0;
 
         for (var i = 0; i < StartMoves; i++)
@@ -245,14 +247,17 @@ public class MainManager : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
+        if (CurrentState == GameState.Play)
+        {
+            SaveScore(CurrentPlayerName, SelectedLineIndex);
+        }
+
         CurrentState = GameState.LeaderBoard;
-        SaveScore(CurrentPlayerName, _selectedLineIndex);
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
         MetroLinesContainer.SetActive(true);
         AudioManager.Instance.FadeAmbianceTo(AudioManager.Instance.AmbianceMenu);
         MainPanel.Instance.TransitionToLeaderBoard();
-        GridPlayground.Instance.ZonesSpawned = 0;
         ResetSnake();
 
         foreach (var mainMenuRenderer in _mainMenuRenderers)
@@ -326,7 +331,7 @@ public class MainManager : MonoBehaviour
     {
         for (var i = 0; i < MetroLines.Length; i++)
         {
-            if (!off && i == _selectedLineIndex)
+            if (!off && i == SelectedLineIndex)
             {
                 MetroLines[i].Emphasize();
                 continue;

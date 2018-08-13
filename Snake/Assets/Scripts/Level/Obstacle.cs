@@ -50,7 +50,14 @@ public class Obstacle : MonoBehaviour
 
         foreach (var cellTileSection in Cell.TileSections)
         {
-            cellTileSection.Renderer.DOFade(0f, MainManager.Instance.PulseTime).OnComplete(() => cellTileSection.Renderer.enabled = false);
+            if (Cell.ZoneModifier == MainManager.Instance.GridPlayground.NoneZoneModifier)
+            {
+                cellTileSection.Renderer.DOFade(0f, MainManager.Instance.PulseTime).OnComplete(() => cellTileSection.Renderer.enabled = false);
+            }
+            else
+            {
+                cellTileSection.Renderer.DOColor(new Color(Cell.ZoneModifier.Color.r, Cell.ZoneModifier.Color.g, Cell.ZoneModifier.Color.b, Cell.ColorAlpha), MainManager.Instance.PulseTime);
+            }
         }
 
         transform.DOScale(0f, MainManager.Instance.PulseTime).OnComplete(() => Destroy(gameObject));

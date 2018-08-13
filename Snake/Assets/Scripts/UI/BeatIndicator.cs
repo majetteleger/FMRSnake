@@ -9,17 +9,16 @@ public class BeatIndicator : MonoBehaviour {
 
     public Bar BaseBar;
     public Metronome Metronome;
+    public Image MetronomeImage;
+    public Image BarImage;
     public GameObject DummyMetronomePrefab;
     public GameObject PassiveBeatPrefab;
     public GameObject ActiveBeatPrefab;
     public float Tempo;
     public Color SuccessColor;
     public Color FailureColor;
-    public float BeatTime;
 
     public Bar Bar { get; set; }
-    public Bar IncomingBar { get; set; }
-    public bool SwitchingBar { get; set; }
     public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
     public bool UpdateBarAtNextBeat { get; set; }
@@ -28,69 +27,15 @@ public class BeatIndicator : MonoBehaviour {
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
     private List<ActiveBeat> _activeBeats;
-    private float _beatTimer;
-    private int _beatIndex;
-
-    // Use this for initialization
-    void Start () {
-        _activeBeats = new List<ActiveBeat>();
-
-        var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
-        Metronome.GetComponent<CircleCollider2D>().radius = y / 2f;
-        var xPos = 0;
-        Metronome.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, 0);
-
-        _beatTimer = BeatTime / 2;
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-        if (_beatTimer > 0f)
-        {
-            _beatTimer -= Time.deltaTime;
-
-            if (_beatTimer < 0)
-            {
-                _beatIndex++;
-
-                if (IncomingBar != null)
-                {
-                    Bar = IncomingBar;
-                    IncomingBar = null;
-                    _beatIndex = 0;
-                    for (int i = 0; i < _activeBeats.Count; i++)
-                    {
-                        if (!_activeBeats[i].HasPlayed)
-                        {
-                            RemoveBeat(_activeBeats[i]);
-                        }
-                    }
-                }
-
-                if (_beatIndex > Bar.Beats.Length - 1)
-                {
-                    _beatIndex = 0;
-                }
-
-                if (Bar.Beats[_beatIndex])
-                {
-                    SpawnActiveBeat();
-                }
-
-                _beatTimer = BeatTime / 2;
-            }
-        }
-	}
-
+    
     public void StartMetronome()
     {
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
-        Metronome.GetComponent<CircleCollider2D>().radius = y / 2f;
+        Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
 
-        //Metronome.GetComponent<Metronome>().BeatIndicator = this;
+        Metronome.GetComponent<Metronome>().BeatIndicator = this;
 
-        //ResetMetronome();
+        ResetMetronome();
     }
 
     private void MoveMetronome()
@@ -104,18 +49,18 @@ public class BeatIndicator : MonoBehaviour {
 
         //AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MetronomeReset);
 
-        //for (int i = 0; i < PassiveBeats.Count; i++)
-        //{
-        //    PassiveBeats[i].HasPlayed = false;
-        //}
+        for (int i = 0; i < PassiveBeats.Count; i++)
+        {
+            PassiveBeats[i].HasPlayed = false;
+        }
 
-        //for (int i = 0; i < _activeBeats.Count; i++)
-        //{
-        //    _activeBeats[i].ResetBeat();
-        //    _activeBeats[i].HasPlayed = false;
-        //}
+        for (int i = 0; i < _activeBeats.Count; i++)
+        {
+            _activeBeats[i].ResetBeat();
+            _activeBeats[i].HasPlayed = false;
+        }
 
-        //MoveMetronome();
+        MoveMetronome();
     }
 
     public void CreatePassiveBeats()
@@ -235,7 +180,7 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateDummyMetronome(bool onBeat)
     {
-        if (MainManager.Instance.CurrentState != MainManager.GameState.Play)
+        if (MainManager.Instance.CurrentState != MainManager.GameState.Play || !MainManager.Instance.Player.MovedOnce)
         {
             return;
         }
@@ -250,6 +195,8 @@ public class BeatIndicator : MonoBehaviour {
         {
             metronomeDummy.GetComponent<Image>().color = FailureColor;
             MainManager.Instance.Player.MovementMultiplier -= MainManager.Instance.Player.MultiplierDecreaseOnSpam;
+
+            MainManager.Instance.CameraShake.Shake(MainManager.Instance.Player.MissShakeAmount, MainManager.Instance.PulseTime);
         }
 
         metronomeDummy.GetComponent<Image>().DOFade(0, 0.5f).OnComplete(() => Destroy(metronomeDummy.gameObject));
@@ -261,23 +208,5 @@ public class BeatIndicator : MonoBehaviour {
         var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
         activeBeat.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
         _activeBeats.Add(activeBeat);
-        activeBeat.GetComponent<RectTransform>().DOAnchorPosX(-Screen.width/2, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(()=> RemoveBeat(activeBeat));
-    }
-
-    private void RemoveBeat(ActiveBeat activeBeat)
-    {
-        _activeBeats.Remove(activeBeat);
-        Destroy(activeBeat.gameObject);
-    }
-
-    public void SpawnActiveBeat()
-    {
-        var yPos = 0;
-        var xPos = Screen.width/2;
-        var anchoredPos = new Vector2(xPos, yPos);
-        var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
-        _activeBeats.Add(activeBeat);
-        activeBeat.GetComponent<RectTransform>().anchoredPosition = anchoredPos;
-        activeBeat.GetComponent<RectTransform>().DOAnchorPosX(-Screen.width / 2, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => RemoveBeat(activeBeat));
     }
 }

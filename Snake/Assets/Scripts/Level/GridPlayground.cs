@@ -28,43 +28,41 @@ public class GridPlayground : MonoBehaviour
     public float AroundPlayerThreshold;
     public float ClosePlayerThreshold;
     public ObstacleShape[] ObstacleShapes;
+    public float GridHeight;
+    public float GridWidth;
+
     public List<Food> Foods { get; set; }
     public List<Obstacle> Obstacles { get; set; }
-
     public float MoveDistance { get { return CellSize + CellSpacing; } }
-    [SerializeField]
     public int ZonesSpawned { get; set; }
     public int ObstaclesSpawned { get; set; }
 
     private Transform _zonesParent;
-    public List<Zone> _zones = new List<Zone>();
     private Player _player;
     private float _obstacleSpawnTimer;
-    private float _gridHeight;
-    private float _gridWidth;
+    
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
     
     private void Awake()
     {
-        _zonesParent = new GameObject("Zones").transform;
+        var zones = GameObject.Find("Zones");
+        _zonesParent = zones == null ? new GameObject("Segments").transform : zones.transform;
+
         Instance = this;
-
-        _gridWidth = BackgroundRenderer.sprite.rect.size.x / 95f;
-        _gridHeight = BackgroundRenderer.sprite.rect.size.y / 95f;
-
+        
         Obstacles = new List<Obstacle>();
         Foods = new List<Food>();
 
-        for (var x = transform.position.x - _gridWidth / 2; x < _gridWidth / 2; x += (CellSize + CellSpacing))
+        for (var x = transform.position.x - GridWidth / 2; x < GridWidth / 2; x += (CellSize + CellSpacing))
         {
-            var firstColumn = Math.Abs(x - (transform.position.x - _gridWidth / 2)) < 0.1f;
-            var lastColumn = x + (CellSize + CellSpacing) >= _gridWidth / 2;
+            var firstColumn = Math.Abs(x - (transform.position.x - GridWidth / 2)) < 0.1f;
+            var lastColumn = x + (CellSize + CellSpacing) >= GridWidth / 2;
 
-            for (var y = transform.position.y - _gridHeight / 2; y < _gridHeight / 2; y += (CellSize + CellSpacing))
+            for (var y = transform.position.y - GridHeight / 2; y < GridHeight / 2; y += (CellSize + CellSpacing))
             {
-                var firstRow = Math.Abs(y - (transform.position.y - _gridHeight / 2)) < 0.1f;
-                var lastRow = y + (CellSize + CellSpacing) >= _gridHeight / 2;
+                var firstRow = Math.Abs(y - (transform.position.y - GridHeight / 2)) < 0.1f;
+                var lastRow = y + (CellSize + CellSpacing) >= GridHeight / 2;
 
                 var newGridCell = Instantiate(CellPrefab, new Vector3(x, y, 0f), Quaternion.identity).GetComponent<GridCell>();
                 newGridCell.GetComponent<SpriteRenderer>().size = Vector2.one * CellSize;
@@ -89,16 +87,7 @@ public class GridPlayground : MonoBehaviour
 
         _cells = GetComponentsInChildren<GridCell>();
     }
-
-    public void ResetZones()
-    {
-        for (int i = 0; i < _zones.Count; i++)
-        {
-            Destroy(_zones[i].gameObject);
-        }
-        _zones.Clear();
-    }
-
+    
     private void Start()
 	{
 	    _zoneSpawnTimer = ZoneSpawnTime;
@@ -236,7 +225,7 @@ public class GridPlayground : MonoBehaviour
 
         do
         {
-            randomPosition = new Vector2(UnityEngine.Random.Range(-_gridWidth / 2f, _gridWidth / 2f), UnityEngine.Random.Range(-_gridHeight / 2f, _gridHeight / 2f));
+            randomPosition = new Vector2(UnityEngine.Random.Range(-GridWidth / 2f, GridWidth / 2f), UnityEngine.Random.Range(-GridHeight / 2f, GridHeight / 2f));
             overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
             tries++;
         }
@@ -247,21 +236,30 @@ public class GridPlayground : MonoBehaviour
             return;
         }
 
-        var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius).Where(x => x.GetComponent<GridCell>() != null).Select(x => x.GetComponent<GridCell>());
+        var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius)
+            .Where(x => x.GetComponent<GridCell>() != null)
+            .Select(x => x.GetComponent<GridCell>()
+        );
 
         foreach (var overlappedCell in overlappedCells)
         {
-            if (overlappedCell.Content != null && overlappedCell.Content.GetComponent<Obstacle>() != null)
-            {
-                if (overlappedCell.Content.GetComponent<Obstacle>().Permanent)
-                {
-                    continue;
-                }
+            var hasObstacle = overlappedCell.Content != null && overlappedCell.Content.GetComponent<Obstacle>() != null;
+            var hasPermanentObstacle = hasObstacle && overlappedCell.Content.GetComponent<Obstacle>().Permanent;
 
+            if (hasPermanentObstacle)
+            {
+                continue;
+            }
+
+            if (hasObstacle)
+            {
+                overlappedCell.ZoneModifier = randomModifier;
                 overlappedCell.Content.GetComponent<Obstacle>().Clear();
             }
-            
-            overlappedCell.ZoneModifier = randomModifier;
+            else
+            {
+                overlappedCell.ZoneModifier = randomModifier;
+            }
         }
 
         foreach (var overlappedCell in overlappedCells)
@@ -271,7 +269,6 @@ public class GridPlayground : MonoBehaviour
 
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
         newZone.Initialize(overlappedCells.ToArray(), randomModifier);
-        _zones.Add(newZone);
         newZone.transform.parent = _zonesParent;
 
         ZonesSpawned++;

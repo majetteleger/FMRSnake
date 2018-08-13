@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,6 +49,8 @@ public class MainPanel : MonoBehaviour
     public Image LeftControlImage;
     public float ControlsFadeTime;
     public float ControlsFadeValue;
+    public Color SuccessColor;
+    public Color FailureColor;
 
     [Header("MainMenu")]
 
@@ -65,6 +68,9 @@ public class MainPanel : MonoBehaviour
     public GameObject PlaySubPanel;
     public BeatIndicator BeatIndicator;
     public RectTransform HealthGauge;
+    public Image HealthOverlay;
+    public Image ScoreOverlay;
+    public Image MultiplierOverlay;
     public Text ScoreText;
     public Text MovementMultiplierText;
     public float ScoreUpdateTime;
@@ -133,13 +139,21 @@ public class MainPanel : MonoBehaviour
         // IDEA: could fade control a bit during play mode to make it less intrusive
         // ALSO: move them up so they don't get in the way of the indicators?
 
+        var tempAlpha = 0f;
+        var tempColor = MainManager.Instance.MetroColors[MainManager.Instance.SelectedLineIndex];
+
+        tempAlpha = BeatIndicator.MetronomeImage.color.a;
+        BeatIndicator.MetronomeImage.color = new Color(tempColor.r, tempColor.g, tempColor.b, tempAlpha);
+
+        tempAlpha = BeatIndicator.MetronomeImage.color.a;
+        BeatIndicator.BarImage.color = new Color(tempColor.r, tempColor.g, tempColor.b, tempAlpha);
+
         PlayControls.ApplyControls();
     }
     
     public void TransitionToLeaderBoard()
     {
         Title.gameObject.SetActive(false);
-        GridPlayground.Instance.ResetZones();
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
         Header.text = LeaderBoardHeader;
@@ -147,15 +161,32 @@ public class MainPanel : MonoBehaviour
         DisplayLeaderBoard();
     }
 
-    public void UpdateHealth(int current, int max)
+    public void UpdateHealth(int current, int max, bool negative)
     {
         var anchoredPosition = new Vector2(HealthGauge.anchoredPosition.x, -HealthGauge.sizeDelta.y + ((float)current / (float)max) * HealthGauge.sizeDelta.y);
         HealthGauge.anchoredPosition = anchoredPosition;
+
+        var healthImage = HealthGauge.GetComponent<Image>();
+        healthImage.DOColor(Color.Lerp(FailureColor, SuccessColor, (float)current / (float)max), MainManager.Instance.PulseTime);
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            HealthOverlay.color = negative 
+                ? new Color(FailureColor.r, FailureColor.g, FailureColor.b, 0.5f) 
+                : new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            HealthOverlay.DOFade(0f, 0.5f);
+        }
     }
 
     public void UpdateScore(int score, bool instant)
     {
         StopAllCoroutines();
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            ScoreOverlay.color = new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            ScoreOverlay.DOFade(0f, 0.5f);
+        }
 
         if (instant)
         {
@@ -168,16 +199,23 @@ public class MainPanel : MonoBehaviour
         StartCoroutine(DoUpdateScore(score));
     }
 
-    public void UpdateMovementMultiplier(int mutliplier, bool instant)
+    public void UpdateMovementMultiplier(int mutliplier, bool instant, bool negative)
     {
         MovementMultiplierText.transform.localScale = Vector3.one;
-        StopAllCoroutines();
+
+        if (MainManager.Instance.CurrentState == MainManager.GameState.Play && MainManager.Instance.Player.MovedOnce)
+        {
+            MultiplierOverlay.color = negative
+                ? new Color(FailureColor.r, FailureColor.g, FailureColor.b, 0.5f)
+                : new Color(SuccessColor.r, SuccessColor.g, SuccessColor.b, 0.5f);
+            MultiplierOverlay.DOFade(0f, 0.5f);
+        }
 
         MovementMultiplierText.text = "x" + mutliplier;
 
         if (!instant)
         {
-            MovementMultiplierText.transform.DOPunchScale(Vector3.one * 0.1f * mutliplier, MovementMultiplierUpdateTime, 10, 0f);
+            MovementMultiplierText.transform.DOPunchScale(Vector3.one * 0.05f * mutliplier, MovementMultiplierUpdateTime, 10, 0f);
         }
     }
 
@@ -244,7 +282,11 @@ public class MainPanel : MonoBehaviour
 
             LeaderboardEntries[uiEntryIndex].Rank.text = (i + 1).ToString();
             LeaderboardEntries[uiEntryIndex].Name.text = leaderBoardEntry.DisplayName;
-            LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
+
+            var format = new NumberFormatInfo { NumberGroupSeparator = " " };
+            var scoreString = leaderBoardEntry.Score.ToString("n0", format);
+
+            LeaderboardEntries[uiEntryIndex].Score.text = scoreString;
 
             LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
             LeaderboardEntries[uiEntryIndex].Stripe.color = leaderBoardEntry.Color;
@@ -274,7 +316,11 @@ public class MainPanel : MonoBehaviour
 
             LeaderboardEntries[uiEntryIndex].Rank.text = (i + 1).ToString();
             LeaderboardEntries[uiEntryIndex].Name.text = leaderBoardEntry.DisplayName;
-            LeaderboardEntries[uiEntryIndex].Score.text = leaderBoardEntry.Score.ToString();
+
+            var format = new NumberFormatInfo { NumberGroupSeparator = " " };
+            var scoreString = leaderBoardEntry.Score.ToString("n0", format);
+
+            LeaderboardEntries[uiEntryIndex].Score.text = scoreString;
 
             LeaderboardEntries[uiEntryIndex].Background.color = i == currentPlayerLeaderboardIndex ? HighlightedEntryColor : NormalEntryColor;
             LeaderboardEntries[uiEntryIndex].Stripe.color = leaderBoardEntry.Color;
@@ -296,7 +342,10 @@ public class MainPanel : MonoBehaviour
             timeStep += Time.deltaTime / ScoreUpdateTime;
             _displayedScore = Mathf.Lerp(currentScore, score, timeStep);
 
-            ScoreText.text = Mathf.RoundToInt(_displayedScore).ToString();
+            var format = new NumberFormatInfo { NumberGroupSeparator = " " };
+            var scoreString = Mathf.RoundToInt(_displayedScore).ToString("n0", format);
+
+            ScoreText.text = scoreString;
 
             yield return null;
         }

@@ -45,6 +45,24 @@ public class Zone : MonoBehaviour
 
         Destroy(_indicator);
         _indicator = null;
+
+        Destroy(gameObject);
+    }
+
+    public void Delete()
+    {
+        foreach (var cell in GridCells)
+        {
+            cell.ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
+            cell.Modify();
+        }
+
+        MainManager.Instance.GridPlayground.ZonesSpawned--;
+
+        Destroy(_indicator);
+        _indicator = null;
+
+        Destroy(gameObject);
     }
 
     public bool IsVisibleOnScreen()

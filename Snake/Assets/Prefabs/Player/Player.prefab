@@ -118,14 +118,15 @@ MonoBehaviour:
     m_RotationOrder: 4
   PlayMoveTime: 0.2
   SetupMoveTime: 0.4
+  DeathShrinkTime: 0.4
+  DeathShrinkDelay: 0.2
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
-  MaxHealth: 1000
+  MaxHealth: 120
   HealthDecreaseOnMiss: 10
   HealthIncreaseOnHit: 5
   MaxMovementMultipler: 10
   MultiplierDecreaseOnMiss: 1
   MultiplierIncreaseOnHit: 1
   MultiplierDecreaseOnSpam: 1
-  CurrentCell: {fileID: 0}
-  _segments: []
+  MissShakeAmount: 0.025

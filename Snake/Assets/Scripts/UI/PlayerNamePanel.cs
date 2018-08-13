@@ -28,15 +28,10 @@ public class PlayerNamePanel : MonoBehaviour
         _currentlySelectedSlotIndex = 1;
         ToggleConfirm(false);
         UpdateSelection();
-
-        foreach (var characterSlot in CharacterSlots)
+        
+        for (var i = 1; i < CharacterSlots.Length - 1; i++)
         {
-            if (characterSlot.IsConfirm || characterSlot.IsBack)
-            {
-                continue;
-            }
-
-            characterSlot.Character.text = "A";
+            CharacterSlots[i].Character.text = !string.IsNullOrEmpty(MainManager.Instance.CurrentPlayerName) ? MainManager.Instance.CurrentPlayerName[i - 1].ToString() : "A";
         }
     }
 
@@ -57,7 +52,7 @@ public class PlayerNamePanel : MonoBehaviour
     {
         switch (keyCode)
         {
-            case KeyCode.UpArrow:
+            case KeyCode.DownArrow:
 
                 if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1 || _currentlySelectedSlotIndex == 0)
                 {
@@ -71,7 +66,7 @@ public class PlayerNamePanel : MonoBehaviour
                     _characterSlotContentIndices[_currentlySelectedSlotIndex] = _alphabet.Length - 1;
                 }
 
-                CharacterSlots[_currentlySelectedSlotIndex].PressUp();
+                CharacterSlots[_currentlySelectedSlotIndex].PressDown();
                 UpdateCharacterSlot();
 
                 break;
@@ -95,7 +90,7 @@ public class PlayerNamePanel : MonoBehaviour
 
                 break;
 
-            case KeyCode.DownArrow:
+            case KeyCode.UpArrow:
 
                 if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1 || _currentlySelectedSlotIndex == 0)
                 {
@@ -109,7 +104,7 @@ public class PlayerNamePanel : MonoBehaviour
                     _characterSlotContentIndices[_currentlySelectedSlotIndex] = 0;
                 }
 
-                CharacterSlots[_currentlySelectedSlotIndex].PressDown();
+                CharacterSlots[_currentlySelectedSlotIndex].PressUp();
                 UpdateCharacterSlot();
 
                 break;
