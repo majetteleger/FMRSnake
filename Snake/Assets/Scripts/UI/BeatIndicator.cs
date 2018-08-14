@@ -17,7 +17,10 @@ public class BeatIndicator : MonoBehaviour {
     public float Tempo;
     public Color SuccessColor;
     public Color FailureColor;
+    public float BeatTime;
 
+    public Bar IncomingBar { get; set; }
+    public bool SwitchingBar { get; set; }
     public Bar Bar { get; set; }
     public ActiveBeat CurrentActiveBeat { get; set; }
     public bool IsHot { get; set; }
@@ -27,13 +30,68 @@ public class BeatIndicator : MonoBehaviour {
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
     private List<ActiveBeat> _activeBeats;
-    
+    private float _beatTimer;
+    private int _beatIndex;
+
+    void Start()
+    {
+        _activeBeats = new List<ActiveBeat>();
+
+        var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
+        Metronome.GetComponent<CircleCollider2D>().radius = y / 2f;
+        var xPos = -GetComponent<RectTransform>().rect.width/2;
+        Metronome.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, 0);
+
+        _beatTimer = BeatTime / 2;
+    }
+
+
+    private void Update()
+    {
+        if (_beatTimer > 0f)
+        {
+            _beatTimer -= Time.deltaTime;
+
+            if (_beatTimer < 0)
+            {
+                _beatIndex++;
+
+                if (IncomingBar != null)
+                {
+                    Bar = IncomingBar;
+                    IncomingBar = null;
+                    _beatIndex = 0;
+                    for (int i = 0; i < _activeBeats.Count; i++)
+                    {
+                        if (!_activeBeats[i].HasPlayed)
+                        {
+                            RemoveBeat(_activeBeats[i]);
+                        }
+                    }
+                }
+
+                if (_beatIndex > Bar.Beats.Length - 1)
+                {
+                    _beatIndex = 0;
+                }
+
+                if (Bar.Beats[_beatIndex])
+                {
+                    SpawnActiveBeat();
+                }
+
+                _beatTimer = BeatTime / 2;
+            }
+        }
+
+    }
+
     public void StartMetronome()
     {
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
-        Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
+        //Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
 
-        ResetMetronome();
+        //ResetMetronome();
     }
 
     private void MoveMetronome()
@@ -43,22 +101,22 @@ public class BeatIndicator : MonoBehaviour {
 
     private void ResetMetronome()
     {
-        Metronome.GetComponent<RectTransform>().anchoredPosition = _metronomeStartPos;
+        //Metronome.GetComponent<RectTransform>().anchoredPosition = _metronomeStartPos;
 
         //AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MetronomeReset);
 
-        for (int i = 0; i < PassiveBeats.Count; i++)
-        {
-            PassiveBeats[i].HasPlayed = false;
-        }
+        //for (int i = 0; i < PassiveBeats.Count; i++)
+        //{
+        //    PassiveBeats[i].HasPlayed = false;
+        //}
 
-        for (int i = 0; i < _activeBeats.Count; i++)
-        {
-            _activeBeats[i].ResetBeat();
-            _activeBeats[i].HasPlayed = false;
-        }
+        //for (int i = 0; i < _activeBeats.Count; i++)
+        //{
+        //    _activeBeats[i].ResetBeat();
+        //    _activeBeats[i].HasPlayed = false;
+        //}
 
-        MoveMetronome();
+        //MoveMetronome();
     }
 
     public void CreatePassiveBeats()
@@ -206,5 +264,26 @@ public class BeatIndicator : MonoBehaviour {
         var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
         activeBeat.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
         _activeBeats.Add(activeBeat);
+        activeBeat.GetComponent<RectTransform>().DOAnchorPosX(-Screen.width / 2, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => RemoveBeat(activeBeat));
+    }
+
+    private void RemoveBeat(ActiveBeat activeBeat)
+    {
+        _activeBeats.Remove(activeBeat);
+        Destroy(activeBeat.gameObject);
+    }
+
+    public void SpawnActiveBeat()
+    {
+        var yPos = 0;
+        var xPos = GetComponent<RectTransform>().rect.width / 2;
+        var anchoredPos = new Vector2(xPos, yPos);
+        var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+        var activeBeatRect = activeBeat.GetComponent<RectTransform>();
+        activeBeatRect.localScale = Vector3.zero;
+        _activeBeats.Add(activeBeat);
+        activeBeatRect.DOScale(Vector3.one, 0.2f);
+        activeBeatRect.anchoredPosition = anchoredPos;
+        activeBeatRect.DOAnchorPosX(-Screen.width / 2, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => RemoveBeat(activeBeat));
     }
 }

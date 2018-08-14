@@ -233,7 +233,11 @@ public class Player : MonoBehaviour
             GiveScore(food.Zone.ZoneModifier.FoodScore, false, true);
             _gridPlayground.Foods.Remove(food);
             food.Zone.FoodObjects.Remove(food);
-            food.Zone.TryClear();
+            if (food.Zone.TryClear())
+            {
+                MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                MainPanel.Instance.BeatIndicator.IncomingBar = CurrentCell.ZoneModifier.Bar;
+            }
             other.gameObject.transform.DOScale(0f, MainManager.Instance.PulseTime).OnComplete(() => Destroy(other.gameObject));
             QueueGrow();
         }
@@ -267,6 +271,7 @@ public class Player : MonoBehaviour
                 if (MainPanel.Instance.BeatIndicator.Bar != CurrentCell.ZoneModifier.Bar)
                 {
                     MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
+                    MainPanel.Instance.BeatIndicator.IncomingBar = CurrentCell.ZoneModifier.Bar;
                 }
             }
         }
@@ -414,9 +419,9 @@ public class Player : MonoBehaviour
         AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameStart);
 
         _beatIndicator.Bar = _beatIndicator.BaseBar;
-        _beatIndicator.CreatePassiveBeats();
-        _beatIndicator.CreateActiveBeats();
-        _beatIndicator.StartMetronome();
+        //_beatIndicator.CreatePassiveBeats();
+        //_beatIndicator.CreateActiveBeats();
+        //_beatIndicator.StartMetronome();
     }
     
     public void QueueMove(Vector3 direction)

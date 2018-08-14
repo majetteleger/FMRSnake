@@ -4416,8 +4416,8 @@ MonoBehaviour:
   LeftControlImage: {fileID: 361767114}
   ControlsFadeTime: 0.1
   ControlsFadeValue: 0.25
-  SuccessColor: {r: 0, g: 0, b: 0, a: 0}
-  FailureColor: {r: 0, g: 0, b: 0, a: 0}
+  SuccessColor: {r: 0.50572807, g: 0.75686276, b: 0.12549017, a: 1}
+  FailureColor: {r: 0.8584906, g: 0.08941172, b: 0.07694017, a: 1}
   MainMenuHeader: 
   MainMenuControls:
     Up: jouer
@@ -6436,9 +6436,10 @@ MonoBehaviour:
     type: 2}
   ActiveBeatPrefab: {fileID: 1541330792976544, guid: 35156a2da395378408ff98d8a9323ae3,
     type: 2}
-  Tempo: 240
+  Tempo: 200
   SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.39215687}
   FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.39215687}
+  BeatTime: 1
 --- !u!1 &1099659625
 GameObject:
   m_ObjectHideFlags: 0
@@ -8034,7 +8035,7 @@ Prefab:
     - target: {fileID: 224871151034565178, guid: 02bb250a24bd93e44a1076899f427155,
         type: 2}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224871151034565178, guid: 02bb250a24bd93e44a1076899f427155,
         type: 2}
@@ -8044,7 +8045,7 @@ Prefab:
     - target: {fileID: 224871151034565178, guid: 02bb250a24bd93e44a1076899f427155,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224871151034565178, guid: 02bb250a24bd93e44a1076899f427155,
         type: 2}

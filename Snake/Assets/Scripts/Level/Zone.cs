@@ -22,12 +22,14 @@ public class Zone : MonoBehaviour
         _indicator.Initialize(this);
     }
     
-    public void TryClear()
+    public bool TryClear()
     {
         if (FoodObjects.Count == 0)
         {
             Clear();
+            return true;
         }
+        return false;
     }
 
     public void Clear()

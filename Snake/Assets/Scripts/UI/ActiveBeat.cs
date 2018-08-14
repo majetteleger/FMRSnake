@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ActiveBeat : MonoBehaviour {
 
@@ -92,6 +93,7 @@ public class ActiveBeat : MonoBehaviour {
 
             MainPanel.Instance.BeatIndicator.IsHot = false;
             MainManager.Instance.Player.HasMoved = false;
+            GetComponent<RectTransform>().DOScale(Vector3.zero, 0.2f);
             //Debug.Log("OFF");
         }
     }
