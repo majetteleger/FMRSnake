@@ -134,14 +134,7 @@ public class Player : MonoBehaviour
     private BeatIndicator _beatIndicator;
     private int _health;
     private List<Segment> _segments;
-
-    /*private Button[] _buttons = {
-        new Button(Vector2.left, KeyCode.LeftArrow),
-        new Button(Vector2.up, KeyCode.UpArrow),
-        new Button(Vector2.right, KeyCode.RightArrow),
-        new Button(Vector2.down, KeyCode.DownArrow),
-    };*/
-
+    
     private void Start()
     {
         _segments = new List<Segment>();
@@ -166,20 +159,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        //foreach (var button in _buttons)
-        //{
-        //    if (Input.GetKeyDown(button.KeyCode))
-        //    {
-        //        button.IsOn = true;
-        //        MainPanel.Instance.ControlToggle(button.KeyCode, true);
-        //    }
-        //    else if (Input.GetKeyUp(button.KeyCode))
-        //    {
-        //        button.IsOn = false;
-        //        MainPanel.Instance.ControlToggle(button.KeyCode, false);
-        //    }
-        //}
-
         if (MainPanel.Instance.BeatIndicator.IsHot && !HasMoved)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
@@ -384,14 +363,9 @@ public class Player : MonoBehaviour
 
     public void Destroy()
     {
-        if (_lastSegment == null)
-        {
-            return;
-        }
-
         var tempSegment = _lastSegment;
 
-        while (tempSegment.PreviouSegment != null)
+        while (tempSegment != null && tempSegment.PreviouSegment != null)
         {
             var segmentToDestroy = tempSegment.gameObject;
             tempSegment = tempSegment.PreviouSegment;
@@ -580,6 +554,8 @@ public class Player : MonoBehaviour
         }
 
         _currentMove = null;
+
+        MainManager.Instance.Player.HasMoved = false;
     }
 
     public void PulseHeadSegment()
