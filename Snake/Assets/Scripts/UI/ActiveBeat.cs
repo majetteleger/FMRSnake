@@ -59,11 +59,11 @@ public class ActiveBeat : MonoBehaviour {
 
             if (!HasPlayed)
             {
-            MainManager.Instance.Player.PulseHeadSegment();
-            GridPlayground.Instance.PulseObstacles();
-            GridPlayground.Instance.PulseFoods();
-            AudioManager.Instance.PlayActiveBeat();
-            HasPlayed = true;
+                //MainManager.Instance.Player.PulseHeadSegment();
+                //GridPlayground.Instance.PulseObstacles();
+                //GridPlayground.Instance.PulseFoods();
+                //AudioManager.Instance.PlayActiveBeat();
+                //HasPlayed = true;
             }
 
             MainPanel.Instance.BeatIndicator.IsHot = true;

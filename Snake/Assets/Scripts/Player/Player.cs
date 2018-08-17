@@ -564,6 +564,7 @@ public class Player : MonoBehaviour
         {
             if (_segments[i].Center.GetComponent<SpriteRenderer>().enabled)
             {
+                _segments[i].Center.transform.localScale = Vector3.one * 0.6f; // reset it to original size just in case
                 _segments[i].Center.transform.DOPunchScale(Vector3.one * MainManager.Instance.PulseFactor, 0.2f);
             }
         }

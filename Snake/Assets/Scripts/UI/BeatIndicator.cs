@@ -39,7 +39,7 @@ public class BeatIndicator : MonoBehaviour {
 
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
         Metronome.GetComponent<CircleCollider2D>().radius = y / 2f;
-        var xPos = -GetComponent<RectTransform>().rect.width/2;
+        var xPos = 0;
         Metronome.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, 0);
 
         _beatTimer = BeatTime / 2;
@@ -47,7 +47,7 @@ public class BeatIndicator : MonoBehaviour {
 
 
     private void Update()
-    {
+    {           
         if (_beatTimer > 0f)
         {
             _beatTimer -= Time.deltaTime;
@@ -273,17 +273,51 @@ public class BeatIndicator : MonoBehaviour {
         Destroy(activeBeat.gameObject);
     }
 
+    private void Pop(ActiveBeat activeBeat)
+    {
+        activeBeat.GetComponent<RectTransform>().DOKill();
+        activeBeat.GetComponent<Image>().DOFade(0, 0.2f);
+        activeBeat.Image.GetComponent<Image>().DOFade(0, 0.2f);
+        activeBeat.GetComponent<RectTransform>().DOScale(Vector3.one * 1.5f, 0.2f).OnComplete(() => RemoveBeat(activeBeat));
+
+        MainManager.Instance.Player.PulseHeadSegment();
+        GridPlayground.Instance.PulseObstacles();
+        GridPlayground.Instance.PulseFoods();
+        AudioManager.Instance.PlayActiveBeat();
+        activeBeat.HasPlayed = true;
+    }
+
     public void SpawnActiveBeat()
     {
         var yPos = 0;
-        var xPos = GetComponent<RectTransform>().rect.width / 2;
-        var anchoredPos = new Vector2(xPos, yPos);
-        var activeBeat = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
-        var activeBeatRect = activeBeat.GetComponent<RectTransform>();
-        activeBeatRect.localScale = Vector3.zero;
-        _activeBeats.Add(activeBeat);
-        activeBeatRect.DOScale(Vector3.one, 0.2f);
-        activeBeatRect.anchoredPosition = anchoredPos;
-        activeBeatRect.DOAnchorPosX(-Screen.width / 2, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => RemoveBeat(activeBeat));
+
+        var xPosRight = GetComponent<RectTransform>().rect.width / 2;
+        var xPosLeft = -GetComponent<RectTransform>().rect.width / 2;
+
+        var anchoredPosRight = new Vector2(xPosRight, yPos);
+        var anchoredPosLeft = new Vector2(xPosLeft, yPos);
+
+        var activeBeatRight = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+        var activeBeatLeft = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
+
+        activeBeatLeft.GetComponent<CircleCollider2D>().enabled = false;
+
+        var activeBeatRectRight = activeBeatRight.GetComponent<RectTransform>();
+        var activeBeatRectLeft = activeBeatLeft.GetComponent<RectTransform>();
+
+        activeBeatRectRight.localScale = Vector3.zero;
+        activeBeatRectLeft.localScale = Vector3.zero;
+
+        _activeBeats.Add(activeBeatRight);
+        _activeBeats.Add(activeBeatLeft);
+
+        activeBeatRectRight.DOScale(Vector3.one, 0.2f);
+        activeBeatRectLeft.DOScale(Vector3.one, 0.2f);
+
+        activeBeatRectRight.anchoredPosition = anchoredPosRight;
+        activeBeatRectLeft.anchoredPosition = anchoredPosLeft;
+
+        activeBeatRectRight.DOAnchorPosX(0, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => Pop(activeBeatRight));
+        activeBeatRectLeft.DOAnchorPosX(0, Tempo).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete(() => Pop(activeBeatLeft));
     }
 }
