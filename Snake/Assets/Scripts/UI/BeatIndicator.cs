@@ -39,15 +39,25 @@ public class BeatIndicator : MonoBehaviour {
 
         var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
         Metronome.GetComponent<CircleCollider2D>().radius = y / 2f;
-        var xPos = 0;
-        Metronome.GetComponent<RectTransform>().anchoredPosition = new Vector2(xPos, 0);
+        Metronome.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         _beatTimer = BeatTime / 2;
     }
 
 
-    private void Update()
-    {           
+    private void Update()        
+    {
+        if (MainManager.Instance.Player.Dead)
+        {
+            for (var i = 0; i < _activeBeats.Count; i++)
+            {
+                var activeBeat = _activeBeats[i];
+                RemoveBeat(activeBeat);
+            }
+
+            return;
+        }
+        
         if (_beatTimer > 0f)
         {
             _beatTimer -= Time.deltaTime;
