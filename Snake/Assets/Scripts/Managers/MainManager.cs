@@ -247,7 +247,7 @@ public class MainManager : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
-        if (CurrentState == GameState.Play)
+        if (CurrentState == GameState.NONE)
         {
             SaveScore(CurrentPlayerName, SelectedLineIndex);
         }
