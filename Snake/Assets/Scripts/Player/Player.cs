@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     public float CenterAppearProbability { get; set; }
     public Segment HeadSegment { get; set; }
     public bool MovedOnce { get; set; }
+    public bool Dead { get; set; }
 
     private Tweener _currentMove;
 
@@ -155,6 +156,8 @@ public class Player : MonoBehaviour
         var segments = GameObject.Find("Segments");
 
         _segmentsContainer = segments == null ? new GameObject("Segments").transform : segments.transform;
+
+        Dead = false;
     }
 
     private void Update()
@@ -263,6 +266,8 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
+        Dead = true;
+
         AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.GameEnd);
         
         _gridPlayground.ClearAllCells();

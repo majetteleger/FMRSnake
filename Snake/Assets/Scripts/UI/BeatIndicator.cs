@@ -48,6 +48,17 @@ public class BeatIndicator : MonoBehaviour {
 
     private void Update()
     {
+        if (MainManager.Instance.Player.Dead)
+        {
+            for (var i = 0; i < _activeBeats.Count; i++)
+            {
+                var activeBeat = _activeBeats[i];
+                RemoveBeat(activeBeat);
+            }
+
+            return;
+        }
+        
         if (_beatTimer > 0f)
         {
             _beatTimer -= Time.deltaTime;
@@ -270,7 +281,7 @@ public class BeatIndicator : MonoBehaviour {
     private void RemoveBeat(ActiveBeat activeBeat)
     {
         _activeBeats.Remove(activeBeat);
-        Destroy(activeBeat.gameObject);
+        activeBeat.transform.DOScale(0f, MainManager.Instance.PulseTime).OnComplete(() => Destroy(activeBeat.gameObject));
     }
 
     public void SpawnActiveBeat()
