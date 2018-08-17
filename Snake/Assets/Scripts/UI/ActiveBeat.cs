@@ -21,25 +21,25 @@ public class ActiveBeat : MonoBehaviour {
         Activated = false;
     }
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        //var metronome = other.GetComponent<Metronome>();
+    //private void OnTriggerStay2D(Collider2D other)
+    //{
+    //    var metronome = other.GetComponent<Metronome>();
 
-        //if (metronome != null)
-        //{
-        //    if (!HasPlayed)
-        //    {
-        //        if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
-        //        {
-        //            MainManager.Instance.Player.PulseHeadSegment();
-        //            GridPlayground.Instance.PulseObstacles();
-        //            GridPlayground.Instance.PulseFoods();
-        //            AudioManager.Instance.PlayActiveBeat();
-        //            HasPlayed = true;
-        //        }
-        //    }
-        //}
-    }
+    //    if (metronome != null)
+    //    {
+    //        if (!HasPlayed)
+    //        {
+    //            if (Vector2.Distance(transform.position, metronome.transform.position) <= 3)
+    //            {
+    //                MainManager.Instance.Player.PulseHeadSegment();
+    //                GridPlayground.Instance.PulseObstacles();
+    //                GridPlayground.Instance.PulseFoods();
+    //                AudioManager.Instance.PlayActiveBeat();
+    //                HasPlayed = true;
+    //            }
+    //        }
+    //    }
+    //}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -57,19 +57,10 @@ public class ActiveBeat : MonoBehaviour {
                 Debug.Log("Beats overlapping");
             }
 
-            if (!HasPlayed)
-            {
-                //MainManager.Instance.Player.PulseHeadSegment();
-                //GridPlayground.Instance.PulseObstacles();
-                //GridPlayground.Instance.PulseFoods();
-                //AudioManager.Instance.PlayActiveBeat();
-                //HasPlayed = true;
-            }
-
             MainPanel.Instance.BeatIndicator.IsHot = true;
         }
     }
-
+    
     private void OnTriggerExit2D(Collider2D other)
     {
         var metronome = other.GetComponent<Metronome>();

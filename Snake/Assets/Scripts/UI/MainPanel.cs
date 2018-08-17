@@ -300,13 +300,15 @@ public class MainPanel : MonoBehaviour
         if (bot <= TopDisplayedEntries)
         {
             bot = TopDisplayedEntries;
+            MiddleDotDotDot.gameObject.SetActive(false);
         }
         else
         {
+            MiddleDotDotDot.gameObject.SetActive(true);
             MiddleDotDotDot.SetSiblingIndex(uiEntryIndex);
         }
 
-        var top = bot + DisplayedEntriesBeforePlayer + DisplayedEntriesAfterPlayer;
+        var top = bot + DisplayedEntriesBeforePlayer + DisplayedEntriesAfterPlayer + 1;
 
         for (var i = bot; i < top && i < MainManager.Instance.LeaderBoard.Count; i++)
         {
