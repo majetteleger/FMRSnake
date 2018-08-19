@@ -11,6 +11,7 @@ public class ActiveBeat : MonoBehaviour {
     public Color HighlightedColor;
     public Color SuccessColor;
     public Color FailureColor;
+    public ActiveBeat TwinBeat;
 
     public bool Activated { get; set; }
     public bool HasPlayed { get; set; }

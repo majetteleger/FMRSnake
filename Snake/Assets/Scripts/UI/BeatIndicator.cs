@@ -310,6 +310,7 @@ public class BeatIndicator : MonoBehaviour {
         var activeBeatRight = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
         var activeBeatLeft = Instantiate(ActiveBeatPrefab, transform).GetComponent<ActiveBeat>();
 
+        activeBeatRight.TwinBeat = activeBeatLeft;
         activeBeatLeft.GetComponent<CircleCollider2D>().enabled = false;
 
         var activeBeatRectRight = activeBeatRight.GetComponent<RectTransform>();

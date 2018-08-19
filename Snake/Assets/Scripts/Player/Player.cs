@@ -427,6 +427,7 @@ public class Player : MonoBehaviour
             {
                 AudioManager.Instance.PlayActivatedBeat();
                 _beatIndicator.CurrentActiveBeat.Image.color = _beatIndicator.CurrentActiveBeat.SuccessColor;
+                _beatIndicator.CurrentActiveBeat.TwinBeat.Image.color = _beatIndicator.CurrentActiveBeat.SuccessColor;
                 _beatIndicator.CurrentActiveBeat.Activated = true;
                 _beatIndicator.CreateDummyMetronome(true);
             }
@@ -467,6 +468,7 @@ public class Player : MonoBehaviour
         Health -= HealthDecreaseOnMiss;
         MovementMultiplier -= MultiplierDecreaseOnMiss;
         MainManager.Instance.CameraShake.Shake(MissShakeAmount, MainManager.Instance.PulseTime);
+        _beatIndicator.CreateDummyMetronome(false);
     }
 
     private void Move(Vector3 direction)
