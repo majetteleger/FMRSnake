@@ -29,7 +29,7 @@ public class BeatIndicator : MonoBehaviour {
 
     private Vector2 _metronomeStartPos;
     private float _halfDistance;
-    private List<ActiveBeat> _activeBeats;
+    public List<ActiveBeat> _activeBeats;
     private float _beatTimer;
     private int _beatIndex;
 
@@ -71,7 +71,7 @@ public class BeatIndicator : MonoBehaviour {
                     Bar = IncomingBar;
                     IncomingBar = null;
                     _beatIndex = 0;
-                    for (int i = 0; i < _activeBeats.Count; i++)
+                    for (int i = _activeBeats.Count - 1; i >= 0; i--)
                     {
                         if (!_activeBeats[i].HasPlayed)
                         {
