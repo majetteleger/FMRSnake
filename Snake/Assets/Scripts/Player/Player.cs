@@ -167,19 +167,19 @@ public class Player : MonoBehaviour
     {
         if (MainPanel.Instance.BeatIndicator.IsHot && !HasMoved)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
+            if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8)) && LastDirection != Vector3.down)
             {
                 QueueMove(Vector3.up);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
+            else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2)) && LastDirection != Vector3.up)
             {
                 QueueMove(Vector3.down);
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
+            else if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6)) && LastDirection != Vector3.left)
             {
                 QueueMove(Vector3.right);
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
+            else if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4)) && LastDirection != Vector3.right)
             {
                 QueueMove(Vector3.left);
             }
@@ -342,8 +342,6 @@ public class Player : MonoBehaviour
                 _deathShrinkTime = DeathShrinkTime.x - ((DeathShrinkTime.x - DeathShrinkTime.y) / (float)DeathShrinkDivisions) * i;
             }
             
-            Debug.Log("Delay: " + _deathShrinkDelay + " / Time: " + _deathShrinkTime);
-
             var segment = reversedSegments[i];
 
             var canGo = false;
