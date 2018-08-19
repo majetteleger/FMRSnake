@@ -99,6 +99,7 @@ public class GridCell : MonoBehaviour
                 tileSection.Renderer.sprite = sharpTile ? BlankTileSectionSprite : tileSection.RoundedSprite;
 
                 tileSection.Renderer.enabled = true;
+                tileSection.Renderer.sortingOrder = -1;
                 tileSection.Renderer.DOFade(ColorAlpha, MainManager.Instance.PulseTime);
             }
         }
@@ -150,6 +151,7 @@ public class GridCell : MonoBehaviour
             tileSection.Renderer.sprite = sharpTile ? BlankTileSectionSprite : tileSection.RoundedSprite;
 
             tileSection.Renderer.enabled = true;
+            tileSection.Renderer.sortingOrder = 0;
             tileSection.Renderer.DOFade(ColorAlpha, MainManager.Instance.PulseTime);
         }
     }

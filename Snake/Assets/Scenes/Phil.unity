@@ -4483,7 +4483,7 @@ MonoBehaviour:
   - {fileID: 1984056807}
   MiddleDotDotDot: {fileID: 670255535}
   EndDotDotDot: {fileID: 1782075698}
-  NormalEntryColor: {r: 0.53333336, g: 0.5019608, b: 0.49411768, a: 1}
+  NormalEntryColor: {r: 0.59607846, g: 0.5686275, b: 0.56078434, a: 1}
   HighlightedEntryColor: {r: 0.2784314, g: 0.2509804, b: 0.2392157, a: 1}
 --- !u!1 &681587846
 GameObject:
