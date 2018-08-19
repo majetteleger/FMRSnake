@@ -28,8 +28,9 @@ public class Player : MonoBehaviour
     public AnimationCurve MoveCurve;
     public float PlayMoveTime;
     public float SetupMoveTime;
-    public float DeathShrinkTime;
-    public float DeathShrinkDelay;
+    public Vector2 DeathShrinkTime;
+    public Vector2 DeathShrinkDelay;
+    public float DeathShrinkDivisions;
     public int IntermediateSegments;
     public float CenterAppearProbabilityIncrement;
     public int MaxHealth;
@@ -50,6 +51,8 @@ public class Player : MonoBehaviour
     public bool Dead { get; set; }
 
     private Tweener _currentMove;
+    private float _deathShrinkTime;
+    private float _deathShrinkDelay;
 
     public int Health
     {
@@ -310,6 +313,9 @@ public class Player : MonoBehaviour
     {
         MainManager.Instance.CurrentState = MainManager.GameState.NONE;
 
+        _deathShrinkDelay = DeathShrinkDelay.x;
+        _deathShrinkTime = DeathShrinkTime.x;
+
         if (_currentMove != null)
         {
             _currentMove.Kill();
@@ -326,25 +332,33 @@ public class Player : MonoBehaviour
         var reversedSegments = new List<Segment>(_segments);
         reversedSegments.Reverse();
         
-        yield return new WaitForSeconds(DeathShrinkDelay);
+        yield return new WaitForSeconds(_deathShrinkDelay);
 
         for (var i = 0; i < reversedSegments.Count; i++)
         {
+            if (i <= DeathShrinkDivisions)
+            {
+                _deathShrinkDelay = DeathShrinkDelay.x - ((DeathShrinkDelay.x - DeathShrinkDelay.y) / (float)DeathShrinkDivisions) * i;
+                _deathShrinkTime = DeathShrinkTime.x - ((DeathShrinkTime.x - DeathShrinkTime.y) / (float)DeathShrinkDivisions) * i;
+            }
+            
+            Debug.Log("Delay: " + _deathShrinkDelay + " / Time: " + _deathShrinkTime);
+
             var segment = reversedSegments[i];
 
             var canGo = false;
 
             if (segment.PreviouSegment == null)
             {
-                segment.transform.DOScale(0f, DeathShrinkTime).OnComplete(() =>
+                segment.transform.DOScale(0f, _deathShrinkTime).OnComplete(() =>
                 {
                     canGo = true;
                 });
             }
             else
             {
-                segment.Center.transform.DOScale(0f, DeathShrinkTime);
-                segment.transform.DOMove(segment.PreviouSegment.transform.position, DeathShrinkTime).SetEase(MoveCurve).OnComplete(() =>
+                segment.Center.transform.DOScale(0f, _deathShrinkTime);
+                segment.transform.DOMove(segment.PreviouSegment.transform.position, _deathShrinkTime).SetEase(MoveCurve).OnComplete(() =>
                 {
                     foreach (var frontDummySegment in segment.FrontDummySegments)
                     {
@@ -356,12 +370,12 @@ public class Player : MonoBehaviour
                 });
             }
 
-            yield return new WaitForSeconds(DeathShrinkDelay);
+            yield return new WaitForSeconds(_deathShrinkDelay);
 
             yield return new WaitUntil(() => canGo);
         }
 
-        yield return new WaitForSeconds(DeathShrinkDelay);
+        yield return new WaitForSeconds(_deathShrinkDelay);
 
         MainManager.Instance.TransitionToLeaderBoard();
     }
