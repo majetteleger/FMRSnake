@@ -125,9 +125,9 @@ MonoBehaviour:
   CenterAppearProbabilityIncrement: 0.33
   MaxHealth: 120
   HealthDecreaseOnMiss: 10
-  HealthIncreaseOnHit: 5
+  HealthIncreaseOnHit: 10
   MaxMovementMultipler: 10
-  MultiplierDecreaseOnMiss: 1
+  MultiplierDecreaseOnMiss: 3
   MultiplierIncreaseOnHit: 1
-  MultiplierDecreaseOnSpam: 1
+  MultiplierDecreaseOnSpam: 2
   MissShakeAmount: 0.025

@@ -44,6 +44,7 @@ public class Zone : MonoBehaviour
 
         MainManager.Instance.GridPlayground.ZonesSpawned--;
         MainManager.Instance.Player.GiveScore(ZoneModifier.ClearBaseScore, true, true);
+        MainManager.Instance.Player.Health += MainManager.Instance.Player.HealthIncreaseOnHit;
 
         Destroy(_indicator);
         _indicator = null;

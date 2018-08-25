@@ -71,13 +71,13 @@ public class BeatIndicator : MonoBehaviour {
                     Bar = IncomingBar;
                     IncomingBar = null;
                     _beatIndex = 0;
-                    for (int i = _activeBeats.Count - 1; i >= 0; i--)
+                    /*for (int i = _activeBeats.Count - 1; i >= 0; i--)
                     {
                         if (!_activeBeats[i].HasPlayed)
                         {
                             RemoveBeat(_activeBeats[i]);
                         }
-                    }
+                    }*/
                 }
 
                 if (_beatIndex > Bar.Beats.Length - 1)
@@ -182,13 +182,13 @@ public class BeatIndicator : MonoBehaviour {
 
         Bar = newBar;
 
-        if (_activeBeats.Count > 0)
+        /*if (_activeBeats.Count > 0)
         {
             for (int i = 0; i < _activeBeats.Count; i++)
             {
                 Destroy(_activeBeats[i].gameObject);
             }
-        }
+        }*/
 
         CreateActiveBeats();
         Metronome.transform.DOKill();
@@ -197,13 +197,13 @@ public class BeatIndicator : MonoBehaviour {
 
     public void CreateActiveBeats()
     {
-        if (_activeBeats != null && _activeBeats.Count != 0)
+        /*if (_activeBeats != null && _activeBeats.Count != 0)
         {
             for (int i = 0; i < _activeBeats.Count; i++)
             {
                 Destroy(_activeBeats[i].gameObject);
             }
-        }
+        }*/
 
         _activeBeats = new List<ActiveBeat>();
 

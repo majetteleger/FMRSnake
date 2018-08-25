@@ -4,7 +4,7 @@
 QualitySettings:
   m_ObjectHideFlags: 0
   serializedVersion: 5
-  m_CurrentQuality: 3
+  m_CurrentQuality: 1
   m_QualitySettings:
   - serializedVersion: 2
     name: Very Low
@@ -33,7 +33,9 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     resolutionScalingFixedDPIFactor: 1
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Android
   - serializedVersion: 2
     name: Low
     pixelLightCount: 0
@@ -89,7 +91,9 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     resolutionScalingFixedDPIFactor: 1
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Android
   - serializedVersion: 2
     name: High
     pixelLightCount: 2
@@ -117,7 +121,9 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     resolutionScalingFixedDPIFactor: 1
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Android
   - serializedVersion: 2
     name: Very High
     pixelLightCount: 3
@@ -145,7 +151,9 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     resolutionScalingFixedDPIFactor: 1
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Android
+    - Standalone
   - serializedVersion: 2
     name: Ultra
     pixelLightCount: 4
@@ -173,15 +181,17 @@ QualitySettings:
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
     resolutionScalingFixedDPIFactor: 1
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Android
   m_PerPlatformDefaultQuality:
-    Android: 2
+    Android: 1
     Nintendo 3DS: 5
     Nintendo Switch: 5
     PS4: 5
     PSM: 5
     PSP2: 2
-    Standalone: 5
+    Standalone: 1
     Tizen: 2
     WebGL: 3
     WiiU: 5

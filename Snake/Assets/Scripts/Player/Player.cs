@@ -413,6 +413,11 @@ public class Player : MonoBehaviour
         //_beatIndicator.CreatePassiveBeats();
         //_beatIndicator.CreateActiveBeats();
         //_beatIndicator.StartMetronome();
+
+        var cameraMoveDestination = transform.position;
+        cameraMoveDestination.z = -10f;
+
+        Camera.main.transform.DOMove(cameraMoveDestination, PlayMoveTime).SetEase(MoveCurve);
     }
     
     public void QueueMove(Vector3 direction)
@@ -472,7 +477,6 @@ public class Player : MonoBehaviour
     private void Move(Vector3 direction)
     {
         MovementMultiplier += MultiplierIncreaseOnHit;
-        Health += HealthIncreaseOnHit;
         
         _moving = true;
 

@@ -239,7 +239,9 @@ public class GridPlayground : MonoBehaviour
         var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius)
             .Where(x => x.GetComponent<GridCell>() != null)
             .Select(x => x.GetComponent<GridCell>()
-        );
+        ).ToList();
+
+        var cellsToRemove = new List<GridCell>();
 
         foreach (var overlappedCell in overlappedCells)
         {
@@ -248,6 +250,7 @@ public class GridPlayground : MonoBehaviour
 
             if (hasPermanentObstacle)
             {
+                cellsToRemove.Add(overlappedCell);
                 continue;
             }
 
@@ -260,6 +263,11 @@ public class GridPlayground : MonoBehaviour
             {
                 overlappedCell.ZoneModifier = randomModifier;
             }
+        }
+
+        foreach (var cellToRemove in cellsToRemove)
+        {
+            overlappedCells.Remove(cellToRemove);
         }
 
         foreach (var overlappedCell in overlappedCells)

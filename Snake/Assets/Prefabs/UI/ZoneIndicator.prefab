@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4a9bb5975f3ed4fb17db3ecfd72e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScreenBorderOffsetTop: 100
+  ScreenBorderOffsetTop: 40
   ScreenBorderOffsetRight: 40
   ScreenBorderOffsetDown: 40
   ScreenBorderOffsetLeft: 40
