@@ -41,8 +41,7 @@ public class Zone : MonoBehaviour
         }
 
         MainPanel.Instance.BeatIndicator.UpdateBarAtNextBeat = true;
-
-        MainManager.Instance.GridPlayground.ZonesSpawned--;
+        
         MainManager.Instance.Player.GiveScore(ZoneModifier.ClearBaseScore, true, true);
         MainManager.Instance.Player.Health += MainManager.Instance.Player.HealthIncreaseOnHit;
 
@@ -59,9 +58,7 @@ public class Zone : MonoBehaviour
             cell.ZoneModifier = MainManager.Instance.GridPlayground.NoneZoneModifier;
             cell.Modify();
         }
-
-        MainManager.Instance.GridPlayground.ZonesSpawned--;
-
+        
         Destroy(_indicator);
         _indicator = null;
 

@@ -123,11 +123,11 @@ MonoBehaviour:
   DeathShrinkDivisions: 8
   IntermediateSegments: 8
   CenterAppearProbabilityIncrement: 0.33
-  MaxHealth: 120
+  MaxHealth: 100
   HealthDecreaseOnMiss: 10
   HealthIncreaseOnHit: 10
   MaxMovementMultipler: 10
-  MultiplierDecreaseOnMiss: 3
+  MultiplierDecreaseOnMiss: 4
   MultiplierIncreaseOnHit: 1
-  MultiplierDecreaseOnSpam: 2
+  MultiplierDecreaseOnSpam: 3
   MissShakeAmount: 0.025

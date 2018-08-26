@@ -18,11 +18,9 @@ public class GridPlayground : MonoBehaviour
     public SpriteRenderer BackgroundRenderer;
     public float CellSize;
     public float CellSpacing;
-	public float FoodSpawnTime;
     public ZoneModifier[] ZoneModifiers;
     public ZoneModifier NoneZoneModifier;
 	public float ZoneSpawnTime;
-	public int MaxZoneSpawned;
     public float ObstacleSpawnTime;
     public int MaxObstaclesSpawned;
     public float AroundPlayerThreshold;
@@ -34,7 +32,6 @@ public class GridPlayground : MonoBehaviour
     public List<Food> Foods { get; set; }
     public List<Obstacle> Obstacles { get; set; }
     public float MoveDistance { get { return CellSize + CellSpacing; } }
-    public int ZonesSpawned { get; set; }
     public int ObstaclesSpawned { get; set; }
 
     private Transform _zonesParent;
@@ -43,7 +40,7 @@ public class GridPlayground : MonoBehaviour
     
     private float _zoneSpawnTimer;
     private GridCell[] _cells;
-    
+
     private void Awake()
     {
         var zones = GameObject.Find("Zones");
@@ -81,11 +78,13 @@ public class GridPlayground : MonoBehaviour
                         section.Renderer.enabled = true;
                         section.Renderer.DOFade(newGridCell.ColorAlpha, MainManager.Instance.PulseTime);
                     }
+
+                    Destroy(newGridCell);
                 }
             }
         }
 
-        _cells = GetComponentsInChildren<GridCell>();
+        _cells = GetComponentsInChildren<GridCell>().Where(x => !x.IsBorder).ToArray();
     }
     
     private void Start()
@@ -121,11 +120,14 @@ public class GridPlayground : MonoBehaviour
             {
                 var obstacles = TrySpawnObstacle();
 
-                foreach (var obstacle in obstacles)
+                if (obstacles != null)
                 {
-                    obstacle.Cell.OutlineObstacle();
+                    foreach (var obstacle in obstacles)
+                    {
+                        obstacle.Cell.OutlineObstacle();
+                    }
                 }
-
+                
                 _obstacleSpawnTimer = ObstacleSpawnTime;
             }
         }
@@ -180,9 +182,12 @@ public class GridPlayground : MonoBehaviour
         }
         
         var aroundPlayer = Physics2D.OverlapCircleAll(MainManager.Instance.Player.transform.position, AroundPlayerThreshold)
-            .Where(x => x.GetComponent<GridCell>() != null && x.GetComponent<GridCell>().Content == null && x.GetComponent<GridCell>().ZoneModifier == MainManager.Instance.GridPlayground.NoneZoneModifier)
-            .Where(x => Vector2.Distance(x.transform.position, MainManager.Instance.Player.transform.position) >= ClosePlayerThreshold)
-            .ToList();
+            .Where(x => x.GetComponent<GridCell>() != null
+                && x.GetComponent<GridCell>().Content == null 
+                && x.GetComponent<GridCell>().ZoneModifier == MainManager.Instance.GridPlayground.NoneZoneModifier
+                && Vector2.Distance(x.transform.position, MainManager.Instance.Player.transform.position) >= ClosePlayerThreshold
+                && x.GetComponent<GridCell>().GetComponentInChildren<Obstacle>() == null
+            ).ToList();
         
         var cell = aroundPlayer[UnityEngine.Random.Range(0, aroundPlayer.Count)].GetComponent<GridCell>();
         
@@ -211,33 +216,18 @@ public class GridPlayground : MonoBehaviour
 
     private void TrySpawnZone()
     {
-        if (ZonesSpawned >= MaxZoneSpawned)
-        {
-            return;
-        }
-
         var randomModifier = ZoneModifiers[UnityEngine.Random.Range(0, ZoneModifiers.Length)];
+        
+        var randomPosition = new Vector2(UnityEngine.Random.Range(-GridWidth / 2f, GridWidth / 2f), UnityEngine.Random.Range(-GridHeight / 2f, GridHeight / 2f));
+        var overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
 
-        var randomPosition = Vector2.zero;
-        var overlappingZoneOrPlayer = false;
-        var tries = 0;
-        var maxTries = 10;
-
-        do
-        {
-            randomPosition = new Vector2(UnityEngine.Random.Range(-GridWidth / 2f, GridWidth / 2f), UnityEngine.Random.Range(-GridHeight / 2f, GridHeight / 2f));
-            overlappingZoneOrPlayer = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius * 2.5f).Any(x => x.GetComponent<Zone>() != null || x.GetComponent<Player>());
-            tries++;
-        }
-        while (overlappingZoneOrPlayer && tries < maxTries);
-
-        if(overlappingZoneOrPlayer)
+        if (overlappingZoneOrPlayer)
         {
             return;
         }
 
         var overlappedCells = Physics2D.OverlapCircleAll(randomPosition, randomModifier.Radius)
-            .Where(x => x.GetComponent<GridCell>() != null)
+            .Where(x => x.GetComponent<GridCell>() != null && !x.GetComponent<GridCell>().IsBorder)
             .Select(x => x.GetComponent<GridCell>()
         ).ToList();
 
@@ -278,9 +268,7 @@ public class GridPlayground : MonoBehaviour
         var newZone = Instantiate(ZoneCenterPrefab, randomPosition, Quaternion.identity).GetComponent<Zone>();
         newZone.Initialize(overlappedCells.ToArray(), randomModifier);
         newZone.transform.parent = _zonesParent;
-
-        ZonesSpawned++;
-
+        
         var tempZoneCells = new List<GridCell>(overlappedCells);
         
         for (var i = 0; i < randomModifier.FoodSpawnCount; i++)
@@ -309,7 +297,9 @@ public class GridPlayground : MonoBehaviour
                     Foods.Remove(food);
                 }
             }
-            
+
+            _cells[i].Content = null;
+
             _cells[i].Modify();
         }
     }

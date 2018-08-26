@@ -6485,7 +6485,7 @@ MonoBehaviour:
   Tempo: 200
   SuccessColor: {r: 0.5803922, g: 0.7568628, b: 0.1254902, a: 0.39215687}
   FailureColor: {r: 0.90196085, g: 0.1764706, b: 0.16470589, a: 0.39215687}
-  BeatTime: 1
+  BeatTime: 0.9
   _activeBeats: []
 --- !u!1 &1099659625
 GameObject:
@@ -11092,7 +11092,6 @@ MonoBehaviour:
   BackgroundRenderer: {fileID: 0}
   CellSize: 0.64
   CellSpacing: 0
-  FoodSpawnTime: 2
   ZoneModifiers:
   - {fileID: 11400000, guid: bc09e5bcf4bf9ca43a1a4d65ca935974, type: 2}
   - {fileID: 11400000, guid: 88e4d82e1c0bf984baa340f19b82f981, type: 2}
@@ -11100,7 +11099,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7e358b2ee6c1a3341a12afecd7d0666a, type: 2}
   NoneZoneModifier: {fileID: 11400000, guid: 09e7c2ebd83771d4aa040fe1463af40f, type: 2}
   ZoneSpawnTime: 2
-  MaxZoneSpawned: 6
   ObstacleSpawnTime: 3
   MaxObstaclesSpawned: 30
   AroundPlayerThreshold: 6

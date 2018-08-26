@@ -95,13 +95,18 @@ public class Player : MonoBehaviour
         }
         set
         {
-            if (value > MaxMovementMultipler || value <= 0)
+            var previousMultiplier = _movementMultiplier;
+
+            if (value > MaxMovementMultipler)
             {
                 return;
             }
 
-            var previousMultiplier = _movementMultiplier;
-
+            if (value <= 0 && previousMultiplier == 0)
+            {
+                return;
+            }
+            
             _movementMultiplier = Mathf.Clamp(value, 1, MaxMovementMultipler);
             MainPanel.Instance.UpdateMovementMultiplier(_movementMultiplier, false, previousMultiplier > _movementMultiplier);
         }

@@ -32,6 +32,11 @@ public class Obstacle : MonoBehaviour
                 Clear();
             }
         }
+
+        if (!Cell.TileSections[0].Renderer.enabled)
+        {
+            Clear();
+        }
 	}
 
     public void Clear()
@@ -59,7 +64,7 @@ public class Obstacle : MonoBehaviour
                 cellTileSection.Renderer.DOColor(new Color(Cell.ZoneModifier.Color.r, Cell.ZoneModifier.Color.g, Cell.ZoneModifier.Color.b, Cell.ColorAlpha), MainManager.Instance.PulseTime);
             }
         }
-
+        
         transform.DOScale(0f, MainManager.Instance.PulseTime).OnComplete(() => Destroy(gameObject));
     }
 }
