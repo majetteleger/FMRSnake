@@ -58,8 +58,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4a9bb5975f3ed4fb17db3ecfd72e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScreenBorderOffset: 30
+  ScreenBorderOffset: 40
   MobileBorderOffset: 60
+  DesktopScale: 1.2
+  MobileScale: 1
   FillImage: {fileID: 114784724160050732}
   FadeTime: 0.25
   AlphaValue: 0.75

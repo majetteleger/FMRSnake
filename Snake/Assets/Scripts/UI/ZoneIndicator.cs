@@ -9,6 +9,8 @@ public class ZoneIndicator : MonoBehaviour
 {
     public float ScreenBorderOffset;
     public float MobileBorderOffset;
+    public float DesktopScale;
+    public float MobileScale;
     public Image FillImage;
     public float FadeTime;
     public float AlphaValue;
@@ -28,6 +30,7 @@ public class ZoneIndicator : MonoBehaviour
         UpdateTransform();
 
         _actualScreenBorderOffset = Screen.width < Screen.height ? MobileBorderOffset : ScreenBorderOffset;
+        transform.localScale = Vector3.one * (Screen.width < Screen.height ? MobileScale : DesktopScale);
     }
 
     private void Update()
