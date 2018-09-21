@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
@@ -35,17 +36,31 @@ public class MainManager : MonoBehaviour
     public GameObject PlayerPrefab;
 
     [Header("General")]
+    public GameObject DesktopCanvas;
+    public GameObject MobileCanvas;
+    public float DesktopBlueLineXPosition;
+    public float MobileBlueLineXPosition;
+    public SpriteRenderer StationsRenderer;
+    public Sprite DesktopStations;
+    public Sprite MobileStations;
     public float TransitionTime;
     public int StartSegments;
     public int StartMoves;
+    public int MobileStartMoves;
     public float PulseFactor;
     public float PulseTime;
     public CameraShake CameraShake;
 
     [Header("Camera Anchors")]
-    public Transform MainMenuAnchor;
-    public Transform BuildYourSnakeAnchor;
-    public Transform LeaderBoardAnchor;
+    public Transform DesktopMainMenuAnchor;
+    public Transform DesktopBuildYourSnakeAnchor;
+    public Transform DesktopLeaderBoardAnchor;
+    public Transform MobileMainMenuAnchor;
+    public Transform MobileBuildYourSnakeAnchor;
+    public Transform MobileLeaderBoardAnchor;
+    public Transform MainMenuAnchor { get; set; }
+    public Transform BuildYourSnakeAnchor { get; set; }
+    public Transform LeaderBoardAnchor { get; set; }
 
     [Header("Metro")]
     public Color[] MetroColors;
@@ -54,7 +69,9 @@ public class MainManager : MonoBehaviour
     public float MainMenuFadeTime;
 
     [Header("UI")]
-    public PlayerNamePanel PlayerNamePanel;
+    public PlayerNamePanel MobilePlayerNamePanel;
+    public PlayerNamePanel DesktopPlayerNamePanel;
+    
 
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
@@ -64,6 +81,8 @@ public class MainManager : MonoBehaviour
     public string CurrentPlayerName { get; set; }
     public int PrepMovesExecuted { get; set; }
     public int SelectedLineIndex { get; set; }
+    public int ActualStartMoves { get; set; }
+    public PlayerNamePanel PlayerNamePanel { get; set; }
 
     public int CurrentPlayerLeaderboardIndex
     {
@@ -72,11 +91,39 @@ public class MainManager : MonoBehaviour
     
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
-    private Vector3 BuildYourSnakeActualAnchor;
+    private Vector3 _buildYourSnakeActualAnchor;
+    
 
     private void Awake()
     {
         Instance = this;
+
+        if (Screen.width < Screen.height)
+        {
+            ActualStartMoves = MobileStartMoves;
+            Camera.main.orthographicSize = 4f;
+            DesktopCanvas.SetActive(false);
+            MobileCanvas.SetActive(true);
+            MainMenuAnchor = MobileMainMenuAnchor;
+            BuildYourSnakeAnchor = MobileBuildYourSnakeAnchor;
+            LeaderBoardAnchor = MobileLeaderBoardAnchor;
+            MetroLines[0].transform.localPosition = new Vector3(MobileBlueLineXPosition, MetroLines[0].transform.localPosition.y, MetroLines[0].transform.localPosition.z);
+            StationsRenderer.sprite = MobileStations;
+            PlayerNamePanel = MobilePlayerNamePanel;
+        }
+        else
+        {
+            ActualStartMoves = StartMoves;
+            Camera.main.orthographicSize = 3.1f;
+            DesktopCanvas.SetActive(true);
+            MobileCanvas.SetActive(false);
+            MainMenuAnchor = DesktopMainMenuAnchor;
+            BuildYourSnakeAnchor = DesktopBuildYourSnakeAnchor;
+            LeaderBoardAnchor = DesktopLeaderBoardAnchor;
+            MetroLines[0].transform.localPosition = new Vector3(DesktopBlueLineXPosition, MetroLines[0].transform.localPosition.y, MetroLines[0].transform.localPosition.z);
+            StationsRenderer.sprite = DesktopStations;
+            PlayerNamePanel = DesktopPlayerNamePanel;
+        }
     }
 
     private void Start()
@@ -85,112 +132,172 @@ public class MainManager : MonoBehaviour
         LeaderBoard = new List<LeaderBoardEntry>();
         _mainMenuRenderers = MetroLinesContainer.GetComponentsInChildren<SpriteRenderer>();
         
-        TransitionToMainMenu();
+        TransitionToMainMenu(true);
     }
 
-    private void Update()
+    public void InputUp()
     {
         switch (CurrentState)
         {
             case GameState.MainMenu:
 
-                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
-                {
-                    SelectedLineIndex++;
-
-                    if (SelectedLineIndex > MetroLines.Length - 1)
-                    {
-                        SelectedLineIndex = 0;
-                    }
-
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-
-                    UpdateSelectedLine();
-                }
-
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
-                {
-                    SelectedLineIndex--;
-
-                    if (SelectedLineIndex < 0)
-                    {
-                        SelectedLineIndex = MetroLines.Length - 1;
-                    }
-
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-
-                    UpdateSelectedLine();
-                }
-
-                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
-                {
-                    TransitionToBuildYourSnake();
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
-
-                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
-                {
-                    TransitionToLeaderBoard();
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
+                TransitionToBuildYourSnake();
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
 
                 break;
 
             case GameState.BuildYourSnake:
 
-                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
-                {
-                    PlayerNamePanel.Input(KeyCode.RightArrow);
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
-
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
-                {
-                    PlayerNamePanel.Input(KeyCode.LeftArrow);
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
-
-                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
-                {
-                    PlayerNamePanel.Input(KeyCode.UpArrow);
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
-
-                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
-                {
-                    PlayerNamePanel.Input(KeyCode.DownArrow);
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
+                PlayerNamePanel.Input(KeyCode.UpArrow);
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
 
                 break;
 
             case GameState.Play:
 
-                // DEBUG
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    Player.Die();
-                }
-                //
+                Player.Input(Vector3.up);
 
                 break;
-                
+
             case GameState.LeaderBoard:
 
-                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
-                {
-                    TransitionToMainMenu();
-                    AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
-                }
+                TransitionToMainMenu();
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
 
                 break;
         }
     }
 
-    public void TransitionToMainMenu()
+    public void InputRight()
+    {
+        switch (CurrentState)
+        {
+            case GameState.MainMenu:
+
+                SelectedLineIndex++;
+
+                if (SelectedLineIndex > MetroLines.Length - 1)
+                {
+                    SelectedLineIndex = 0;
+                }
+
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                UpdateSelectedLine();
+
+                break;
+
+            case GameState.BuildYourSnake:
+
+                PlayerNamePanel.Input(KeyCode.RightArrow);
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                break;
+
+            case GameState.Play:
+
+                Player.Input(Vector3.right);
+
+                break;
+
+            case GameState.LeaderBoard:
+                break;
+        }
+    }
+
+    public void InputDown()
+    {
+        switch (CurrentState)
+        {
+            case GameState.MainMenu:
+
+                TransitionToLeaderBoard();
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                break;
+
+            case GameState.BuildYourSnake:
+
+                PlayerNamePanel.Input(KeyCode.DownArrow);
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                break;
+
+            case GameState.Play:
+
+                Player.Input(Vector3.down);
+
+                break;
+
+            case GameState.LeaderBoard:
+                break;
+        }
+    }
+
+    public void InputLeft()
+    {
+        switch (CurrentState)
+        {
+            case GameState.MainMenu:
+                
+                SelectedLineIndex--;
+
+                if (SelectedLineIndex < 0)
+                {
+                    SelectedLineIndex = MetroLines.Length - 1;
+                }
+
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                UpdateSelectedLine();
+
+                break;
+
+            case GameState.BuildYourSnake:
+
+                PlayerNamePanel.Input(KeyCode.LeftArrow);
+                AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
+
+                break;
+
+            case GameState.Play:
+
+                Player.Input(Vector3.left);
+
+                break;
+
+            case GameState.LeaderBoard:
+                break;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            InputRight();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            InputLeft();
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            InputUp();
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            InputDown();
+        }
+    }
+
+    public void TransitionToMainMenu(bool instant = false)
     {
         CurrentState = GameState.MainMenu;
-        Camera.main.transform.DOMove(MainMenuAnchor.position, TransitionTime);
+        Camera.main.transform.DOMove(MainMenuAnchor.position, instant ? 0f : TransitionTime);
 
         SelectedLineIndex = UnityEngine.Random.Range(0, MetroLines.Length);
         UpdateSelectedLine();
@@ -214,12 +321,12 @@ public class MainManager : MonoBehaviour
         PlayerNamePanel.gameObject.SetActive(true);
         MainPanel.Instance.TransitionToBuildYourSnake();
 
-        Camera.main.transform.DOMove(BuildYourSnakeActualAnchor, TransitionTime);
+        Camera.main.transform.DOMove(_buildYourSnakeActualAnchor, TransitionTime);
 
         Player.GetComponentInChildren<SpriteRenderer>().color = MetroLines[SelectedLineIndex].Color;
         PrepMovesExecuted = 0;
 
-        for (var i = 0; i < StartMoves; i++)
+        for (var i = 0; i < ActualStartMoves; i++)
         {
             Player.QueueMove(Vector3.right);
 
@@ -276,7 +383,7 @@ public class MainManager : MonoBehaviour
         var approximatePosition = BuildYourSnakeAnchor.transform.position + new Vector3(0f, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
         approximatePosition.z = 0f;
 
-        var spawnPosition = FindNearestCellPosition(approximatePosition, StartMoves);
+        var spawnPosition = FindNearestCellPosition(approximatePosition, ActualStartMoves);
         
         Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
     }
@@ -308,13 +415,6 @@ public class MainManager : MonoBehaviour
 
         while (!string.IsNullOrEmpty(currentValue))
         {
-            // this part is updating the existing playerprefs entry to fit the new format, we should get rid of this eventually
-            if (currentValue.Split(':').Length != 3)
-            {
-                currentValue += ":1";
-            }
-            //
-
             var values = currentValue.Split(':');
             LeaderBoard.Add(new LeaderBoardEntry(values[0], int.Parse(values[1]), int.Parse(values[2])));
 
@@ -343,7 +443,7 @@ public class MainManager : MonoBehaviour
 
     private Vector3 FindNearestCellPosition(Vector3 approximatePosition, int leftGridOffset = 0)
     {
-        BuildYourSnakeActualAnchor = BuildYourSnakeAnchor.position;
+        _buildYourSnakeActualAnchor = BuildYourSnakeAnchor.position;
 
         var gridCells = Physics2D.OverlapCircleAll(approximatePosition, GridPlayground.CellSize).Select(x => x.transform).ToArray();
 
@@ -364,7 +464,7 @@ public class MainManager : MonoBehaviour
         var newAnchorPosition = resultCell.transform.position - new Vector3(0f, MainPanel.Instance.BuildYourSnakeCameraOffset.y);
         newAnchorPosition.z = -10f;
 
-        BuildYourSnakeActualAnchor = newAnchorPosition;
+        _buildYourSnakeActualAnchor = newAnchorPosition;
 
         for (var i = 0; i < leftGridOffset; i++)
         {

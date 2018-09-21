@@ -168,48 +168,24 @@ public class Player : MonoBehaviour
         Dead = false;
     }
 
-    private void Update()
+    public void Input(Vector3 direction)
     {
-        if (MainPanel.Instance.BeatIndicator.IsHot && !HasMoved)
+        var reverse =
+            LastDirection == Vector3.down && direction == Vector3.up ||
+            LastDirection == Vector3.left && direction == Vector3.right ||
+            LastDirection == Vector3.up && direction == Vector3.down ||
+            LastDirection == Vector3.right && direction == Vector3.left;
+
+        if (!MainPanel.Instance.BeatIndicator.IsHot || HasMoved || reverse)
         {
-            if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8)) && LastDirection != Vector3.down)
-            {
-                QueueMove(Vector3.up);
-            }
-            else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2)) && LastDirection != Vector3.up)
-            {
-                QueueMove(Vector3.down);
-            }
-            else if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6)) && LastDirection != Vector3.left)
-            {
-                QueueMove(Vector3.right);
-            }
-            else if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4)) && LastDirection != Vector3.right)
-            {
-                QueueMove(Vector3.left);
-            }
+            _beatIndicator.CreateDummyMetronome(false);
         }
-        else if ((MainManager.Instance.CurrentState == MainManager.GameState.Play) && !MainPanel.Instance.BeatIndicator.IsHot || HasMoved)
+        else
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Keypad8))
-            {
-                _beatIndicator.CreateDummyMetronome(false);
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                _beatIndicator.CreateDummyMetronome(false);
-            }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.Keypad6))
-            {
-                _beatIndicator.CreateDummyMetronome(false);
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Keypad4))
-            {
-                _beatIndicator.CreateDummyMetronome(false);
-            }
+            QueueMove(direction);
         }
     }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         var food = other.GetComponent<Food>();
@@ -575,7 +551,7 @@ public class Player : MonoBehaviour
         {
             MainManager.Instance.PrepMovesExecuted++;
 
-            if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.StartMoves)
+            if (MainManager.Instance.PrepMovesExecuted >= MainManager.Instance.ActualStartMoves)
             {
                 MainManager.Instance.PlayerNamePanel.ToggleConfirm(true);
             }

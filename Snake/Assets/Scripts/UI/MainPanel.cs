@@ -37,7 +37,7 @@ public class MainPanel : MonoBehaviour
 
     [Header("General")]
 
-    public Image Title;
+    public GameObject Title;
     public Text Header;
     public Text UpControlText;
     public Image UpControlImage;
@@ -218,57 +218,7 @@ public class MainPanel : MonoBehaviour
             MovementMultiplierText.transform.DOPunchScale(Vector3.one * 0.05f * mutliplier, MovementMultiplierUpdateTime, 10, 0f);
         }
     }
-
-    public void ControlToggle(KeyCode keyCode, bool toggle)
-    {
-        switch (keyCode)
-        {
-            case KeyCode.UpArrow:
-
-                if (UpControlText.text == string.Empty)
-                {
-                    break;
-                }
-
-                UpControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
-
-                break;
-
-            case KeyCode.RightArrow:
-
-                if (RightControlText.text == string.Empty)
-                {
-                    break;
-                }
-
-                RightControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
-
-                break;
-
-            case KeyCode.DownArrow:
-
-                if (DownControlText.text == string.Empty)
-                {
-                    break;
-                }
-
-                DownControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
-
-                break;
-
-            case KeyCode.LeftArrow:
-
-                if (LeftControlText.text == string.Empty)
-                {
-                    break;
-                }
-
-                LeftControlImage.DOFade(toggle ? ControlsFadeValue : 1f, Instance.ControlsFadeTime);
-
-                break;
-        }
-    }
-
+    
     private void DisplayLeaderBoard()
     {
         var currentPlayerLeaderboardIndex = MainManager.Instance.CurrentPlayerLeaderboardIndex;
@@ -351,5 +301,29 @@ public class MainPanel : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void UI_Input(string input)
+    {
+        switch (input)
+        {
+            case "down":
+                MainManager.Instance.InputDown();
+                break;
+
+            case "right":
+                MainManager.Instance.InputRight();
+                break;
+
+            case "up":
+                MainManager.Instance.InputUp();
+                break;
+
+            case "left":
+                MainManager.Instance.InputLeft();
+                break;
+        }
+
+        
     }
 }

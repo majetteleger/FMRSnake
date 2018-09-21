@@ -4381,7 +4381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f422343d04aa6e48b5e71e52d97d62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 1375414024}
+  Title: {fileID: 0}
   Header: {fileID: 1419527229}
   UpControlText: {fileID: 1157021119}
   UpControlImage: {fileID: 1724415590}
@@ -5677,15 +5677,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 1465107564994596, guid: 44840f4d2931fda44af7f96f5b921e1d,
     type: 2}
+  DesktopCanvas: {fileID: 0}
+  MobileCanvas: {fileID: 0}
+  DesktopBlueLineXPosition: 0
+  MobileBlueLineXPosition: 0
+  StationsRenderer: {fileID: 0}
+  DesktopStations: {fileID: 0}
+  MobileStations: {fileID: 0}
   TransitionTime: 1
   StartSegments: 3
   StartMoves: 11
+  MobileStartMoves: 0
   PulseFactor: 0.2
   PulseTime: 0.2
   CameraShake: {fileID: 370450046}
-  MainMenuAnchor: {fileID: 666853905}
-  BuildYourSnakeAnchor: {fileID: 1423733471}
-  LeaderBoardAnchor: {fileID: 787414671}
+  DesktopMainMenuAnchor: {fileID: 0}
+  DesktopBuildYourSnakeAnchor: {fileID: 0}
+  DesktopLeaderBoardAnchor: {fileID: 0}
+  MobileMainMenuAnchor: {fileID: 0}
+  MobileBuildYourSnakeAnchor: {fileID: 0}
+  MobileLeaderBoardAnchor: {fileID: 0}
   MetroColors:
   - {r: 0, g: 0.4901961, b: 0.75294125, a: 1}
   - {r: 0.93725497, g: 0.49803925, b: 0.003921569, a: 1}
@@ -7469,7 +7480,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 54.375, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1192918960
@@ -8697,7 +8708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 124.75, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1331504072
@@ -10577,7 +10588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 62.375, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1797944382

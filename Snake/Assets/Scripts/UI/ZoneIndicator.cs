@@ -7,10 +7,8 @@ using UnityEngine.UI;
 
 public class ZoneIndicator : MonoBehaviour
 {
-    public float ScreenBorderOffsetTop;
-    public float ScreenBorderOffsetRight;
-    public float ScreenBorderOffsetDown;
-    public float ScreenBorderOffsetLeft;
+    public float ScreenBorderOffset;
+    public float MobileBorderOffset;
     public Image FillImage;
     public float FadeTime;
     public float AlphaValue;
@@ -18,7 +16,8 @@ public class ZoneIndicator : MonoBehaviour
     private Zone _targetZone;
     private CanvasGroup _canvasGroup;
     private bool _isOn;
-    
+    private float _actualScreenBorderOffset;
+
     public void Initialize(Zone targetZone)
     {
         _targetZone = targetZone;
@@ -27,6 +26,8 @@ public class ZoneIndicator : MonoBehaviour
         _canvasGroup = GetComponent<CanvasGroup>();
         _canvasGroup.alpha = AlphaValue;
         UpdateTransform();
+
+        _actualScreenBorderOffset = Screen.width < Screen.height ? MobileBorderOffset : ScreenBorderOffset;
     }
 
     private void Update()
@@ -57,8 +58,8 @@ public class ZoneIndicator : MonoBehaviour
         var zonePosition = Camera.main.WorldToScreenPoint(_targetZone.transform.position);
         var newPosition = new Vector3
         {
-            x = Mathf.Clamp(zonePosition.x, 0f + ScreenBorderOffsetLeft, Screen.width - ScreenBorderOffsetRight),
-            y = Mathf.Clamp(zonePosition.y, 0f + ScreenBorderOffsetDown, Screen.height - ScreenBorderOffsetTop)
+            x = Mathf.Clamp(zonePosition.x, 0f + _actualScreenBorderOffset, Screen.width - _actualScreenBorderOffset),
+            y = Mathf.Clamp(zonePosition.y, 0f + _actualScreenBorderOffset, Screen.height - _actualScreenBorderOffset)
         };
 
         var newScreenPosition = newPosition;
