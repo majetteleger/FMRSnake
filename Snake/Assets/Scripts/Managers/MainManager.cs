@@ -92,6 +92,7 @@ public class MainManager : MonoBehaviour
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
     private Vector3 _buildYourSnakeActualAnchor;
+    private string url = "ligneleaderboard.herokuapp.com/addscore/";
     
 
     private void Awake()
@@ -161,6 +162,10 @@ public class MainManager : MonoBehaviour
 
             case GameState.LeaderBoard:
 
+                if (MainPanel.Instance.WarningPanel.activeSelf)
+                {
+                    MainPanel.Instance.WarningPanel.SetActive(false);
+                }
                 TransitionToMainMenu();
                 AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
 
@@ -367,6 +372,8 @@ public class MainManager : MonoBehaviour
         MainPanel.Instance.TransitionToLeaderBoard();
         ResetSnake();
 
+        
+
         foreach (var mainMenuRenderer in _mainMenuRenderers)
         {
             mainMenuRenderer.DOFade(1f, MainMenuFadeTime);
@@ -386,6 +393,26 @@ public class MainManager : MonoBehaviour
         var spawnPosition = FindNearestCellPosition(approximatePosition, ActualStartMoves);
         
         Player = Instantiate(PlayerPrefab, spawnPosition, Quaternion.identity).GetComponent<Player>();
+    }
+
+    public void SendScore()
+    {
+        Debug.Log("sending score");
+        StartCoroutine(DoSendScore(CurrentPlayerName, SelectedLineIndex, Player.Score));
+    }
+
+    private IEnumerator DoSendScore(string name, int color, int score)
+    {
+        WWW www = new WWW(url + name + "/" + color + "/" + score);
+        yield return www;
+
+        if (string.IsNullOrEmpty(www.error))
+            print("Upload Successful");
+        else
+        {
+            print("Error uploading: " + www.error);
+            MainPanel.Instance.DisplayWarning("Could not upload score: " + www.error);
+        }
     }
     
     public void SaveScore(string displayName, int lineColor)

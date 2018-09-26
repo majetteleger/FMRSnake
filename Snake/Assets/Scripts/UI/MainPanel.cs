@@ -97,6 +97,8 @@ public class MainPanel : MonoBehaviour
     public GameObject EndDotDotDot;
     public Color NormalEntryColor;
     public Color HighlightedEntryColor;
+    public GameObject WarningPanel;
+    public Text WarningText;
 
     private float _displayedScore;
 
@@ -197,6 +199,12 @@ public class MainPanel : MonoBehaviour
         }
 
         StartCoroutine(DoUpdateScore(score));
+    }
+
+    public void DisplayWarning(string msg)
+    {
+        WarningText.text = msg;
+        WarningPanel.SetActive(true);
     }
 
     public void UpdateMovementMultiplier(int mutliplier, bool instant, bool negative)

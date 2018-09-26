@@ -288,6 +288,7 @@ public class Player : MonoBehaviour
         MainPanel.Instance.BeatIndicator.StopBeat();
 
         StartCoroutine(DoDie());
+        MainManager.Instance.SendScore();
     }
 
     private IEnumerator DoDie()
