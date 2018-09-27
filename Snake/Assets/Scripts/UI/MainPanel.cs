@@ -229,6 +229,8 @@ public class MainPanel : MonoBehaviour
     
     private void DisplayLeaderBoard()
     {
+
+
         var currentPlayerLeaderboardIndex = MainManager.Instance.CurrentPlayerLeaderboardIndex;
         var uiEntryIndex = 0;
 

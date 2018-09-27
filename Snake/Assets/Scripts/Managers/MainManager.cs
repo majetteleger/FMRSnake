@@ -71,8 +71,9 @@ public class MainManager : MonoBehaviour
     [Header("UI")]
     public PlayerNamePanel MobilePlayerNamePanel;
     public PlayerNamePanel DesktopPlayerNamePanel;
-    
 
+    public string[] LeaderboardEntries;
+    public bool CanReachLeaderboard;
     public GameState CurrentState { get; set; }
     public Player Player { get; set; }
     public GridPlayground GridPlayground { get; set; }
@@ -92,8 +93,8 @@ public class MainManager : MonoBehaviour
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
     private Vector3 _buildYourSnakeActualAnchor;
-    private string url = "ligneleaderboard.herokuapp.com/addscore/";
-    
+    private string _url = "http://ligneleaderboard.herokuapp.com";
+    private string _leaderboardRaw;
 
     private void Awake()
     {
@@ -311,7 +312,8 @@ public class MainManager : MonoBehaviour
         MainPanel.Instance.TransitionToMainMenu();
         PlayerNamePanel.gameObject.SetActive(false);
         ResetSnake();
-        LoadLeaderBoard();
+        //LoadLeaderBoard();
+        DownloadScores();
 
         foreach (var mainMenuRenderer in _mainMenuRenderers)
         {
@@ -362,6 +364,7 @@ public class MainManager : MonoBehaviour
         if (CurrentState == GameState.NONE)
         {
             SaveScore(CurrentPlayerName, SelectedLineIndex);
+            SendScore();
         }
 
         CurrentState = GameState.LeaderBoard;
@@ -371,8 +374,6 @@ public class MainManager : MonoBehaviour
         AudioManager.Instance.FadeAmbianceTo(AudioManager.Instance.AmbianceMenu);
         MainPanel.Instance.TransitionToLeaderBoard();
         ResetSnake();
-
-        
 
         foreach (var mainMenuRenderer in _mainMenuRenderers)
         {
@@ -403,7 +404,7 @@ public class MainManager : MonoBehaviour
 
     private IEnumerator DoSendScore(string name, int color, int score)
     {
-        WWW www = new WWW(url + name + "/" + color + "/" + score);
+        WWW www = new WWW(_url + "/" + name + "/" + color + "/" + score);
         yield return www;
 
         if (string.IsNullOrEmpty(www.error))
@@ -411,7 +412,7 @@ public class MainManager : MonoBehaviour
         else
         {
             print("Error uploading: " + www.error);
-            MainPanel.Instance.DisplayWarning("Could not upload score: " + www.error);
+            CanReachLeaderboard = false;
         }
     }
     
@@ -432,13 +433,43 @@ public class MainManager : MonoBehaviour
         _newLeaderBoardId++;
     }
 
-    private void LoadLeaderBoard()
+    private void DownloadScores()
+    {
+        Debug.Log("Querying database");
+        StartCoroutine("DownloadScoresFromDatabase");
+    }
+
+    private IEnumerator DownloadScoresFromDatabase()
+    {
+        WWW www = new WWW(_url + "/getscores");
+        yield return www;
+
+        if (string.IsNullOrEmpty(www.error))
+        {
+            _leaderboardRaw = www.text;
+            FormatLeaderboard(_leaderboardRaw);
+            ParseLeaderboardEntries();
+        }
+        else
+        {
+            print("Error Downloading: " + www.error);
+            //trigger warning;
+        }
+    }
+
+    private void FormatLeaderboard(string raw)
+    {
+        LeaderboardEntries = raw.Split('|');
+        Debug.Log(LeaderboardEntries);
+    }
+
+    private void ParseLeaderboardEntries()
     {
         LeaderBoard.Clear();
 
         var currentId = 0;
-        var currentIdString = currentId.ToString();
-        var currentValue = PlayerPrefs.GetString(currentIdString);
+        //var currentIdString = currentId.ToString();
+        var currentValue = LeaderboardEntries[currentId]; /*PlayerPrefs.GetString(currentIdString);*/
 
         while (!string.IsNullOrEmpty(currentValue))
         {
@@ -446,8 +477,8 @@ public class MainManager : MonoBehaviour
             LeaderBoard.Add(new LeaderBoardEntry(values[0], int.Parse(values[1]), int.Parse(values[2])));
 
             currentId++;
-            currentIdString = currentId.ToString();
-            currentValue = PlayerPrefs.GetString(currentIdString);
+            //currentIdString = currentId.ToString();
+            currentValue = LeaderboardEntries[currentId];
         }
 
         LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
