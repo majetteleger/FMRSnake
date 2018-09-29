@@ -51,6 +51,8 @@ public class MainPanel : MonoBehaviour
     public float ControlsFadeValue;
     public Color SuccessColor;
     public Color FailureColor;
+    public GameObject DialogBoxBackground;
+    public GameObject[] ButtonsToDeactivate;
 
     [Header("MainMenu")]
 
@@ -99,6 +101,7 @@ public class MainPanel : MonoBehaviour
     public Color HighlightedEntryColor;
 
     private float _displayedScore;
+    private GameObject _openedDialogBox;
 
     private void Awake()
     {
@@ -136,6 +139,11 @@ public class MainPanel : MonoBehaviour
         LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
 
+        foreach (var button in ButtonsToDeactivate)
+        {
+            button.SetActive(false);
+        }
+
         // IDEA: could fade control a bit during play mode to make it less intrusive
         // ALSO: move them up so they don't get in the way of the indicators?
 
@@ -153,6 +161,11 @@ public class MainPanel : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
+        foreach (var button in ButtonsToDeactivate)
+        {
+            button.SetActive(true);
+        }
+
         Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
@@ -323,7 +336,41 @@ public class MainPanel : MonoBehaviour
                 MainManager.Instance.InputLeft();
                 break;
         }
+    }
 
-        
+    private void CloseDialogBox()
+    {
+        DialogBoxBackground.SetActive(false);
+        _openedDialogBox.SetActive(false);
+    }
+
+    public void UI_Quit()
+    {
+        Application.Quit();
+    }
+
+    public void UI_CloseDialogBox()
+    {
+        CloseDialogBox();
+    }
+
+    public void UI_ChangeLanguageToFrench()
+    {
+        //...
+        CloseDialogBox();
+    }
+
+    public void UI_ChangeLanguageToEnglish()
+    {
+        //...
+        CloseDialogBox();
+    }
+
+    public void UI_OpenDialogBox(GameObject dialogBox)
+    {
+        DialogBoxBackground.SetActive(true);
+        dialogBox.SetActive(true);
+
+        _openedDialogBox = dialogBox;
     }
 }
