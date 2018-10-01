@@ -376,7 +376,6 @@ public class MainManager : MonoBehaviour
         ResetSnake();
         //LoadLeaderBoard();
         DownloadScores();
-        LoadLeaderBoard();
 
         foreach (var mainMenuRenderer in _mainMenuRenderers)
         {
@@ -534,7 +533,7 @@ public class MainManager : MonoBehaviour
         var currentId = 0;
         //var currentIdString = currentId.ToString();
         var currentValue = LeaderboardEntries[currentId]; /*PlayerPrefs.GetString(currentIdString);*/
-        var currentIdString = currentId.ToString();
+        //var currentIdString = currentId.ToString();
 
         while (!string.IsNullOrEmpty(currentValue))
         {
@@ -544,8 +543,8 @@ public class MainManager : MonoBehaviour
             currentId++;
             //currentIdString = currentId.ToString();
             currentValue = LeaderboardEntries[currentId];
-            currentIdString = currentId.ToString();
-            currentValue = PlayerPrefs.GetString(currentIdString);
+            //currentIdString = currentId.ToString();
+            //currentValue = PlayerPrefs.GetString(currentIdString);
         }
 
         LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
