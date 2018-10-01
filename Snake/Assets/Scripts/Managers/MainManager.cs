@@ -361,11 +361,10 @@ public class MainManager : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
-        if (CurrentState == GameState.NONE)
-        {
-            SaveScore(CurrentPlayerName, SelectedLineIndex);
-            SendScore();
-        }
+        //if (CurrentState == GameState.NONE)
+        //{
+        //    SaveScore(CurrentPlayerName, SelectedLineIndex);
+        //}
 
         CurrentState = GameState.LeaderBoard;
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
@@ -404,34 +403,36 @@ public class MainManager : MonoBehaviour
 
     private IEnumerator DoSendScore(string name, int color, int score)
     {
-        WWW www = new WWW(_url + "/" + name + "/" + color + "/" + score);
+        WWW www = new WWW(_url + "/addscore/" + name + "/" + color.ToString() + "/" + score.ToString());
         yield return www;
 
         if (string.IsNullOrEmpty(www.error))
-            print("Upload Successful");
+            print("Upload Successful: " + www.text);
         else
         {
             print("Error uploading: " + www.error);
             CanReachLeaderboard = false;
         }
+
+        DownloadScores();
     }
     
-    public void SaveScore(string displayName, int lineColor)
-    {
-        if (string.IsNullOrEmpty(displayName))
-        {
-            return;
-        }
+    //public void SaveScore(string displayName, int lineColor)
+    //{
+    //    if (string.IsNullOrEmpty(displayName))
+    //    {
+    //        return;
+    //    }
 
-        var newValue = string.Format("{0}:{1}:{2}", displayName, Player.Score, lineColor);
-        PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
+    //    var newValue = string.Format("{0}:{1}:{2}", displayName, Player.Score, lineColor);
+    //    PlayerPrefs.SetString(_newLeaderBoardId.ToString(), newValue);
 
-        CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score, lineColor);
-        LeaderBoard.Add(CurrentPlayerEntry);
-        LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
+    //    CurrentPlayerEntry = new LeaderBoardEntry(displayName, Player.Score, lineColor);
+    //    LeaderBoard.Add(CurrentPlayerEntry);
+    //    LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();
         
-        _newLeaderBoardId++;
-    }
+    //    _newLeaderBoardId++;
+    //}
 
     private void DownloadScores()
     {
@@ -449,18 +450,18 @@ public class MainManager : MonoBehaviour
             _leaderboardRaw = www.text;
             FormatLeaderboard(_leaderboardRaw);
             ParseLeaderboardEntries();
+            CanReachLeaderboard = true;
         }
         else
         {
             print("Error Downloading: " + www.error);
-            //trigger warning;
+            CanReachLeaderboard = false;
         }
     }
 
     private void FormatLeaderboard(string raw)
     {
         LeaderboardEntries = raw.Split('|');
-        Debug.Log(LeaderboardEntries);
     }
 
     private void ParseLeaderboardEntries()

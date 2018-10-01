@@ -353,7 +353,7 @@ public class Player : MonoBehaviour
 
             yield return new WaitUntil(() => canGo);
         }
-
+        MainManager.Instance.SendScore();
         yield return new WaitForSeconds(_deathShrinkDelay);
 
         MainManager.Instance.TransitionToLeaderBoard();
