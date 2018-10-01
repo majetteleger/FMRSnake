@@ -27,7 +27,7 @@ public class BeatIndicator : MonoBehaviour {
     public bool UpdateBarAtNextBeat { get; set; }
     public List<PassiveBeat> PassiveBeats { get; set; }
 
-    private Vector2 _metronomeStartPos;
+    //private Vector2 _metronomeStartPos;
     private float _halfDistance;
     public List<ActiveBeat> _activeBeats;
     private float _beatTimer;
@@ -98,7 +98,7 @@ public class BeatIndicator : MonoBehaviour {
 
     public void StartMetronome()
     {
-        var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
+        //var y = Metronome.GetComponent<RectTransform>().sizeDelta.y;
         //Metronome.GetComponent<CircleCollider2D>().radius = y/2f;
 
         //ResetMetronome();
@@ -164,10 +164,10 @@ public class BeatIndicator : MonoBehaviour {
 
     private void SetMetronomeStartingPos()
     {
-        var yPos = 0;
-        var xPos = - Screen.width / 2;
+        //var yPos = 0;
+        //var xPos = - Screen.width / 2;
         _halfDistance = (Vector2.Distance(PassiveBeats[4].GetComponent<RectTransform>().anchoredPosition, PassiveBeats[5].GetComponent<RectTransform>().anchoredPosition)) / 2;
-        _metronomeStartPos = new Vector2(xPos + _halfDistance, yPos);
+        //_metronomeStartPos = new Vector2(xPos + _halfDistance, yPos);
     }
 
     public void StopBeat()

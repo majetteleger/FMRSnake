@@ -10223,7 +10223,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f422343d04aa6e48b5e71e52d97d62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 1064409518}
+  TitleFr: {fileID: 0}
+  TitleEng: {fileID: 0}
   Header: {fileID: 1419527229}
   UpControlText: {fileID: 1157021119}
   UpControlImage: {fileID: 0}
@@ -10242,18 +10243,35 @@ MonoBehaviour:
   - {fileID: 1920920404}
   - {fileID: 570510711}
   - {fileID: 1221299926}
-  MainMenuHeader: 
   MainMenuControls:
-    Up: jouer
-    Right: choisir
-    Down: classements
-    Left: choisir
-  BuildYourSnakeHeader: inscrivez votre nom
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
+  BuildYourSnakeHeader:
+    English: 
+    French: 
   BuildYourSnakeControls:
-    Up: changer lettre
-    Right: "changer caract\xE8re"
-    Down: changer lettre
-    Left: "changer caract\xE8re"
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   BuildYourSnakeCameraOffset: {x: -7, y: 1.19}
   PlaySubPanel: {fileID: 180480001}
   BeatIndicator: {fileID: 1086401352}
@@ -10269,35 +10287,74 @@ MonoBehaviour:
   EntryPrefab: {fileID: 1069191814485678, guid: fcb422bd27abf074a9cc05fc01570540,
     type: 2}
   PlayControls:
-    Up: haut
-    Right: droite
-    Down: bas
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterControls:
-    Up: "lettre pr\xE9c\xE9dente"
-    Right: droite
-    Down: lettre suivante
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterBackControls:
-    Up: 
-    Right: droite
-    Down: 
-    Left: menu principal
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterConfirmControls:
-    Up: 
-    Right: confirmer
-    Down: 
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   LeaderBoardSubPanel: {fileID: 1101577780}
-  LeaderBoardHeader: 
   TopDisplayedEntries: 3
   DisplayedEntriesBeforePlayer: 1
   DisplayedEntriesAfterPlayer: 1
   LeaderBoardControls:
-    Up: menu principal
-    Right: 
-    Down: 
-    Left: 
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   LeaderboardEntries:
   - {fileID: 1856315331}
   - {fileID: 404671797}
@@ -18270,7 +18327,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 54.375, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1192918960
@@ -19611,7 +19668,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f422343d04aa6e48b5e71e52d97d62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Title: {fileID: 1006350189}
+  TitleFr: {fileID: 0}
+  TitleEng: {fileID: 0}
   Header: {fileID: 1128991281}
   UpControlText: {fileID: 9659771}
   UpControlImage: {fileID: 702691309}
@@ -19630,18 +19688,35 @@ MonoBehaviour:
   - {fileID: 1384126935}
   - {fileID: 75872643}
   - {fileID: 2023368499}
-  MainMenuHeader: 
   MainMenuControls:
-    Up: jouer
-    Right: choisir
-    Down: classements
-    Left: choisir
-  BuildYourSnakeHeader: inscrivez votre nom
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
+  BuildYourSnakeHeader:
+    English: 
+    French: 
   BuildYourSnakeControls:
-    Up: changer lettre
-    Right: "changer caract\xE8re"
-    Down: changer lettre
-    Left: "changer caract\xE8re"
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   BuildYourSnakeCameraOffset: {x: -7, y: 1.19}
   PlaySubPanel: {fileID: 596270095}
   BeatIndicator: {fileID: 1049846805}
@@ -19657,35 +19732,74 @@ MonoBehaviour:
   EntryPrefab: {fileID: 1069191814485678, guid: fcb422bd27abf074a9cc05fc01570540,
     type: 2}
   PlayControls:
-    Up: haut
-    Right: droite
-    Down: bas
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterControls:
-    Up: "lettre pr\xE9c\xE9dente"
-    Right: droite
-    Down: lettre suivante
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterBackControls:
-    Up: 
-    Right: droite
-    Down: 
-    Left: menu principal
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   PlayerNameEnterConfirmControls:
-    Up: 
-    Right: confirmer
-    Down: 
-    Left: gauche
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   LeaderBoardSubPanel: {fileID: 2067514481}
-  LeaderBoardHeader: 
   TopDisplayedEntries: 3
   DisplayedEntriesBeforePlayer: 1
   DisplayedEntriesAfterPlayer: 1
   LeaderBoardControls:
-    Up: menu principal
-    Right: 
-    Down: 
-    Left: 
+    Up:
+      English: 
+      French: 
+    Right:
+      English: 
+      French: 
+    Down:
+      English: 
+      French: 
+    Left:
+      English: 
+      French: 
   LeaderboardEntries:
   - {fileID: 668401398}
   - {fileID: 365154232}
@@ -21128,7 +21242,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 124.75, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1331504072
@@ -26930,7 +27044,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 62.375, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1797944382

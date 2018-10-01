@@ -10,26 +10,38 @@ using UnityEngine.UI;
 public class MainPanel : MonoBehaviour
 {
     [Serializable]
+    public class LocalizedString
+    {
+        public string Value
+        {
+            get { return MainManager.Instance.Language == MainManager.UserLanguage.English ? English : French; }
+        }
+
+        public string English;
+        public string French;
+    }
+
+    [Serializable]
     public class ControlsText
     {
-        public string Up;
-        public string Right;
-        public string Down;
-        public string Left;
+        public LocalizedString Up;
+        public LocalizedString Right;
+        public LocalizedString Down;
+        public LocalizedString Left;
 
         public void ApplyControls()
         {
-            Instance.UpControlText.text = Up;
-            Instance.UpControlImage.DOFade(string.IsNullOrEmpty(Up) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.UpControlText.text = Up.Value;
+            Instance.UpControlImage.DOFade(string.IsNullOrEmpty(Up.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.RightControlText.text = Right;
-            Instance.RightControlImage.DOFade(string.IsNullOrEmpty(Right) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.RightControlText.text = Right.Value;
+            Instance.RightControlImage.DOFade(string.IsNullOrEmpty(Right.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.DownControlText.text = Down;
-            Instance.DownControlImage.DOFade(string.IsNullOrEmpty(Down) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.DownControlText.text = Down.Value;
+            Instance.DownControlImage.DOFade(string.IsNullOrEmpty(Down.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.LeftControlText.text = Left;
-            Instance.LeftControlImage.DOFade(string.IsNullOrEmpty(Left) ? 0.5f : 1f, Instance.ControlsFadeTime);
+            Instance.LeftControlText.text = Left.Value;
+            Instance.LeftControlImage.DOFade(string.IsNullOrEmpty(Left.Value) ? 0.5f : 1f, Instance.ControlsFadeTime);
         }
     }
 
@@ -37,7 +49,8 @@ public class MainPanel : MonoBehaviour
 
     [Header("General")]
 
-    public GameObject Title;
+    public GameObject TitleFr;
+    public GameObject TitleEng;
     public Text Header;
     public Text UpControlText;
     public Image UpControlImage;
@@ -55,13 +68,12 @@ public class MainPanel : MonoBehaviour
     public GameObject[] ButtonsToDeactivate;
 
     [Header("MainMenu")]
-
-    public string MainMenuHeader;
+    
     public ControlsText MainMenuControls;
 
     [Header("BuildYourSnake")]
 
-    public string BuildYourSnakeHeader;
+    public LocalizedString BuildYourSnakeHeader;
     public ControlsText BuildYourSnakeControls;
     public Vector2 BuildYourSnakeCameraOffset;
 
@@ -89,7 +101,6 @@ public class MainPanel : MonoBehaviour
     [Header("LeaderBoard")]
 
     public GameObject LeaderBoardSubPanel;
-    public string LeaderBoardHeader;
     public int TopDisplayedEntries;
     public int DisplayedEntriesBeforePlayer;
     public int DisplayedEntriesAfterPlayer;
@@ -100,18 +111,18 @@ public class MainPanel : MonoBehaviour
     public Color NormalEntryColor;
     public Color HighlightedEntryColor;
 
+    public GameObject Title {
+        get { return MainManager.Instance.Language == MainManager.UserLanguage.English ? TitleEng : TitleFr; }
+    }
+
     private float _displayedScore;
     private GameObject _openedDialogBox;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
     
     public void TransitionToMainMenu()
     {
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
+        Header.text = string.Empty;
 
         foreach (var leaderboardEntry in LeaderboardEntries)
         {
@@ -119,7 +130,6 @@ public class MainPanel : MonoBehaviour
         }
 
         Title.gameObject.SetActive(true);
-        Header.text = MainMenuHeader;
         MainMenuControls.ApplyControls();
     }
 
@@ -128,7 +138,7 @@ public class MainPanel : MonoBehaviour
         Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
-        Header.text = BuildYourSnakeHeader;
+        Header.text = BuildYourSnakeHeader.Value;
         PlayerNameEnterControls.ApplyControls();
     }
 
@@ -166,10 +176,10 @@ public class MainPanel : MonoBehaviour
             button.SetActive(true);
         }
 
+        Header.text = string.Empty;
         Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
-        Header.text = LeaderBoardHeader;
         LeaderBoardControls.ApplyControls();
         DisplayLeaderBoard();
     }
@@ -356,13 +366,13 @@ public class MainPanel : MonoBehaviour
 
     public void UI_ChangeLanguageToFrench()
     {
-        //...
+        MainManager.Instance.Language = MainManager.UserLanguage.French;
         CloseDialogBox();
     }
 
     public void UI_ChangeLanguageToEnglish()
     {
-        //...
+        MainManager.Instance.Language = MainManager.UserLanguage.English;
         CloseDialogBox();
     }
 
