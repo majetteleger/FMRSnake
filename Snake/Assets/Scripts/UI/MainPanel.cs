@@ -10,26 +10,38 @@ using UnityEngine.UI;
 public class MainPanel : MonoBehaviour
 {
     [Serializable]
+    public class LocalizedString
+    {
+        public string Value
+        {
+            get { return MainManager.Instance.Language == MainManager.UserLanguage.English ? English : French; }
+        }
+
+        public string English;
+        public string French;
+    }
+
+    [Serializable]
     public class ControlsText
     {
-        public string Up;
-        public string Right;
-        public string Down;
-        public string Left;
+        public LocalizedString Up;
+        public LocalizedString Right;
+        public LocalizedString Down;
+        public LocalizedString Left;
 
         public void ApplyControls()
         {
-            Instance.UpControlText.text = Up;
-            Instance.UpControlImage.DOFade(string.IsNullOrEmpty(Up) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.UpControlText.text = Up.Value;
+            Instance.UpControlImage.DOFade(string.IsNullOrEmpty(Up.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.RightControlText.text = Right;
-            Instance.RightControlImage.DOFade(string.IsNullOrEmpty(Right) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.RightControlText.text = Right.Value;
+            Instance.RightControlImage.DOFade(string.IsNullOrEmpty(Right.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.DownControlText.text = Down;
-            Instance.DownControlImage.DOFade(string.IsNullOrEmpty(Down) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
+            Instance.DownControlText.text = Down.Value;
+            Instance.DownControlImage.DOFade(string.IsNullOrEmpty(Down.Value) ? Instance.ControlsFadeValue : 1f, Instance.ControlsFadeTime);
 
-            Instance.LeftControlText.text = Left;
-            Instance.LeftControlImage.DOFade(string.IsNullOrEmpty(Left) ? 0.5f : 1f, Instance.ControlsFadeTime);
+            Instance.LeftControlText.text = Left.Value;
+            Instance.LeftControlImage.DOFade(string.IsNullOrEmpty(Left.Value) ? 0.5f : 1f, Instance.ControlsFadeTime);
         }
     }
 
@@ -37,7 +49,8 @@ public class MainPanel : MonoBehaviour
 
     [Header("General")]
 
-    public GameObject Title;
+    public GameObject TitleFr;
+    public GameObject TitleEng;
     public Text Header;
     public Text UpControlText;
     public Image UpControlImage;
@@ -51,15 +64,16 @@ public class MainPanel : MonoBehaviour
     public float ControlsFadeValue;
     public Color SuccessColor;
     public Color FailureColor;
+    public GameObject DialogBoxBackground;
+    public GameObject[] ButtonsToDeactivate;
 
     [Header("MainMenu")]
-
-    public string MainMenuHeader;
+    
     public ControlsText MainMenuControls;
 
     [Header("BuildYourSnake")]
 
-    public string BuildYourSnakeHeader;
+    public LocalizedString BuildYourSnakeHeader;
     public ControlsText BuildYourSnakeControls;
     public Vector2 BuildYourSnakeCameraOffset;
 
@@ -87,7 +101,6 @@ public class MainPanel : MonoBehaviour
     [Header("LeaderBoard")]
 
     public GameObject LeaderBoardSubPanel;
-    public string LeaderBoardHeader;
     public int TopDisplayedEntries;
     public int DisplayedEntriesBeforePlayer;
     public int DisplayedEntriesAfterPlayer;
@@ -97,20 +110,19 @@ public class MainPanel : MonoBehaviour
     public GameObject EndDotDotDot;
     public Color NormalEntryColor;
     public Color HighlightedEntryColor;
-    public GameObject WarningPanel;
-    public Text WarningText;
+
+    public GameObject Title {
+        get { return MainManager.Instance.Language == MainManager.UserLanguage.English ? TitleEng : TitleFr; }
+    }
 
     private float _displayedScore;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private GameObject _openedDialogBox;
     
     public void TransitionToMainMenu()
     {
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
+        Header.text = string.Empty;
 
         foreach (var leaderboardEntry in LeaderboardEntries)
         {
@@ -118,7 +130,6 @@ public class MainPanel : MonoBehaviour
         }
 
         Title.gameObject.SetActive(true);
-        Header.text = MainMenuHeader;
         MainMenuControls.ApplyControls();
     }
 
@@ -127,7 +138,7 @@ public class MainPanel : MonoBehaviour
         Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(false);
-        Header.text = BuildYourSnakeHeader;
+        Header.text = BuildYourSnakeHeader.Value;
         PlayerNameEnterControls.ApplyControls();
     }
 
@@ -137,6 +148,11 @@ public class MainPanel : MonoBehaviour
         PlaySubPanel.SetActive(true);
         LeaderboardPanel.SetActive(false);
         Header.text = string.Empty;
+
+        foreach (var button in ButtonsToDeactivate)
+        {
+            button.SetActive(false);
+        }
 
         // IDEA: could fade control a bit during play mode to make it less intrusive
         // ALSO: move them up so they don't get in the way of the indicators?
@@ -155,10 +171,15 @@ public class MainPanel : MonoBehaviour
     
     public void TransitionToLeaderBoard()
     {
+        foreach (var button in ButtonsToDeactivate)
+        {
+            button.SetActive(true);
+        }
+
+        Header.text = string.Empty;
         Title.gameObject.SetActive(false);
         PlaySubPanel.SetActive(false);
         LeaderboardPanel.SetActive(true);
-        Header.text = LeaderBoardHeader;
         LeaderBoardControls.ApplyControls();
         DisplayLeaderBoard();
     }
@@ -201,12 +222,6 @@ public class MainPanel : MonoBehaviour
         StartCoroutine(DoUpdateScore(score));
     }
 
-    public void DisplayWarning(string msg)
-    {
-        WarningText.text = msg;
-        WarningPanel.SetActive(true);
-    }
-
     public void UpdateMovementMultiplier(int mutliplier, bool instant, bool negative)
     {
         MovementMultiplierText.transform.localScale = Vector3.one;
@@ -229,8 +244,6 @@ public class MainPanel : MonoBehaviour
     
     private void DisplayLeaderBoard()
     {
-
-
         var currentPlayerLeaderboardIndex = MainManager.Instance.CurrentPlayerLeaderboardIndex;
         var uiEntryIndex = 0;
 
@@ -333,7 +346,41 @@ public class MainPanel : MonoBehaviour
                 MainManager.Instance.InputLeft();
                 break;
         }
+    }
 
-        
+    private void CloseDialogBox()
+    {
+        DialogBoxBackground.SetActive(false);
+        _openedDialogBox.SetActive(false);
+    }
+
+    public void UI_Quit()
+    {
+        Application.Quit();
+    }
+
+    public void UI_CloseDialogBox()
+    {
+        CloseDialogBox();
+    }
+
+    public void UI_ChangeLanguageToFrench()
+    {
+        MainManager.Instance.Language = MainManager.UserLanguage.French;
+        CloseDialogBox();
+    }
+
+    public void UI_ChangeLanguageToEnglish()
+    {
+        MainManager.Instance.Language = MainManager.UserLanguage.English;
+        CloseDialogBox();
+    }
+
+    public void UI_OpenDialogBox(GameObject dialogBox)
+    {
+        DialogBoxBackground.SetActive(true);
+        dialogBox.SetActive(true);
+
+        _openedDialogBox = dialogBox;
     }
 }

@@ -21,7 +21,13 @@ public class MainManager : MonoBehaviour
             Color = MainManager.Instance.MetroColors[color];
         }
     }
-    
+
+    public enum UserLanguage
+    {
+        English = 0,
+        French = 1
+    }
+
     public enum GameState
     {
         MainMenu,
@@ -89,12 +95,57 @@ public class MainManager : MonoBehaviour
     {
         get { return LeaderBoard.FindIndex(x => x == CurrentPlayerEntry); }
     }
-    
+
+    public UserLanguage Language
+    {
+        get
+        {
+            return _language;
+        }
+        set
+        {
+            _language = value;
+            PlayerPrefs.SetInt("Language", (int)_language);
+            
+            switch (CurrentState)
+            {
+                case GameState.MainMenu:
+                    MainPanel.Instance.TitleFr.SetActive(_language == UserLanguage.French);
+                    MainPanel.Instance.TitleEng.SetActive(_language == UserLanguage.English);
+                    MainPanel.Instance.MainMenuControls.ApplyControls();
+                    break;
+                case GameState.BuildYourSnake:
+                    MainPanel.Instance.Header.text = MainPanel.Instance.BuildYourSnakeHeader.Value;
+                    PlayerNamePanel.UpdateSelection();
+                    break;
+                case GameState.Play:
+                    MainPanel.Instance.PlayControls.ApplyControls();
+                    break;
+                case GameState.LeaderBoard:
+                    MainPanel.Instance.LeaderBoardControls.ApplyControls();
+                    break;
+            }
+            
+            var localizedTexts = MainPanel.Instance.GetComponentsInChildren<LocalizedText>(true);
+
+            if (localizedTexts == null || localizedTexts.Length == 0)
+            {
+                localizedTexts = Resources.FindObjectsOfTypeAll<LocalizedText>();
+            }
+
+            foreach (var localizedText in localizedTexts)
+            {
+                localizedText.Apply();
+            }
+        }
+    }
+
     private int _newLeaderBoardId;
     private SpriteRenderer[] _mainMenuRenderers;
     private Vector3 _buildYourSnakeActualAnchor;
     private string _url = "http://ligneleaderboard.herokuapp.com";
     private string _leaderboardRaw;
+    private UserLanguage _language;
 
     private void Awake()
     {
@@ -106,6 +157,9 @@ public class MainManager : MonoBehaviour
             Camera.main.orthographicSize = 4f;
             DesktopCanvas.SetActive(false);
             MobileCanvas.SetActive(true);
+
+            MainPanel.Instance = MobileCanvas.GetComponentInChildren<MainPanel>();
+
             MainMenuAnchor = MobileMainMenuAnchor;
             BuildYourSnakeAnchor = MobileBuildYourSnakeAnchor;
             LeaderBoardAnchor = MobileLeaderBoardAnchor;
@@ -119,6 +173,9 @@ public class MainManager : MonoBehaviour
             Camera.main.orthographicSize = 3.1f;
             DesktopCanvas.SetActive(true);
             MobileCanvas.SetActive(false);
+
+            MainPanel.Instance = DesktopCanvas.GetComponentInChildren<MainPanel>();
+
             MainMenuAnchor = DesktopMainMenuAnchor;
             BuildYourSnakeAnchor = DesktopBuildYourSnakeAnchor;
             LeaderBoardAnchor = DesktopLeaderBoardAnchor;
@@ -135,6 +192,15 @@ public class MainManager : MonoBehaviour
         _mainMenuRenderers = MetroLinesContainer.GetComponentsInChildren<SpriteRenderer>();
         
         TransitionToMainMenu(true);
+
+        if (PlayerPrefs.GetInt("Language") == 0)
+        {
+            Language = UserLanguage.English;
+        }
+        else
+        {
+            Language = UserLanguage.French;
+        }
     }
 
     public void InputUp()
@@ -163,10 +229,6 @@ public class MainManager : MonoBehaviour
 
             case GameState.LeaderBoard:
 
-                if (MainPanel.Instance.WarningPanel.activeSelf)
-                {
-                    MainPanel.Instance.WarningPanel.SetActive(false);
-                }
                 TransitionToMainMenu();
                 AudioManager.Instance.PlayOtherSFX(AudioManager.Instance.MenuInteraction);
 
@@ -314,6 +376,7 @@ public class MainManager : MonoBehaviour
         ResetSnake();
         //LoadLeaderBoard();
         DownloadScores();
+        LoadLeaderBoard();
 
         foreach (var mainMenuRenderer in _mainMenuRenderers)
         {
@@ -365,7 +428,7 @@ public class MainManager : MonoBehaviour
         //{
         //    SaveScore(CurrentPlayerName, SelectedLineIndex);
         //}
-
+  
         CurrentState = GameState.LeaderBoard;
         Camera.main.transform.DOMove(LeaderBoardAnchor.position, TransitionTime);
         UpdateSelectedLine(true);
@@ -471,6 +534,7 @@ public class MainManager : MonoBehaviour
         var currentId = 0;
         //var currentIdString = currentId.ToString();
         var currentValue = LeaderboardEntries[currentId]; /*PlayerPrefs.GetString(currentIdString);*/
+        var currentIdString = currentId.ToString();
 
         while (!string.IsNullOrEmpty(currentValue))
         {
@@ -480,6 +544,8 @@ public class MainManager : MonoBehaviour
             currentId++;
             //currentIdString = currentId.ToString();
             currentValue = LeaderboardEntries[currentId];
+            currentIdString = currentId.ToString();
+            currentValue = PlayerPrefs.GetString(currentIdString);
         }
 
         LeaderBoard = LeaderBoard.OrderByDescending(x => x.Score).ToList();

@@ -136,7 +136,7 @@ public class PlayerNamePanel : MonoBehaviour
         CharacterSlots[_currentlySelectedSlotIndex].Character.text = _alphabet[_characterSlotContentIndices[_currentlySelectedSlotIndex]].ToString();
     }
 
-    private void UpdateSelection()
+    public void UpdateSelection()
     {
         if (_currentlySelectedSlotIndex == CharacterSlots.Length - 1)
         {
